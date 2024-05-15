@@ -1,4 +1,4 @@
-import { loginAction, setCityWalletAction } from '../redux/actions/loginAction';
+import { loginAction, setCityWalletAction, setLoginFlagAction } from '../redux/actions/loginAction';
 import Base from './Base.service'
 import { LOGIN_SLUG, LOGOUT_SLUG } from './Slug'
 import { store } from '../redux/store'
@@ -42,35 +42,37 @@ class LoginService extends Base {
                             user_name: resp_data?.user_name,
                             user_type_id: resp_data?.user_type_id,
                             is_applied_for_credit: 0,
-                            is_ws_not: +resp_data?.is_ws_not
+                            is_ws_not: +resp_data?.is_ws_not,
+                            is_gst_verified: +resp_data?.is_gst_verified  // 0 - no record , 1 - has record
                         }
 
                         // if (!resp_data?.default_address) {
                         //     reject({ message: "API error: Proper data is not coming" })
                         //     return
                         // }
+                        
+                        let address = null
+                        if(resp_data?.is_gst_verified !== 2){                            
+                            const add = resp_data?.default_address
+                            address = {
+                                address_book_id: add?.address_book_id,
+                                name: resp_data?.shop_name,
+                                address: add?.entry_address1,
+                                state: add?.zone_name,
+                                pin: add?.entry_postcode,
+                                country: add?.countries_name,
+                                mobile: resp_data?.phone,
+                                email: resp_data?.email,
+                                isChecked: true
+                            }
+                        }
 
-                        // const add = resp_data.default_address
-                        const address = null
-                        // const address = {
-                        //     address_book_id: add.address_book_id,
-                        //     name: resp_data.shop_name,
-                        //     address: add.entry_address1,
-                        //     state: add.zone_name,
-                        //     pin: add.entry_postcode,
-                        //     country: add.countries_name,
-                        //     mobile: resp_data.phone,
-                        //     email: resp_data.email,
-                        //     isChecked: true
-                        // }
-
-                        // console.log(data);
-                       
-                        await store.dispatch(setCityWalletAction(resp_data?.City_Wallet))
+                        // await store.dispatch(setCityWalletAction(resp_data?.City_Wallet))
                         await store.dispatch(setDefaultAddressAction(address))
                         await store.dispatch(loginAction(data))
                         await store.dispatch(setCartCountDataAction(resp_data?.AddTheCart))
                         await store.dispatch(setWishListCount(resp_data?.GetWishList))
+                        
 
                         resolve(true)
 
@@ -80,6 +82,10 @@ class LoginService extends Base {
                     //         otp_verification: false
                     //     })
                     // }
+                }else{
+                    reject({
+                        message: "Something went wrong. Please try again"
+                    })
                 }
                 return
 
@@ -96,7 +102,7 @@ class LoginService extends Base {
             this.post(LOGOUT_SLUG, param).then(async response => {
                 resolve(response?.data?.data)
             }, error => {
-                console.log(error);
+                // console.log(error);
                 reject({
                     message: "Something went wrong",
                 })

@@ -66,7 +66,7 @@ class CustomHeader extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log(props.is_ws_not);
+        // console.log(props.is_ws_not);
         return {
             total_cart_items: props.total_cart_items ? props.total_cart_items : 0,
             total_wishlist_count: props.total_wishlist_count ? props.total_wishlist_count : 0,

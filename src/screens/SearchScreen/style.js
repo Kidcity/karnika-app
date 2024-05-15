@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
 import colors from "../../utils/colors";
-import { fonts, setHeight, setWidth, shadow_css } from "../../utils/variable";
+import { fonts, normalize, setHeight, setWidth, shadow_css } from "../../utils/variable";
 
 export const styles = StyleSheet.create({
     container:{
-        flex:1,
+        backgroundColor: colors.white,
     },
     searchBar:{
         // position: 'absolute',
@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
         flex:1,
     },
     searchInput:{
+        height: normalize(35),
         borderColor: colors.grey3,
         borderWidth: setWidth(0.3),
         borderRadius: setWidth(10),
@@ -35,7 +36,16 @@ export const styles = StyleSheet.create({
         color: colors.dark_charcoal
     },
     content:{
-        flex:1,
+        flex:1,        
+        // backgroundColor: 'red',
+    },
+    heading:{
+        fontFamily: fonts.bold,
+        fontSize: normalize(15),
+        color: colors.dark_charcoal,
+        textDecorationLine:'underline',
+        // marginLeft: normalize(15),
+        textAlign:'center'
     },
     suggestionTextView:{
         paddingVertical: setHeight(4),
@@ -60,6 +70,11 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.fontBold,
         fontSize: setWidth(4.5),
         color: colors.dark_charcoal,
-        textTransform: 'capitalize'
+        textTransform: 'capitalize',
+        marginHorizontal: normalize(15)
+    },
+    lottiView:{
+        width: normalize(150),
+        height: normalize(150)
     }
 })

@@ -66,12 +66,13 @@ export const styles = StyleSheet.create({
         padding: setWidth(4),
         backgroundColor: colors.green,
         borderRadius: setWidth(2),
+        justifyContent:'center'
     },
     btnText: {
         color: colors.white,
         fontFamily: fonts.fontBold,
         fontSize: setWidth(3.4),
-        textAlign:'center'
+        textAlign:'center',
     },
     whiteBtn:{
         backgroundColor: colors.white,
@@ -81,6 +82,7 @@ export const styles = StyleSheet.create({
     lottiView: {
         // position: 'relative',
         height: '100%',
+        width: '100%',
         alignSelf: 'center',
     },
 })

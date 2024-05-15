@@ -5,7 +5,8 @@ import { fonts, normalize, setWidth } from "../../utils/variable";
 export const styles = StyleSheet.create({
     container:{
         //padding: 10,
-        borderBottomColor: colors.grey1,
+        height: Platform.OS === 'ios' ? normalize(30) : undefined,
+        borderBottomColor: colors.grey2,
         borderBottomWidth: setWidth(0.2),
         flexDirection: 'row',
         marginTop: Platform.OS === 'ios' ? setWidth(5) : setWidth(5),
@@ -18,7 +19,7 @@ export const styles = StyleSheet.create({
         paddingLeft: setWidth(3),
         fontFamily: fonts.fontBold,
         fontSize:setWidth(3.2),
-        color: colors.grey3
+        color: colors.grey2
     },
     pressableIcon:{
        // padding: setWidth(2)

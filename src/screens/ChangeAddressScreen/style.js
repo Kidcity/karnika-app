@@ -22,10 +22,10 @@ export const styles = StyleSheet.create({
     },
     footerBtn:{
         flex: 1,
-        backgroundColor: colors.lightRed,
+        backgroundColor: colors.themeColor,
         paddingVertical: setWidth(3),
         borderRadius: setWidth(2),
-        borderColor: colors.lightRed,
+        borderColor: colors.themeColor,
         borderWidth: setWidth(0.5)
     },
     footerBtnText:{

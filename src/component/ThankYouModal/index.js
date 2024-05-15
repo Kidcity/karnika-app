@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { styles } from './style';
-import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
 import { normalize, setWidth } from '../../utils/variable';
 import colors from '../../utils/colors';
 
@@ -34,23 +34,22 @@ export default class ThankYouModal extends Component {
             <View style={styles.container}>
                 <Animated.View style={[styles.content, { transform: [{ translateY: this.animHeight }] }]}>
                     <View style={styles.headingView}>
-                        {
-                            this.props.is_ws_not == 0 &&
+                        {                            
                             <Text style={[styles.heading, { color: colors.green, fontSize: normalize(15), marginBottom: normalize(10), textDecorationLine:'underline' }]} >
-                                Thank You For Your Request !!!
+                                Thank You For Your {this.props.is_ws_not == 0 ? "Request": "Order"} !!!
                             </Text>
                         }
                         <Text style={styles.heading} >Your
                             <Text style={[ styles.redText]} > {this.props.is_ws_not == 1 ? "Order No." : "Request No."} {this.props.order_no} </Text>
-                            Was Placed Successfully To Karnika.
-                            {this.props.is_ws_not == 0 && " We Will Get Back To You Soon."}
+                            Was Placed Successfully {this.props.is_ws_not === 1 && " To Karnika"}.
+                            {/* {this.props.is_ws_not == 0 && " We Will Get Back To You Soon."} */}
                         </Text>
                         <Text style={[styles.heading,{marginTop: 8, fontSize: normalize(9.3)}]}>
                             For More Details Please Check {this.props.is_ws_not == 1 ? "My Order" : "My Request"} Page.
                         </Text>
                     </View>
                     <View style={styles.rocketView}>
-                        <Lottie
+                        <LottieView
                             autoPlay
                             loop
                             style={styles.lottiView}
@@ -65,10 +64,10 @@ export default class ThankYouModal extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.row, styles.padding_v_3, styles.padding_h_4,]}>
-                            <TouchableOpacity style={[styles.btn, styles.whiteBtn, { flex: 1 }]} onPress={this.props.onBackToHome}>
+                            <TouchableOpacity style={[styles.btn, styles.whiteBtn, { flex: 1, justifyContent:'center' }]} onPress={this.props.onBackToHome}>
                                 <Text style={[styles.btnText, { color: colors.red }]}>GO BACK HOME</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.btn, { flex: 1, marginLeft: setWidth(2) }]} onPress={this.props.onGoToOrders}>
+                            <TouchableOpacity style={[styles.btn, { flex: 1, marginLeft: setWidth(2)}]} onPress={this.props.onGoToOrders}>
                                 <Text style={styles.btnText}>GO TO MY {this.props.is_ws_not == 1 ? "ORDER" : "REQUEST"}</Text>
                             </TouchableOpacity>
                         </View>

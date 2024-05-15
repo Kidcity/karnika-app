@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, Platform, Linking } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import LinearGradient from 'react-native-linear-gradient';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { styles } from './style';
 import colors from '../../utils/colors';
-import { fonts, formattedCurrency, icons, images, normalize, rupifi_status, setWidth } from '../../utils/variable';
+import { icons, images, normalize, setWidth } from '../../utils/variable';
 import TextCard from '../TextCard';
 import Feather from 'react-native-vector-icons/Feather'
 import { connect } from 'react-redux';
 import { clearLoginData } from '../../redux/actions/loginAction';
 import FastImage from 'react-native-fast-image';
-import SettingsService from '../../services/SettingsService';
 import { logout } from '../../helper/Logout';
-import Lottie from 'lottie-react-native';
 import VersionInfo from 'react-native-version-info'
-import FastImageComponent from '../FastImageComponent';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 class CustomDrawerMenu extends Component {
     constructor(props) {
@@ -52,7 +51,7 @@ class CustomDrawerMenu extends Component {
     }
 
     componentDidMount() {
-        this.animation.play();
+        // this.animation.play();
     }
 
     render() {
@@ -61,219 +60,120 @@ class CustomDrawerMenu extends Component {
             <View style={styles.container}>
                 <DrawerContentScrollView {...this.props} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={colors.drawerProfileContainer} style={styles.profileInfoContainer}>
+                    <View style={styles.imageContainer}>
                         {
-                            this.state.isDemoLogin ?
-                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <FastImageComponent
-                                        source={images.logo}
-                                        resizeMode={FastImage.resizeMode.cover}
-                                        style={{
-                                            width: setWidth(50),
-                                            height: setWidth(30),
-                                        }}
-                                    />
-                                </View>
+                            (this.state.userdata.image != '') ?
+                                <FastImage
+                                    style={[styles.image]}
+                                    source={{
+                                        uri: this.state.userdata.image,
+                                        priority: FastImage.priority.high,
+                                    }}
+                                    resizeMode={FastImage.resizeMode.cover}
+                                />
                                 :
-                                <>
-                                    <View style={styles.row}>
-                                        <View style={styles.imageContainer}>
-                                            {
-                                                (this.state.userdata.image != '') ?
-                                                    <FastImage
-                                                        style={[styles.image]}
-                                                        source={{
-                                                            uri: this.state.userdata.image,
-                                                            priority: FastImage.priority.high,
-                                                        }}
-                                                        resizeMode={FastImage.resizeMode.cover}
-                                                    />
-                                                    :
-                                                    <Image source={images.profileimg} style={styles.image} resizeMode="cover" />
-                                            }
-
-                                        </View>
-                                        <View style={styles.nameContainer}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={styles.name}>{this.state.userdata.shop_name}</Text>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={styles.name2}>Hi {this.state.userdata.first_name}</Text>
-                                        </View>
-                                        <TouchableOpacity onPress={() => { this.props.navigation.navigate("EditProfile") }} style={{ height: setWidth(10), justifyContent: 'flex-start', }}>
-                                            <Text style={{ fontFamily: fonts.fontRegular, color: colors.white, fontSize: normalize(10) }}>Edit Profile</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    {
-                                        this.state.userdata?.default_address &&
-                                        <View style={[styles.row, { alignItems: 'center', justifyContent: 'center', marginTop: setWidth(3) }]}>
-                                            <SimpleLineIcons name='location-pin' size={setWidth(6)} color={colors.white} />
-                                            <Text style={styles.location}>
-
-                                                {this.state.userdata?.default_address?.entry_address1} , {this.state.userdata?.default_address?.entry_city} {this.state.userdata?.default_address?.entry_postcode} {this.state.userdata?.default_address?.zone_name}
-                                            </Text>
-                                        </View>
-                                    }
-                                </>
+                                <Image source={images.profileimg} style={styles.image} resizeMode="cover" />
                         }
+                    </View>
 
-                    </LinearGradient>
-
-                    {/* <View style={styles.creditView}>
-                        <Text style={styles.creditText}>Your available credit limit Rs XXX</Text>
-                    </View> */}
-
-                    {
-                        <TextCard
-                            containerStyle={{
-                                marginTop: setWidth(3)
-                            }}
-                            image={icons.shopping_bag}
-                            leftText={this.state.is_ws_not == 1 ? "My Orders" : "My Request"}
-                            onPress={() => { this.props.navigation.navigate("MyOrders") }}
-                            rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
-                            titleStyle={{
-                                fontSize: setWidth(3.3)
-                            }}
-                        />
-                    }
-
-                    <TextCard
-                        containerStyle={{
-                            marginTop: setWidth(3)
-                        }}
-                        image={icons.heart}
-                        leftText="Wishlist"
-                        onPress={() => { this.props.navigation.navigate("WishList") }}
-                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
-                        titleStyle={{
-                            fontSize: setWidth(3.3)
-                        }}
-                    />
-                    {/*
-                        this.state.is_ws_not === 1 &&
-                        <TextCard
-                            containerStyle={{
-                                marginTop: setWidth(3)
-                            }}
-                            image={icons.credit_card}
-                            leftText="City Wallet"
-                            middleView={
-                                <View style={[styles.walletAmountView]}>
-                                    <Text style={[styles.walletAmount]}>INR {(this.state.city_wallet_amt && formattedCurrency(this.state.city_wallet_amt))}</Text>
-                                </View>
+                    <View style={styles.profileInfoContainer}>
+                        <View style={styles.nameContainer}>
+                            {
+                                this.state.userdata.shop_name &&
+                                <Text numberOfLines={2} style={styles.name}>{this.state.userdata.shop_name}</Text>
                             }
-                            onPress={() => { this.props.navigation.navigate("CityWallet") }}
-                            rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
-                            titleStyle={{
-                                fontSize: setWidth(3.3),
-                                textAlign: 'right'
-                            }}
-                        />
-                        */ }
-
-                    {/* <TextCard
-                        containerStyle={{
-                            marginTop: setWidth(3)
-                        }}
-                        leftIcon={<Feather name='loader' size={setWidth(6)} color={colors.grey3} />}
-                        leftText={(this.state.rupifi_credit_balance) ? "Available Credit" : "Apply For Credit"}
-                        onPress={() => {
-                            (this.state.rupifi_credit_balance) ?
-                                Linking.openURL(this.state.rupifi_soa_url)
-                                :
-                                this.props.navigation.navigate("ApplyForCredit")
-                        }}
-                        middleView={
-                            (this.state.rupifi_credit_balance) ?
-                                <View style={[styles.walletAmountView]}>
-                                    <Text style={[styles.walletAmount]} numberOfLines={1}>INR {(this.state.rupifi_credit_balance && formattedCurrency(this.state.rupifi_credit_balance))}</Text>
-                                </View> :
-                                <></>
-                        }
-                        // middleView={
-                        //     <View style={[{ backgroundColor: colors.white,}]}>
-                        //         <Text style={[styles.walletAmount, { color: colors.dark_charcoal, marginLeft: setWidth(3), textAlign: 'right', fontSize: setWidth(3) }]}>Coming Soon</Text>
-                        //     </View>
-                        // }
-                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
-                        titleStyle={{
-                            fontSize: setWidth(3.4),
-                        }}
-                    /> */}
-                    {/*
-                        (this.state.rupifi_account_status !== '' && this.state.rupifi_account_status == rupifi_status.ACTIVE) &&
-                        <TextCard
-                            containerStyle={{
-                                marginTop: setWidth(3)
-                            }}
-                            leftIcon={<MaterialIcons name='payments' size={setWidth(5.5)} color={colors.grey3} />}
-                            leftText="Re-Pay Credit"
-                            rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
-                            titleStyle={{
-                                fontSize: setWidth(3.3)
-                            }}
-                            onPress={() => { Linking.openURL(this.state.rupifi_repayment_url) }}
-                        />
-                        */ }
-
-
-                    {/*                       
-                        <TextCard
-                        containerStyle={{
-                            marginTop: setWidth(3)
-                        }}
-                        leftIcon={<Feather name='users' size={setWidth(5)} color={colors.grey3} />}
-                        leftText="Add Team Members"
-                        middleView={
-                            <View style={[{ backgroundColor: colors.white }]}>
-                                <Text style={[styles.walletAmount, { color: colors.dark_charcoal, marginLeft: setWidth(3), textAlign: 'right', fontSize: setWidth(3) }]}>Coming Soon</Text>
+                            {
+                                this.state.userdata.first_name &&
+                                <Text numberOfLines={2} style={styles.name2}>Hi, {this.state.userdata.first_name}</Text>
+                            }
+                        </View>
+                        {
+                            this.state.userdata?.default_address &&
+                            <View style={[styles.row, { alignItems: 'center', marginTop: setWidth(2) }]}>
+                                <SimpleLineIcons name='location-pin' size={setWidth(3.8)} color={colors.white} />
+                                <Text style={styles.location} numberOfLines={2}>
+                                    {this.state.userdata?.default_address?.entry_address1} , {this.state.userdata?.default_address?.entry_city} {this.state.userdata?.default_address?.entry_postcode} {this.state.userdata?.default_address?.zone_name}
+                                </Text>
                             </View>
                         }
+                    </View>
+
+                    <TextCard
+                        containerStyle={{
+                            marginTop: setWidth(2),
+                            backgroundColor: colors.green,
+                            borderRadius: normalize(4),
+                            paddingHorizontal: normalize(5),
+                        }}
+                        leftText={"Edit Profile"}
+                        leftIcon={<Feather name='edit' size={setWidth(5)} color={colors.white} />}
+                        onPress={() => { this.props.navigation.navigate("EditProfile") }}
+                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.white} />}
                         titleStyle={{
-                            fontSize: setWidth(3.3)
+                            fontSize: setWidth(3.8),
+                            color: colors.white
                         }}
                     />
-                    */}
-
-                    {/* <TextCard
-                        leftIcon={<Ionicons name='chatbubble-outline' size={setWidth(6)} color={colors.dark_charcoal} />}
-                        leftText="Your Suggestions ?"
-                        onPress={() => { console.log('here') }}
-                        rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
-                    /> */}
 
                     <TextCard
                         containerStyle={{
                             marginTop: setWidth(3)
                         }}
-                        image={icons.phone_call}
+                        leftIcon={<Ionicons name='bag-handle-sharp' size={setWidth(6)} color={colors.black} />}
+                        leftText={this.state.is_ws_not == 1 ? "My Orders" : "My Request"}
+                        onPress={() => { this.props.navigation.navigate("MyOrders") }}
+                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.black} />}
+                        titleStyle={{
+                            fontSize: setWidth(3.3),
+                            color: colors.black,
+                            letterSpacing: 0.5
+                        }}
+                    />
+
+                    <TextCard
+                        containerStyle={{
+                            marginTop: setWidth(3)
+                        }}
+                        leftIcon={<AntDesign name='heart' size={setWidth(5)} color={colors.black} />}
+                        leftText="Wishlist"
+                        onPress={() => { this.props.navigation.navigate("WishList") }}
+                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.black} />}
+                        titleStyle={{
+                            fontSize: setWidth(3.3),
+                            color: colors.black,
+                            letterSpacing: 0.5
+                        }}
+                    />
+
+                    <TextCard
+                        containerStyle={{
+                            marginTop: setWidth(3)
+                        }}
+                        leftIcon={<MaterialIcons name='phone' size={setWidth(6)} color={colors.black} />}
                         leftText={this.state.is_ws_not == 0 ? "Contact" : "Contact Us"}
                         onPress={() => {
                             this.props.navigation.navigate("ContactUs")
                         }}
-                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
+                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.black} />}
                         titleStyle={{
-                            fontSize: setWidth(3.3)
+                            fontSize: setWidth(3.3),
+                            color: colors.black,
+                            letterSpacing: 0.5
                         }}
                     />
-
-                    {/* <TextCard
-                        leftIcon={<EvilIcons name='star' size={setWidth(6)} color={colors.dark_charcoal} />}
-                        leftText="Rate Us"
-                        onPress={() => { 
-                            this._rateus()
-                         }}
-                        rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
-                    /> */}
 
                     <TextCard
                         containerStyle={{
                             marginTop: setWidth(3)
                         }}
-                        leftIcon={<SimpleLineIcons name='settings' size={setWidth(5)} color={colors.grey3} />}
+                        leftIcon={<Ionicons name='settings-sharp' size={setWidth(5)} color={colors.black} />}
                         leftText="Settings"
                         onPress={() => { this.props.navigation.navigate("Settings") }}
-                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
+                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.black} />}
                         titleStyle={{
-                            fontSize: setWidth(3.3)
+                            fontSize: setWidth(3.3),
+                            color: colors.black,
+                            letterSpacing: 0.5
                         }}
                     />
 
@@ -282,19 +182,15 @@ class CustomDrawerMenu extends Component {
                             marginTop: setWidth(3)
                         }}
                         leftIcon={
-                            <Lottie
-                                ref={animation => {
-                                    this.animation = animation;
-                                }}
-                                style={styles.lottiView}
-                                source={require("../../utils/jumping_youtube.json")}
-                            />
+                            <Entypo name='youtube' size={setWidth(5)} color={colors.red} />
                         }
                         leftText="App Tutorial"
                         onPress={() => Linking.openURL("https://www.youtube.com/@karnikaindia")}
-                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.grey3} />}
+                        rightIcon={<Feather name='arrow-right' size={setWidth(5)} color={colors.black} />}
                         titleStyle={{
-                            fontSize: setWidth(3.3)
+                            fontSize: setWidth(3.3),
+                            color: colors.black,
+                            letterSpacing: 0.5
                         }}
                     />
 
@@ -302,11 +198,15 @@ class CustomDrawerMenu extends Component {
                         containerStyle={{
                             marginTop: setWidth(3)
                         }}
-                        image={icons.logout}
+                        leftIcon={
+                            <Entypo name='log-out' size={setWidth(5)} color={colors.black} />
+                        }
                         leftText="Logout"
                         onPress={logout}
                         titleStyle={{
-                            fontSize: setWidth(3.3)
+                            fontSize: setWidth(3.3),
+                            color: colors.black,
+                            letterSpacing: 0.5
                         }}
                     />
 
@@ -321,7 +221,6 @@ class CustomDrawerMenu extends Component {
                     </View>
 
 
-                    {/* <DrawerItemList {...this.props} /> */}
                 </DrawerContentScrollView>
             </View>
         );

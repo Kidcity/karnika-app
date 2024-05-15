@@ -14,12 +14,12 @@ export const Strings = {
         uploadphotoText: "Upload Store Photo",
         mobilenumberText: "Mobile Number*",
         emailText: "Email Id",
-        shopnameText:"Shop Name*",
+        shopnameText:"Shop Name",
         panfieldText: "No. Here*",
         gstText: "GST",
         panText: "PAN",
         companynameText:"Company Name*",
-        ownernameText: "Owner Name*",
+        ownernameText: "Owner Name",
         billingaddressText: "Billing Address*",
         stateText:"State",
         districtText: "District",
@@ -58,7 +58,7 @@ export const Strings = {
         noItemsInCartText: "No items in the cart, continue shopping",
         cartViewComponentStrings:{
             ordernotdelivarableText: "Order cannot be delivered in your address",
-            totalPriceDetailsText: "Total Price Details",
+            totalPriceDetailsText: "Total Quantity Details",
             applyPromoText: "Apply Promo Code"
         },
         cartaddressComponentStrings:{

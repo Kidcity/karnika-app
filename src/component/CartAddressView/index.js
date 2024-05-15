@@ -53,8 +53,8 @@ export default class CartAddressView extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.shippingAddressView}>
-                    <View style={[styles.row, { alignItems: 'center' }]}>
-                        <EvilIcons name='location' size={setWidth(7)} color={colors.dark_charcoal} />
+                    <View style={[styles.row, { alignItems: 'center',paddingVertical: 5 }]}>
+                        <EvilIcons name='location' size={setWidth(6)} color={colors.dark_charcoal} />
                         <Text style={styles.shippingAddressHeading}>Shipping Address</Text>
                     </View>
                     {
@@ -78,13 +78,13 @@ export default class CartAddressView extends Component {
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.estimateTimeView}>
+                {/* <View style={styles.estimateTimeView}>
                     <Feather name='truck' size={setWidth(6)} color={colors.dark_charcoal} />
                     <Text style={styles.estimateText}>Estimated Delivey By {this.state.est_date}</Text>
-                </View>
+                </View> */}
 
                 <View style={styles.priceDetailsView}>
-                    <Text style={[{ color: colors.grey2 }, styles.textBold]}>Total Price Details</Text>
+                    <Text style={[{ color: colors.grey2 }, styles.textBold]}>Total Quantity Details</Text>
                     <View style={styles.priceBoxView}>
                         {
                             this.state.total_price_details &&
@@ -92,7 +92,8 @@ export default class CartAddressView extends Component {
                                 return (
                                     <View style={[styles.row, styles.textGap, { justifyContent: 'space-between' }]} key={index}>
                                         <Text style={[styles.subHeading, styles.darkText]}>{item.title}</Text>
-                                        <Text style={[styles.subHeading, styles.darkText, commonStyle.bluredText,]}>₹ {parseFloat(item.value).toFixed(2)}</Text>
+                                        <Text style={[styles.subHeading, styles.darkText]}> {item.value } Pcs</Text>
+                                        {/* <Text style={[styles.subHeading, styles.darkText]}>{this.props.total_ordered_qty}</Text> */}
                                     </View>
                                 )
                             })

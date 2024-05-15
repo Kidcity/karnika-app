@@ -29,17 +29,17 @@ export const styles = StyleSheet.create({
     headerBtnText:{
         fontFamily: fonts.bold,
         color: colors.red,
-        fontSize: normalize(15)
+        fontSize: normalize(12)
     },
     content:{
         flex:1
     },
     left:{
-        flex:0.3,
+        flex:0.35,
         backgroundColor: colors.grey5
     },
     right:{
-        flex: 0.7,
+        flex: 0.65,
         // paddingTop: normalize(10)
         // paddingHorizontal: normalize(10),
         // backgroundColor:'pink',

@@ -6,7 +6,7 @@ import { setCartCountDataAction } from '../redux/actions/cartAction'
 class ProductDetailsService extends Base {
 
     _populateData(data) {
-        console.log(JSON.stringify(data));
+        // console.log(JSON.stringify(data));
         return new Promise((resolve, reject) => {
             let sizeList = []
             for (let index = 0; index < data.product_size_groups.length; index++) {
@@ -19,6 +19,7 @@ class ProductDetailsService extends Base {
                         price_per_piece: element.sale_price,
                         mrp: element.MRP,
                         wsp: element.WSP,
+                        subsku: element.subsku,
                         total_set: element.set_qty,
                         total_selected: 0,
                         total_set_available: parseInt(element.stock_qty),
@@ -61,8 +62,8 @@ class ProductDetailsService extends Base {
                         {
                             id: element.products_id,
                             brand_name: element.brand_name,
-                            image: element.image,
-                            price: element.sale_price,
+                            image: element.image, 
+                            price: element.sale_price,                            
                             off: element.extra,
                             prev_price: element.min_wsp_price,
                             size: element.size_group_name,
@@ -116,7 +117,9 @@ class ProductDetailsService extends Base {
                 city_id: data.brand.city_id,
                 city_name: data.brand.city_name,
 
-                product_total_colors: (data.colors && data.product_size_groups.length > 0) ? data.colors.length + ' (Each ' + data.product_size_groups[0].each_set_color + ' Set)' : 0,
+                // product_total_colors: (data.colors && data.product_size_groups.length > 0) ? data.colors.length + ' (Each ' + data.product_size_groups[0].each_set_color + ' Set)' : 0,
+
+                product_total_colors: (data.colors && data.product_size_groups.length > 0) ? data.colors.length : 0,
 
                 product_id: data.product.products_id,
 
@@ -155,6 +158,7 @@ class ProductDetailsService extends Base {
             this.post(PRODUCT_DETAILS_SLUG, param).then(async response => {
                 
                 if (response?.data?.data) {
+                    // console.log(JSON.stringify(response.data.data));
                     const data = await this._populateData(response.data.data)
                     resolve(data)
                 } else {

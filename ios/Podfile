@@ -28,6 +28,13 @@ end
 target 'Karnika' do
   config = use_native_modules!
   use_frameworks! :linkage => :static
+  pod 'RNFBCrashlytics', :path => '../node_modules/@react-native-firebase/crashlytics'
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseAnalytics', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  
   use_react_native!(
     :path => config[:reactNativePath],
     # Enables Flipper.

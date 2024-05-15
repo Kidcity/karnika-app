@@ -9,8 +9,9 @@ class WishlistService extends Base {
         return new Promise((resolve, reject) => {
             this.post(WISHLIST_SLUG, param).then(response => {
 
-                if (response.data && response.data.data && response.data.data.data) {
-                    const data = response.data.data.data                    
+                if (response?.data && response?.data?.data && response?.data?.data?.data) {
+                    const data = response?.data?.data?.data                    
+                    console.log(data);
                     let list = []
                     for (let index = 0; index < data.length; index++) {
                         const element = data[index];
@@ -30,6 +31,7 @@ class WishlistService extends Base {
                             size: size_group_name,
                             margin: element.margin,
                             mrp: element.min_mrp,
+                            master_style_no: element.master_style_no,
                             image: element.image,
                             category: element.category_name,
                             each_set_color: element.each_set_color

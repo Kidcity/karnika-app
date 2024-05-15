@@ -11,6 +11,7 @@ import FlatListContainer from '../FlatListContainer'
 import { initialWindowMetrics } from 'react-native-safe-area-context';
 import { commonStyle } from '../../helper/commonStyle'
 import CustomImage from '../FastImage';
+import Checkbox from '../Checkbox';
 
 /**
  * category: '',
@@ -44,7 +45,7 @@ class FilterModal extends Component {
         },
         {
           id: 3,
-          title: "Age/Size",
+          title: "Size",
           tag: "ageGroup",
           options: [],
           isActive: false
@@ -56,13 +57,13 @@ class FilterModal extends Component {
           options: [],
           isActive: false
         },
-        {
-          id: 5,
-          title: "Price Range",
-          tag: "priceRange",
-          options: [],
-          isActive: false
-        }
+        // {
+        //   id: 5,
+        //   title: "Price Range",
+        //   tag: "priceRange",
+        //   options: [],
+        //   isActive: false
+        // }
       ],
       genders: [],
       selectedGender: '',
@@ -99,7 +100,7 @@ class FilterModal extends Component {
       this.setState({
         selectedGender: param_filter?.category + ''
       }, () => this._getFilterData())
-    }else{
+    } else {
       this.setState({
         selectedGender: this.state.genders[0].id
       }, () => this._getFilterData())
@@ -117,7 +118,7 @@ class FilterModal extends Component {
         }
       })
     }
-    
+
 
     // SEASON
     if (param_filter?.season) {
@@ -131,7 +132,7 @@ class FilterModal extends Component {
       })
     }
 
-    
+
     // AGE
     if (param_filter?.ageGroup) {
       this.setState({
@@ -157,16 +158,16 @@ class FilterModal extends Component {
     }
 
     // PRICE RANGE
-    if (param_filter?.priceRange) {
-      this.setState({
-        selectedPrice: param_filter?.priceRange + ''
-      })
-      filter[4].options.map(item => {
-        if (param_filter?.priceRange.includes(item.id + '')) {
-          item.isActive = true
-        }
-      })
-    }
+    // if (param_filter?.priceRange) {
+    //   this.setState({
+    //     selectedPrice: param_filter?.priceRange + ''
+    //   })
+    //   filter[4].options.map(item => {
+    //     if (param_filter?.priceRange.includes(item.id + '')) {
+    //       item.isActive = true
+    //     }
+    //   })
+    // }
 
     // console.log("changes => ",JSON.stringify(filter));
     this.setState({
@@ -175,7 +176,7 @@ class FilterModal extends Component {
   }
 
   _getFilterData() {
-    if(this.state.selectedGender == ''){
+    if (this.state.selectedGender == '') {
       return
     }
 
@@ -184,7 +185,7 @@ class FilterModal extends Component {
     const season_filter = filters.filter((item) => item.id === 2)[0]
     const age_filter = filters.filter((item) => item.id === 3)[0]
     const brand_filter = filters.filter((item) => item.id === 4)[0]
-    const price_filter = filters.filter((item) => item.id === 5)[0]
+    // const price_filter = filters.filter((item) => item.id === 5)[0]
 
     const param = {
       category_id: this.state.selectedGender + "",
@@ -197,7 +198,7 @@ class FilterModal extends Component {
     this.setState({ showLoader: true })
 
     FilterService._getFilterDataService(param, this.props.filter, this.state.selectedSeason).then(response => {
-      
+
       categories_filter.options = response?.categories
       filters[0] = categories_filter
 
@@ -210,8 +211,8 @@ class FilterModal extends Component {
       brand_filter.options = response?.brands
       filters[3] = brand_filter
 
-      price_filter.options = response?.price
-      filters[4] = price_filter
+      // price_filter.options = response?.price
+      // filters[4] = price_filter
 
       // console.log(JSON.stringify(filters));
 
@@ -238,11 +239,11 @@ class FilterModal extends Component {
       filters: filters,
       selectedGender: this.state.genders[0].id,
       selectedCategories: "",
-      selectedSeason:"",
+      selectedSeason: "",
       selectedAge: "",
       selectedBrands: '',
       selectedPrice: ""
-    } , () =>this._getFilterData() )
+    }, () => this._getFilterData())
   }
 
   _onPressGender(index) {
@@ -268,7 +269,7 @@ class FilterModal extends Component {
       }, () => this._getFilterData())
     }
 
-    if (filters[parentIndex].title === "Age/Size") {
+    if (filters[parentIndex].title === "Size") {
       const filter = filters[parentIndex].options.filter(item => item.isActive === true).map(({ id }) => id)
       this.setState({
         selectedAge: filter.toString()
@@ -295,7 +296,7 @@ class FilterModal extends Component {
 
   }
 
- async _populateTotalFilters() {
+  async _populateTotalFilters() {
 
     let count = 0
     if (this.state.selectedGender !== "") {
@@ -341,7 +342,7 @@ class FilterModal extends Component {
     //   this.props.setMyFeedAction(filter)
     // }else{
     // }
-    
+
     this.props.onDone(count)
   }
 
@@ -380,7 +381,7 @@ class FilterModal extends Component {
               return (
                 <TouchableOpacity style={[item?.isActive && styles.selectedBorder, styles.seasonImageContainer, commonStyle.gapTop10, item.isActive && styles.selectedBorder]} onPress={() => this._onPressRightOption(Pindex, index)}>
                   <CustomImage
-                    source={{uri: item.image}}
+                    source={{ uri: item.image }}
                     style={styles.image}
                     resizeMode="contain"
                   />
@@ -392,35 +393,24 @@ class FilterModal extends Component {
         )
       }
 
-      if (item.title === 'Age/Size') {
+      if (item.title === 'Size') {
         return (
           <FlatListContainer
             data={item.options}
-            numColumns={2}
-            columnWrapperStyle={{
-              justifyContent: 'space-around',
-            }}
             renderItem={({ item, index }) => {
               return (
-                <View>
-                  <TouchableOpacity style={[item?.isActive && styles.selectedBorder, styles.ageImageContainer]} onPress={() => this._onPressRightOption(Pindex, index)}>
-                    <CustomImage
-                      source={{uri: item.image}}
-                      // source={images.trends2}
-                      style={styles.image}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
-                  <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
+                <TouchableOpacity style={[styles.priceRangeContainer,{flexDirection:'row', alignItems:'center'}, item?.isActive && { backgroundColor: colors.grey5 }]} onPress={() => this._onPressRightOption(Pindex, index)}>
+                  <Checkbox isChecked={item?.isActive} containerStyle={{borderRadius: normalize(5)}} onPressCheckBox={() => this._onPressRightOption(Pindex, index)} />
+                  <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontRegular, item?.isActive && commonStyle.fontBold, {marginLeft: normalize(5)}]}>
                     {
                       item?.subtitle
                     }
                   </Text>
-                </View>
+                </TouchableOpacity>
               )
             }
             }
-            itemSeparatorComponent={() => <View style={{ marginTop: normalize(15) }} />}
+            itemSeparatorComponent={() => <View style={{ marginTop: normalize(5) }} />}
           />
         )
       }
@@ -433,7 +423,7 @@ class FilterModal extends Component {
             numColumns={3}
             style={{ paddingHorizontal: normalize(10), paddingBottom: normalize(20), }}
             columnWrapperStyle={{
-              justifyContent: 'space-between',
+              justifyContent: 'space-evenly',
             }}
             renderItem={({ item, index }) => {
               return (
@@ -441,7 +431,7 @@ class FilterModal extends Component {
                   <View style={[styles.brandImageContainer, commonStyle.shadow, item?.isActive && styles.selectedBorder]}>
                     <CustomImage
                       source={{ uri: item.image }}
-                      style={{flex:1, aspectRatio: 1}}
+                      style={{ flex: 1, aspectRatio: 1 }}
                       resizeMode="contain"
                     />
                   </View>
@@ -468,13 +458,13 @@ class FilterModal extends Component {
             data={item.options}
             renderItem={({ item, index }) => {
               return (
-                <TouchableOpacity style={[styles.priceRangeContainer, item?.isActive && {backgroundColor: colors.grey5}]} onPress={() => this._onPressRightOption(Pindex, index)}>
-                  <Text style={[commonStyle.text11, commonStyle.textBlack,commonStyle.fontRegular, item?.isActive && commonStyle.fontBold, commonStyle.textCapitalize]}>
+                <TouchableOpacity style={[styles.priceRangeContainer, item?.isActive && { backgroundColor: colors.grey5 }]} onPress={() => this._onPressRightOption(Pindex, index)}>
+                  <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontRegular, item?.isActive && commonStyle.fontBold, commonStyle.textCapitalize]}>
                     Under {
                       item?.subtitle
                     }
                   </Text>
-                </TouchableOpacity>                
+                </TouchableOpacity>
               )
             }
             }
@@ -482,29 +472,29 @@ class FilterModal extends Component {
         )
       }
 
-      if (item.title === 'Categories') {        
+      if (item.title === 'Categories') {
         return (
           <FlatListContainer
             data={item.options}
             numColumns={3}
             style={{ paddingHorizontal: normalize(10), paddingBottom: normalize(20), }}
             columnWrapperStyle={{
-              justifyContent: 'space-between',
+              justifyContent: 'space-evenly',
             }}
             renderItem={({ item, index }) => {
               return (
                 <TouchableOpacity style={[styles.brandsContainer, { width: '31%', overflow: 'hidden' }]} onPress={() => this._onPressRightOption(Pindex, index)}>
 
-                  <View style={[styles.brandImageContainer,  commonStyle.shadow, item?.isActive && styles.selectedBorder]}>
+                  <View style={[styles.brandImageContainer, commonStyle.shadow, item?.isActive && styles.selectedBorder]}>
                     <CustomImage
                       source={{ uri: item.image }}
                       // source={images.trends2}
-                      style={{flex:1, aspectRatio: 1}}
+                      style={{ flex: 1, aspectRatio: 1 }}
                       resizeMode="contain"
                     />
                   </View>
                   <View style={[commonStyle.padding_V_10]}>
-                    <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
+                    <Text style={[commonStyle.text10, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
                       {
                         item.subtitle
                       }
@@ -527,18 +517,18 @@ class FilterModal extends Component {
   render() {
 
     return (
-      <View style={[styles.container, (this.state.isMyFeed)? {height: setHeight(100) - setHeight(10)} : {height: '100%'} ]}>
+      <View style={[styles.container, (this.state.isMyFeed) ? { height: setHeight(100) - setHeight(10) } : { height: '100%' }]}>
         <View style={{
           flex: 1,
         }} >
 
           <View style={[styles.header]} >
-            <Text style={[styles.heading, this.state.isMyFeed && commonStyle.textUpperCase ]}>
+            <Text style={[styles.heading, this.state.isMyFeed && commonStyle.textUpperCase]}>
               {
-                this.state.isMyFeed ? 
-                "Set Your Today's Feed"
-                :
-                "Filter"
+                this.state.isMyFeed ?
+                  "Set Your Today's Feed"
+                  :
+                  "Filter"
               }
             </Text>
             <TouchableOpacity style={styles.headerBtn} onPress={() => this.clearAllFilter()}>
@@ -585,10 +575,10 @@ class FilterModal extends Component {
           <TouchableOpacity style={styles.footerBtn} onPress={() => this._populateTotalFilters()}>
             <Text style={[commonStyle.text13, commonStyle.textWhite, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
               {
-                 this.state.isMyFeed ? 
-                 "SET"
-                 :
-                 "DONE"
+                this.state.isMyFeed ?
+                  "SET"
+                  :
+                  "APPLY"
               }
             </Text>
           </TouchableOpacity>

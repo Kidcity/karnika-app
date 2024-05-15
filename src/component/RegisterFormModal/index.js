@@ -41,7 +41,8 @@ export default class RegisterFormModal extends PureComponent {
                 district: "Please select district",
                 city: "Please enter city",
                 pin: "Please enter pin."
-            }
+            },
+            is_pan_gst_error: false
         }
     }
 
@@ -136,10 +137,11 @@ export default class RegisterFormModal extends PureComponent {
                     city: data?.primary_business_address?.location,
                     address: data?.primary_business_address?.full_address,
                     pin: data?.primary_business_address?.pincode,
-                    pangstLoader: false
+                    pangstLoader: false,
+                    is_pan_gst_error: false
                 })
             } else {
-                this.setState({ pangstLoader: false })
+                this.setState({ pangstLoader: false, is_pan_gst_error: true })
             }
         }, error => {
             this.setState({
@@ -159,7 +161,8 @@ export default class RegisterFormModal extends PureComponent {
             } else {
                 this.setState({
                     errMessage: "GST Number error : " + error.message,
-                    showErrorModal: true
+                    showErrorModal: true,
+                    is_pan_gst_error: true
                 })
                 // errorAlert("Error", error.message)
             }
@@ -178,10 +181,11 @@ export default class RegisterFormModal extends PureComponent {
             if (response?.data?.data?.data) {
                 const data = response?.data?.data?.data
                 this.setState({
-                    pangstLoader: false
+                    pangstLoader: false,
+                    is_pan_gst_error: false
                 })
             } else {
-                this.setState({ pangstLoader: false })
+                this.setState({ pangstLoader: false, is_pan_gst_error: true })
             }
         }, error => {
 
@@ -202,7 +206,8 @@ export default class RegisterFormModal extends PureComponent {
             } else {
                 this.setState({
                     errMessage: "PAN Number error : " + error.message,
-                    showErrorModal: true
+                    showErrorModal: true,
+                    is_pan_gst_error: true
                 })
                 // errorAlert("Error", error.message)
             }
@@ -216,6 +221,9 @@ export default class RegisterFormModal extends PureComponent {
         if (state.pangstno === "") {
             err = state.isgst ? "Please enter GST number" : "Please enter Pan number"
         }
+        // if(state.is_pan_gst_error){
+        //     err = state.isgst ? "Please enter valid GST number" : "Please enter valid Pan number"
+        // }
         if (state.companyname === "") {
             err = state.validationMessage.company_name
         }
@@ -256,19 +264,19 @@ export default class RegisterFormModal extends PureComponent {
             pin: this.state.pin,
         }
 
-        console.log(param);
+        // console.log(param);
 
         RegisterService._updateProfileService(param).then(response => {
-            if(response.status){
-                successToast("SUCCESS!", "Profile Updated.")            
-                this.props.onClose()
+            if (response.status) {
+                successToast("SUCCESS!", "Profile Updated.")
+                this.props.onSuccess()
             }
         }, error => {
             this.setState({ showLoader: false })
             if (error.message == "server_error") {
                 retryAlert(() => this.updateProfile())
             } else {
-                
+
                 this.setState({
                     errMessage: error.message,
                     showErrorModal: true
@@ -398,6 +406,20 @@ export default class RegisterFormModal extends PureComponent {
                             labelStyle={{ color: colors.white }}
                             iconColor={colors.white}
                             onPress={() => this.updateProfile()}
+                            leftIcon
+                        />
+
+                        <CustomButton
+                            container={{
+                                backgroundColor: colors.red,
+                                marginTop: setWidth(2),
+                                paddingHorizontal: setWidth(7),
+                                paddingRight: setWidth(9),
+                            }}
+                            label="CLOSE"
+                            labelStyle={{ color: colors.white }}
+                            iconColor={colors.white}
+                            onPress={() => this.props.onClose()}
                             leftIcon
                         />
 

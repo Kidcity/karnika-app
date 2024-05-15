@@ -93,7 +93,7 @@ class ChangeAddressScreen extends Component {
 
         if (filtered_data.length > 0) {
             AddressService._setDefaultAddress(filtered_data[0]).then(response => {
-                console.log('_saveDefaultAddress ====> ', response);
+                // console.log('_saveDefaultAddress ====> ', response);
                 successToast("Success", "Default Address Saved!")
                 setScreenActivity({ action_type: "going_back", action_id: '' })
                 this.props.navigation.goBack()
@@ -186,7 +186,7 @@ class ChangeAddressScreen extends Component {
                 />
                 <View style={styles.content}>
                     <CustomButton
-                        container={{ backgroundColor: colors.lightRed, marginTop: setWidth(5) }}
+                        container={{ backgroundColor: colors.themeColor, marginTop: setWidth(5) }}
                         label="ADD NEW ADDRESS"
                         labelStyle={{ color: colors.white }}
                         iconColor={colors.white}
@@ -214,7 +214,7 @@ class ChangeAddressScreen extends Component {
                 </View>
                 <View style={styles.footerView}>
                     <TouchableOpacity style={[styles.footerBtn, { backgroundColor: colors.white }]} onPress={this.backAction}>
-                        <Text style={[styles.footerBtnText, { color: colors.lightRed }]}>CANCEL</Text>
+                        <Text style={[styles.footerBtnText, { color: colors.themeColor }]}>BACK</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.footerBtn, { marginLeft: setWidth(2) }]} onPress={() => this._saveDefaultAddress()}>
                         <Text style={styles.footerBtnText}>SAVE</Text>

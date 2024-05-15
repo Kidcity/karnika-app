@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     },
     heading:{
         fontFamily: fonts.fontRegular,
-        fontSize: setWidth(10),
+        fontSize: setWidth(5),
         textAlign:'center',
         color: colors.red,
         marginBottom: normalize(10)
@@ -52,5 +52,10 @@ export const styles = StyleSheet.create({
     btnText:{
         fontFamily: fonts.fontRegular,
         color: colors.dark_charcoal
-    }
+    },
+    btnImage:{
+        width: setWidth(10),
+        height: setWidth(10),
+        marginRight: setWidth(3)
+    },
 })

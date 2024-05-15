@@ -22,6 +22,8 @@ import CartPageDynamicPaymentModal from '../../component/CartPageDynamicPaymentM
 import { setScreenActivity } from '../../helper/AppActivityTrackingHelper';
 import { clearProductFilterAction, setProductFilterAction } from '../../redux/actions/commonAction';
 import { clearProductListData } from '../../redux/actions/productListAction';
+import EmptyContent from '../../component/EmptyContent';
+import { setWholesalerAction } from '../../redux/actions/homeAction';
 
 class CartScreen extends Component {
     constructor(props) {
@@ -78,7 +80,9 @@ class CartScreen extends Component {
             gst_12: 0,
             gst_total: 0,
             final_order_no: '',
-            is_ws_not: 0
+            is_ws_not: 0,
+            wholesalers: [],
+            selected_wholesaler: null
         };
 
     }
@@ -93,7 +97,8 @@ class CartScreen extends Component {
             cart_items: props.hasOwnProperty("cart_items") ? props.cart_items : [],
             total_price_details: props.hasOwnProperty("cart_total_price_details") ? props.cart_total_price_details : [],
             total_cart_items: props.hasOwnProperty("total_cart_items") ? props.total_cart_items : 0,
-            is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0
+            is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0,
+            wholesalers: props.hasOwnProperty("wholesalers") ? props.wholesalers : [],
         }
     }
 
@@ -159,12 +164,22 @@ class CartScreen extends Component {
     _visitorOrder = async (selected_order) => {
         //https://thekarnika.co/karnika/api/retailer/visitorOrder
 
+        if (this.state.wholesalers.length === 0) {
+            alert("There is no wholesalers in your location.\nPlease contact to Karnika Team.\n9903528105 / 9903428105")
+            return
+        }
+
+        if (!this.state.selected_wholesaler) {
+            alert("Please select wholesaler first.")
+            return
+        }
+
         const default_shipping_address = this.state.default_shipping_address
         const param = {
             retailer_id: this.props.loginReducer.data.cust_manu_id,
             product_size_group_id: selected_order.map((item => item.items.map(e => e.product_size_group_id))).join(","),
             address_book_id: default_shipping_address.address_book_id,
-            wholsaler_id: ""
+            wholsaler_id: this.state.selected_wholesaler?.wholsaler_id
         }
         console.log(param);
         this.setState({ showLoader: true })
@@ -178,16 +193,22 @@ class CartScreen extends Component {
                 }, async () => {
                     this.resetStockState()
                 })
+            } else {
+                this.setState({ showLoader: false })
             }
         }, error => {
+
             this.setState({ showLoader: false })
+            if (error.message == "server_error") {
+                retryAlert(() => this._visitorOrder())
+            }
         })
 
     }
 
     async _customerOrder(selected_order) {
 
-        console.log(selected_order);
+        // console.log(selected_order);
         let oda_charge = 0, gst_5 = 0, gst_12 = 0, total_gst = 0
         selected_order.map(item => {
             oda_charge += +item.shipping_details.oda_charges
@@ -208,7 +229,7 @@ class CartScreen extends Component {
             gst_12: parseFloat(gst_12).toFixed(2),
             totalGst: parseFloat(total_gst).toFixed(2),
         }
-        console.log(param);
+        // console.log(param);
         this.setState({ showLoader: true })
         CartServices._customerOrderService(param).then(res => {
             if (res.status === "true") {
@@ -223,6 +244,9 @@ class CartScreen extends Component {
             }
         }, error => {
             this.setState({ showLoader: false })
+            if (error.message == "server_error") {
+                retryAlert(() => this._visitorOrder())
+            }
         })
     }
 
@@ -412,7 +436,7 @@ class CartScreen extends Component {
                 gst_12: this.state.gst_12
             }
 
-            console.log("_updatePaymentStatus  ==> ", param);
+            // console.log("_updatePaymentStatus  ==> ", param);
 
             await CartServices._updatePaymentStatusService(param).then(async response => {
 
@@ -715,6 +739,8 @@ class CartScreen extends Component {
             let gst_5_total = 0
             let gst_12_total = 0
 
+            let total_qty_ordered = 0
+
             for (let index = 0; index < cart_items[parentIndex].items.length; index++) {
                 const element = cart_items[parentIndex].items[index];
                 total_order_price += +element.order_price
@@ -724,7 +750,11 @@ class CartScreen extends Component {
                 } else {
                     gst_12_total += element.order_price
                 }
+
+                total_qty_ordered += element.set_qty * element.qty_ordered
             }
+
+            total_qty_ordered = (total_qty_ordered === 1) ? total_qty_ordered + " Pc" : total_qty_ordered + " Pcs"
 
             let shipping_details = await this._getShippingDetails(total_order_price, gst_5_total, gst_12_total)
 
@@ -744,9 +774,11 @@ class CartScreen extends Component {
             total_price_details.map((item, index) => {
                 if (!item?.shop_in_shop && item?.city_id && item?.city_id == id) {
                     item.value = total_gross_price
+                    item.total_qty_ordered = total_qty_ordered
                 }
                 if (item?.brand_id && item?.brand_id == id) {
                     item.value = total_gross_price
+                    item.total_qty_ordered = total_qty_ordered
                 }
             })
 
@@ -766,6 +798,7 @@ class CartScreen extends Component {
         let total_order_price = 0
         let gst_5_total = 0
         let gst_12_total = 0
+        let total_qty_ordered = 0
 
         for (let index = 0; index < cart_items[parentIndex].items.length; index++) {
             const element = cart_items[parentIndex].items[index];
@@ -776,7 +809,10 @@ class CartScreen extends Component {
             } else {
                 gst_12_total += element.order_price
             }
+            total_qty_ordered += element.set_qty * element.qty_ordered
         }
+
+        total_qty_ordered = (total_qty_ordered === 1) ? total_qty_ordered + " Pc" : total_qty_ordered + " Pcs"
 
         let shipping_details = await this._getShippingDetails(total_order_price, gst_5_total, gst_12_total)
 
@@ -798,9 +834,11 @@ class CartScreen extends Component {
         total_price_details.map((item, index) => {
             if (!item?.shop_in_shop && item?.city_id && item.city_id == id) {
                 item.value = gross_total
+                item.total_qty_ordered = total_qty_ordered
             }
             if (item?.brand_id && item.brand_id == id) {
                 item.value = gross_total
+                item.total_qty_ordered = total_qty_ordered
             }
         })
 
@@ -841,14 +879,14 @@ class CartScreen extends Component {
             retailer_id: this.props.loginReducer.data.cust_manu_id
         }
         const default_address = this.props.addressReducer.default_address
-        if(!default_address){
-            console.log(this.state.noCartData, this.state.total_cart_items);
+        if (!default_address) {
+            // console.log(this.state.noCartData, this.state.total_cart_items);
             errorAlert("Error", "Please add your shipping address.")
         }
-        
+
         this.setState({ showLoader: true })
         CartServices._getCartProductService(param).then(response => {
-            
+
             this.setState({
                 showLoader: false,
                 total_cart_items: response?.total_cart_items,
@@ -913,16 +951,6 @@ class CartScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* <CustomHeader
-                    heading={this.state.page_heading}
-                    headingStyle={{
-                        textAlign: "center"
-                    }}
-                    showBackButton={true}
-                    onPressBack={() => {
-                        this.backAction()
-                    }}
-                /> */}
                 <AppHeader
                     showBackBtn
                     showSearch
@@ -933,7 +961,8 @@ class CartScreen extends Component {
                 <ScrollView contentContainerStyle={styles.content}>
                     {
                         this.state.noCartData ?
-                            <Text style={[styles.text, { marginTop: setWidth(10), textAlign: 'center', fontSize: setWidth(4), color: colors.dark_charcoal }]}>{Strings.cartScreenStrings.noItemsInCartText}</Text>
+                            <EmptyContent />
+                            // <Text style={[styles.text, { marginTop: setWidth(10), textAlign: 'center', fontSize: setWidth(4), color: colors.dark_charcoal }]}>{Strings.cartScreenStrings.noItemsInCartText}</Text>
                             :
                             <CartView
                                 is_ws_not={this.state.is_ws_not}
@@ -952,11 +981,14 @@ class CartScreen extends Component {
                     }
 
                 </ScrollView>
+                {/* <Text style={{color: 'red'}}>{  `${this.state.is_ws_not}`  }</Text> */}
                 {
                     this.state.showPaymentProcessModal &&
                     <CartPageDynamicPaymentModal
                         is_ws_not={this.state.is_ws_not}
                         cart_items={this.state.cart_items}
+                        wholesalers={this.state.wholesalers}
+                        // onChooseWholesaler={(data) => this.onChooseWholesaler(data)}
                         onCityWiseBuy={(item) => this.onCityWiseBuy(item)}
                         onPressChangeAddress={() => { this.props.navigation.navigate("ChangeAddress") }}
                         onPressAddNewAddress={() => { this.props.navigation.navigate("AddNewAddress") }}
@@ -970,11 +1002,39 @@ class CartScreen extends Component {
                         // city_wallet_amount={1000}
                         credit_balance={this.state.rupifi_credit_balance}
                         // credit_balance={10000}
+                        onChooseWholesaler={(data) => {
+
+                            let selected_whole = data
+
+                            const wholesaler = this.state.wholesalers
+                            const filter_wholesaler = wholesaler.map((item, index) => {
+                                if (data?.wholsaler_id === item?.wholsaler_id) {
+                                    selected_whole = {
+                                        ...item,
+                                        isChecked: !item.isChecked
+                                    }
+                                    return (selected_whole)
+                                } else {
+                                    return ({
+                                        ...item,
+                                        isChecked: false
+                                    })
+                                }
+                            })
+
+                            // console.log(selected_whole);
+
+                            this.props.setWholesalerAction(filter_wholesaler)
+
+                            this.setState({
+                                selected_wholesaler: selected_whole
+                            })
+                        }}
                         onPressContinueShopping={() => {
                             if (this.state.shop_in_shop == "1") {
                                 this._brandWistList()
                             } else {
-                                this.props.navigation.navigate('Home',{scroll_to_top: true})
+                                this.props.navigation.navigate('Home', { scroll_to_top: true })
                             }
                         }}
                         onChoosePaymentMode={(obj) => {
@@ -1028,9 +1088,10 @@ class CartScreen extends Component {
                     this.state.showEmptyCartModal &&
                     <EmptyCartModal
                         title={this.state.emptyCartModalTitle}
+                        showLeftButton={false}
                         onPressContinueShopping={() => {
                             this.setState({ showEmptyCartModal: false })
-                            this.props.navigation.navigate('Home', { scroll_to_top: true })
+                            this.props.navigation.navigate('Home', { scroll_to_top: true, fromCart: 1 })
                         }}
                         onPressClose={() => this.setState({ showEmptyCartModal: false })}
                     />
@@ -1091,6 +1152,7 @@ const mapStateToProps = state => {
         rupifi_credit_balance: state.applyForCreditReducer.rupifi_credit_balance,
         rupifi_merchant_id: state.applyForCreditReducer.rupifi_merchant_id,
         is_ws_not: state.loginReducer.data.is_ws_not,
+        wholesalers: state.homeReducer.wholesalers
     }
 }
 
@@ -1103,6 +1165,7 @@ const mapDispatchToProps = dispatch => ({
     clearProductFilterAction: () => dispatch(clearProductFilterAction()),
     clearProductListData: () => dispatch(clearProductListData()),
     setProductFilterAction: (param) => dispatch(setProductFilterAction(param)),
+    setWholesalerAction: (param) => dispatch(setWholesalerAction(param))
 })
 const connectComponent = connect(mapStateToProps, mapDispatchToProps)
 export default connectComponent(CartScreen)

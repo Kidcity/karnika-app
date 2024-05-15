@@ -40,11 +40,11 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     left: {
-        flex: 0.3,
+        flex: 0.35,
         backgroundColor: colors.grey5
     },
     right: {
-        flex: 0.7,
+        flex: 0.65,
         // paddingTop: normalize(10)
         // paddingHorizontal: normalize(10),
         // backgroundColor:'pink',
@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
     },
     leftFiltersTitle: {
         fontFamily: fonts.regular,
-        fontSize: normalize(13),
+        fontSize: normalize(12),
         textTransform: 'capitalize',
         color: colors.grey2,
     },

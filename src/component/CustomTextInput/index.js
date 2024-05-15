@@ -21,7 +21,7 @@ export default class CustomTextInput extends Component {
 
                 <TextInput
                     placeholder={this.props.placeholder}
-                    placeholderTextColor={colors.grey1}
+                    placeholderTextColor={colors.grey2}
                     value={this.props.value}
                     onChangeText={e => this.props.onChangeText(e)}
                     onBlur={(e) => {
@@ -31,6 +31,8 @@ export default class CustomTextInput extends Component {
                             
                         }
                     }}
+                    // testId={this.props.testId ?? "_test"}
+                    // accessibilityLabel={this.props.testId ?? "_testlabel"}
                     //onChangeText={e => {}}
                     secureTextEntry={this.props.secureTextEntry}
                     keyboardType={this.props.keyboardType}                    

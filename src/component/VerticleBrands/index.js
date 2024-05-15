@@ -3,7 +3,9 @@ import React, { Component, PureComponent } from 'react'
 import { styles } from './style';
 import CustomImage from '../FastImage';
 import { commonStyle } from '../../helper/commonStyle';
-import { images, normalize } from '../../utils/variable';
+import { images, normalize, setWidth } from '../../utils/variable';
+import CustomButton from '../CustomButton';
+import colors from '../../utils/colors';
 
 export default class VerticleBrands extends PureComponent {
     constructor(props) {
@@ -32,9 +34,16 @@ export default class VerticleBrands extends PureComponent {
                 <CustomImage
                     source={{uri: item.image}}
                     style={styles.image}
-                    resizeMode="cover"
+                    resizeMode="stretch"
                 />
-                <Text style={[commonStyle.text12, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCharcoal, commonStyle.padding_V_10]}>{item.title}</Text>
+                <View style={{
+                    flex: 1,
+                    paddingVertical: normalize(5),
+                    justifyContent:'center',
+                    paddingHorizontal: normalize(5)
+                }}>
+                <Text style={[commonStyle.text10, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCharcoal]} numberOfLines={2} >{item.title}</Text>  
+                </View>               
             </TouchableOpacity>
         )
     }
@@ -64,6 +73,20 @@ export default class VerticleBrands extends PureComponent {
                         ItemSeparatorComponent={() => <View style={styles.separator} />}
                     />
                 </View>
+                <CustomButton
+                    container={{
+                        backgroundColor: colors.themeColor,
+                        marginTop: setWidth(2),
+                        paddingHorizontal: setWidth(7),
+                        paddingRight: setWidth(9),
+                        marginHorizontal: setWidth(2)
+                    }}
+                    label="VIEW ALL PRODUCTS"
+                    labelStyle={{ color: colors.white }}
+                    iconColor={colors.white}
+                    onPress={this.props.onPressViewAll}
+                    leftIcon={true}
+                />
             </View>
         )
     }

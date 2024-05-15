@@ -29,12 +29,12 @@ export default class CartPageDynamicPaymentModal extends Component {
           isDone: false,
           showRedDash: false
         },
-        // {
-        //   id: 3,
-        //   title: "Step3",
-        //   isDone: false,
-        //   showRedDash: false
-        // }
+        {
+          id: 3,
+          title: "Step3",
+          isDone: false,
+          showRedDash: false
+        }
       ],
       currentMapIndex: 0,
       total_price_to_pay: 0,
@@ -61,7 +61,9 @@ export default class CartPageDynamicPaymentModal extends Component {
       total_order_value: 0,
       city_wallet_amount: 0,
       credit_balance: 0,
-      is_ws_not: 0
+      is_ws_not: 0,
+
+      total_ordered_qty: 0
     };
     this.yAxis = new Animated.Value(height)
   }
@@ -91,14 +93,18 @@ export default class CartPageDynamicPaymentModal extends Component {
   }
 
   onPressCartItem = (item, is_del = 1) => {
-
+    
     if (item && is_del === 0) {
       let selected_item = this.state.selected_item
       selected_item.push(item)
+
+      const total_ordered_qty = this.getTotalPiecesOrdered(item?.items)
+
       this.setState({
         total_price_to_pay: this.state.total_price_to_pay + item.gross_total_price,
         city_name: item.city_name,
-        selected_item: selected_item
+        selected_item: selected_item,
+        total_ordered_qty: this.state.total_ordered_qty + total_ordered_qty
       })
 
       if (this.state.onCityWiseBuy) {
@@ -109,6 +115,8 @@ export default class CartPageDynamicPaymentModal extends Component {
       let selected_item = this.state.selected_item
       let total_price = 0
 
+      const total_ordered_qty = this.getTotalPiecesOrdered(item?.items)
+
       if (selected_item.includes(item)) {
         const _index = selected_item.indexOf(item)    
         selected_item.splice(_index, 1)
@@ -118,7 +126,12 @@ export default class CartPageDynamicPaymentModal extends Component {
         const element = selected_item[index];
         total_price += element.gross_total_price
       }
-      this.setState({ total_price_to_pay: total_price, city_name: '', selected_item: selected_item })
+      this.setState({ 
+        total_price_to_pay: total_price, 
+        city_name: '', 
+        selected_item: selected_item,
+        total_ordered_qty: this.state.total_ordered_qty - total_ordered_qty 
+      })
     }
   }
 
@@ -165,8 +178,8 @@ export default class CartPageDynamicPaymentModal extends Component {
       return
     }
 
+
     let filter_price = []
-    
 
     selected_item.map((item, index) => {
       if (item?.shop_in_shop == "1") {
@@ -175,19 +188,31 @@ export default class CartPageDynamicPaymentModal extends Component {
         filter_price.push(total_price_details.filter(itm => itm.city_id == item.city_id)[0])
       }
     })
+
+    // console.log(filter_price);
+    
+    // const total_ordered_qty = this.getTotalPiecesOrdered(selected_item[0]?.items)
   
     this.setState({
-      total_price_details: filter_price
+      total_price_details: filter_price,
+      // total_ordered_qty: total_ordered_qty
     })
     
-    if (+currentMapIndex === 1) {
+    if (+currentMapIndex === 1 && this.state.is_ws_not === 1) {
       if (this.state.showPaymentBreakUpModal) {
         this.state.showPaymentBreakUpModal(selected_item)
       }
       return
     }
 
-    const result = await this.checkMinimumOrderPrice()
+    if (+currentMapIndex === 1 && this.state.is_ws_not === 0) {
+      if (this.state.showPaymentBreakUpModal) {
+        this.state.showPaymentBreakUpModal(selected_item)
+      }
+      return
+    }
+
+    const result = true // await this.checkMinimumOrderPrice() // last change by me
     if (result) {
       cart_map_pointer[(+currentMapIndex + 1)].isDone = true
       cart_map_pointer[(+currentMapIndex + 1)].showRedDash = true
@@ -197,7 +222,15 @@ export default class CartPageDynamicPaymentModal extends Component {
         cart_map_pointer: cart_map_pointer
       })
     }
+
   }
+
+  getTotalPiecesOrdered = (item) => {    
+
+    const pc = item.reduce((pv,curr) => (pv +(curr.set_qty * curr.qty_ordered) ) , 0 ) 
+    // const total_ordered_qty = pc + this.state.total_ordered_qty
+    return pc //=== 1 ? pc+' Pc' : pc+" Pcs" 
+   }
 
   onChoosePaymentMode = (payment_obj) => {
     if (this.state.onChoosePaymentMode) {
@@ -231,13 +264,25 @@ export default class CartPageDynamicPaymentModal extends Component {
 
   componentDidMount() {
     this.animUp()
-    // if (this.state.is_ws_not == 1) {
-    //   const cart_map_pointer = this.state.cart_map_pointer
-    //   cart_map_pointer.splice(2, 1)
-    //   this.setState({
-    //     cart_map_pointer
-    //   })
-    // }
+    
+    if (this.state.is_ws_not == 1) {
+      const cart_map_pointer = this.state.cart_map_pointer
+      cart_map_pointer.splice(2, 1)
+      // console.log(cart_map_pointer);
+      this.setState({
+        cart_map_pointer
+      })
+    }
+    if (this.state.is_ws_not == 0) {
+      const cart_map_pointer = this.state.cart_map_pointer
+      cart_map_pointer.splice(1, 1)
+      // console.log(cart_map_pointer);
+      cart_map_pointer[1].title = "Step2"
+      cart_map_pointer[1].id = "2"
+      this.setState({
+        cart_map_pointer
+      })
+    }
   }
 
   render() {
@@ -261,7 +306,7 @@ export default class CartPageDynamicPaymentModal extends Component {
                 onPressCartItem={(item, is_del) => this.onPressCartItem(item, is_del)}
               />
               :
-              this.state.currentMapIndex == 1 ?
+              (this.state.currentMapIndex == 1 && this.state.is_ws_not === 1) ?
                 <Step2
                   city_name={this.state.city_name}
                   onPressChangeAddress={this.state.onPressChangeAddress}
@@ -269,6 +314,7 @@ export default class CartPageDynamicPaymentModal extends Component {
                   total_price_details={this.state.total_price_details}
                   default_shipping_address={this.state.default_shipping_address}
                   notDeliverable={this.state.notDeliverable}
+                  total_ordered_qty={this.state.total_ordered_qty}
                 />
                 :
                 <Step3
@@ -278,6 +324,8 @@ export default class CartPageDynamicPaymentModal extends Component {
                   cod_percentage={this.state.cod_percentage}
                   cod_amount_to_pay={this.state.cod_amount_to_pay}
                   total_order_value={this.state.total_order_value}
+                  onChooseWholesaler={this.props.onChooseWholesaler}
+                  wholesalers={this.props.wholesalers}
                   onChoosePaymentMode={(payment_obj) => this.onChoosePaymentMode(payment_obj)}
                 />
           }
@@ -300,20 +348,28 @@ export default class CartPageDynamicPaymentModal extends Component {
           }
           <View style={styles.footerBtnView}>
             <View style={styles.row}>
-              <Text style={[styles.footerText, styles.textBold]}>Total </Text>
-              <Text style={[styles.footerText, styles.textBold, { color: colors.grey2 },commonStyle.bluredText ]}> ₹ {parseFloat(this.state.total_price_to_pay).toFixed(2)}</Text>
+              <Text style={[styles.footerText, styles.textBold]}>Total Qty: </Text>
+              {/* <Text style={[styles.footerText, styles.textBold, { color: colors.grey2 } ]}> ₹ {parseFloat(this.state.total_price_to_pay).toFixed(2)}</Text> */}
+              <Text style={[styles.footerText, styles.textBold, { color: colors.grey2 } ]}>
+                {
+                    this.state.total_ordered_qty + " Pcs"
+                }
+              </Text>
             </View>
 
             <TouchableOpacity style={styles.footerBtn} onPress={this.onPressFooterBtn}>
               <Text style={styles.footerBtnText} adjustsFontSizeToFit numberOfLines={1}>
                 {
-                  this.state.currentMapIndex == 0 ?
+                  (this.state.currentMapIndex == 0) ?
+                    this.state.is_ws_not === 1 ?
                     "PROCEED TO SELECT ADDRESS"
                     :
+                    "PROCEED TO REQUEST"
+                    :
                     this.state.currentMapIndex == 1 ?
-                      this.state.is_ws_not === 0 ? "CONFIRM ADDRESS & REQUEST" : "CONFIRM ADDRESS & ORDER"
+                      this.state.is_ws_not === 1 ? "CONFIRM ADDRESS AND PROCEES" : "PROCEED TO REQUEST"
                       :
-                      "PROCEED TO BUY"
+                      "PROCEED TO REQUEST"
                 }
               </Text>
             </TouchableOpacity>

@@ -13,7 +13,7 @@ export default class CartPageMapping extends Component {
     }
 
     render() {
-
+        // console.log(this.props.cart_map_pointer);
         return (
             <View style={[styles.container, styles.row, { alignItems: 'center' }]}>
 
@@ -36,25 +36,29 @@ export default class CartPageMapping extends Component {
 
                 <Text style={[styles.mapTitle, (this.props.cart_map_pointer[1]?.isDone) && { color: colors.red }]}>{this.props.cart_map_pointer[1]?.title}</Text>
 
-{/*                
+
                 {
-                    (this.props.is_ws_not === 0) &&
+                    (this.props.cart_map_pointer[2]) &&
                     <View style={[styles.sideDash, (this.props.cart_map_pointer[2]?.isDone) && { borderColor: colors.red }]} />
                 }
 
                 {
-                    (this.props.is_ws_not === 0) ?
+                    (this.props.is_ws_not === 3) ?
                         this.props.cart_map_pointer[2]?.isDone ?
-                        <AntDesign name='checkcircle' size={setWidth(6)} color={colors.btnGreen} />
-                        :
-                        <View style={styles.mapPointerCircle} />
+                            <AntDesign name='checkcircle' size={setWidth(6)} color={colors.btnGreen} />
+                            :
+                            <View style={styles.mapPointerCircle} />
                         :
                         null
                 }
                 {
-                    this.props.is_ws_not === 0 &&
-                    <Text style={[styles.mapTitle, (this.props.cart_map_pointer[2]?.isDone) && { color: colors.red }]}>{this.props.cart_map_pointer[2]?.title}</Text>
-                } */}
+                    this.props.cart_map_pointer[2] &&
+                    <Text style={[styles.mapTitle, (this.props.cart_map_pointer[2]?.isDone) && { color: colors.red }]}>
+                        {
+                            `${this.props.cart_map_pointer[2]?.title}`
+                        }
+                    </Text>
+                }
 
 
             </View>

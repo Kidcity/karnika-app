@@ -41,10 +41,10 @@ export default class AddToCartModal extends Component {
                         <Text style={[styles.text]}>Color: </Text>
                         <Text style={[styles.text, styles.textBold]}>{item.color}</Text>
                     </View>
-                    <View style={styles.row}>
+                    {/* <View style={styles.row}>
                         <Text style={[styles.text]}>Price: </Text>
                         <Text style={[styles.text, styles.textBold, commonStyle.bluredText]}>₹ {item.price} / Piece</Text>
-                    </View>
+                    </View> */}
                 </View>
             </View>
         )

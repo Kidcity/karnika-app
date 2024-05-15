@@ -69,7 +69,7 @@ export const deepLinking = {
   async getInitialURL() {
     const url = await Linking.getInitialURL()
 
-    console.log('url ===> ', url);
+    // console.log('url ===> ', url);
     if (url != null) {
       return url;
     }

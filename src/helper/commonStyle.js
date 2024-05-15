@@ -25,6 +25,9 @@ export const commonStyle = StyleSheet.create({
     justifyContentEnd: {
         justifyContent: 'flex-end'
     },
+    text9: {
+        fontSize: normalize(9)
+    },
     text10: {
         fontSize: normalize(10)
     },
@@ -41,7 +44,8 @@ export const commonStyle = StyleSheet.create({
         fontSize: normalize(14)
     },
     fontBold: {
-        fontFamily: fonts.bold
+        fontFamily: fonts.bold,
+        fontWeight:'bold'
     },
     fontRegular: {
         fontFamily: fonts.regular

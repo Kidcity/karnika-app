@@ -19,7 +19,10 @@ export default class AddressCard extends Component {
         return (
             <View style={[styles.shippingCardView, this.props.containerStyle]}>
                 <View style={[styles.row, { justifyContent: 'space-between' }]}>
-                    <Text style={[styles.text, styles.textBold, styles.textRed, {textTransform:'capitalize' }]}>{this.data.name}</Text>
+                    {
+                        this.data.name &&
+                        <Text style={[styles.text, styles.textBold, styles.textorange, { textTransform: 'capitalize' }]}>{this.data.name}</Text>
+                    }
                     {
                         this.props.showCheckBox &&
                         <Checkbox
@@ -28,7 +31,7 @@ export default class AddressCard extends Component {
                         />
                     }
                 </View>
-                <Text style={[styles.text, styles.textBold, styles.textGrey3, { marginTop: setWidth(2),textTransform:'capitalize' }]}>
+                <Text style={[styles.text, styles.textGrey3, { marginTop: setWidth(2), textTransform: 'capitalize' }]}>
                     {
                         this.data.address ?
                             this.data.address
@@ -36,15 +39,15 @@ export default class AddressCard extends Component {
                             '---'
                     }
                 </Text>
-                <Text style={[styles.text, styles.textBold, styles.textGrey3, { marginTop: setWidth(2) }]}>{this.data.state} - {this.data.pin}</Text>
-                <Text style={[styles.text, styles.textBold, styles.textGrey3, { marginTop: setWidth(2) }]}>{this.data.country}</Text>
-                <Text style={[styles.text, styles.textBold, styles.darkText, { marginTop: setWidth(2) }]}>+91 {this.data.mobile}</Text>
-                <Text style={[styles.text, styles.textBold, styles.darkText, { marginTop: setWidth(2) }]}>
+                <Text style={[styles.text, styles.textGrey3, { marginTop: setWidth(2) }]}>{this.data.state} - {this.data.pin}</Text>
+                <Text style={[styles.text, styles.textGrey3, { marginTop: setWidth(2) }]}>{this.data.country}</Text>
+                <Text style={[styles.text, styles.darkText, { marginTop: setWidth(2) }]}>+91 {this.data.mobile}</Text>
+                <Text style={[styles.text, styles.darkText, { marginTop: setWidth(2) }]}>
                     {
                         this.data.email ?
-                        this.data.email
-                        :
-                        '---'
+                            this.data.email
+                            :
+                            '---'
                     }
                 </Text>
 
@@ -52,17 +55,17 @@ export default class AddressCard extends Component {
                     this.props.showEditButton &&
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <CustomButton
-                            container={{ backgroundColor: colors.white, borderColor: colors.red, borderWidth: setWidth(0.3), marginTop: setWidth(5), height: setWidth(8), flex: 0.3, justifyContent: 'center', }}
+                            container={{ backgroundColor: colors.white, borderColor: colors.themeColor, borderWidth: setWidth(0.3), marginTop: setWidth(5), height: setWidth(8), flex: 0.3, justifyContent: 'center', }}
                             label="EDIT"
-                            labelStyle={{ color: colors.red, fontFamily: fonts.fontRegular }}
+                            labelStyle={{ color: colors.themeColor, fontFamily: fonts.fontRegular }}
                             // iconColor={colors.white}
                             //leftIcon={true}
                             onPress={() => this.props.onPressEditAddress()}
                         />
                         <CustomButton
-                            container={{ backgroundColor: colors.white, borderColor: colors.red, borderWidth: setWidth(0.3), marginTop: setWidth(5), height: setWidth(8), flex: 0.3, justifyContent: 'center', }}
+                            container={{ backgroundColor: colors.white, borderColor: colors.themeColor, borderWidth: setWidth(0.3), marginTop: setWidth(5), height: setWidth(8), flex: 0.3, justifyContent: 'center', }}
                             label="DELETE"
-                            labelStyle={{ color: colors.red, fontFamily: fonts.fontRegular, }}
+                            labelStyle={{ color: colors.themeColor, fontFamily: fonts.fontRegular, }}
                             iconColor={colors.white}
                             //leftIcon={true}
                             onPress={() => this.props.onPressDeleteAddress()}

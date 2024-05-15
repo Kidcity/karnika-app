@@ -11,10 +11,9 @@ import HomeService from './src/services/HomeService';
 import VersionInfo from 'react-native-version-info'
 import AppUpdateModal from './src/component/AppUpdateModal';
 import { errorAlert, retryAlert } from './src/helper/ToastHelper';
-// import analytics, { firebase } from '@react-native-firebase/analytics';
-// import crashlytics from '@react-native-firebase/crashlytics';
-// import { _crashApp, _recordCrashReport, _setCrashAttributes } from './src/helper/CrashlyticsHelper';
-// import { _checkPermission, _handleAppOpenFromBackgroundState, _handleAppOpenFromQuitState } from './src/helper/NotificationHelper';
+import analytics, { firebase } from '@react-native-firebase/analytics';
+import crashlytics from '@react-native-firebase/crashlytics';
+import { _crashApp, _recordCrashReport, _setCrashAttributes } from './src/helper/CrashlyticsHelper';
 import { appStoreLink } from './src/utils/variable';
 import AppTrackingService from './src/services/AppTrackingService';
 import { clearCache } from './src/helper/cacheHandler';
@@ -165,11 +164,11 @@ export default class App extends Component {
     // }
 
     
-
+    // _crashApp()
 
     this.startTimer()
     // this._getAppVersion();
-    // this._getFirebaseId();
+    this._getFirebaseId();
     _handleAppOpenFromBackgroundState()
     _handleAppOpenFromQuitState()
 
@@ -186,7 +185,7 @@ export default class App extends Component {
         this.setState({ appState: nextAppState });
       },
     );
-    // await crashlytics().setCrashlyticsCollectionEnabled(true).then(() => console.log("setCrashlyticsCollectionEnabled ", true));
+    await crashlytics().setCrashlyticsCollectionEnabled(true).then(() => console.log("setCrashlyticsCollectionEnabled ", true));
 
 
   }

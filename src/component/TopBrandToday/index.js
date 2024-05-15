@@ -53,7 +53,7 @@ export default class TopBrandToday extends PureComponent {
     }
 
     renderBrandItem = ({ item, index }) => {
-       
+        //    console.log(item.brand_logo);
         return (
             <View style={[styles.brandLogoView]}>
                 <TouchableOpacity style={[styles.brandLogoContainer, commonStyle.shadow]} onPress={() => this.state.onPressBrand({ id: item.brand_id, city_id: item.city_id })}>
@@ -64,7 +64,7 @@ export default class TopBrandToday extends PureComponent {
                         <FastImageComponent
                             source={{ uri: item.brand_logo }}
                             style={styles.brandlogo}
-                            resizeMode="contain"
+                            resizeMode="cover"
                         />
                     </View>
                 </TouchableOpacity>
@@ -73,11 +73,11 @@ export default class TopBrandToday extends PureComponent {
     }
 
     renderProductItem = ({ item, index }) => {
-        
+
         return (
             <View style={[commonStyle.row]}>
                 {
-                    item.products.map((item, index) => {                        
+                    item.products.map((item, index) => {
                         return (
                             <TouchableOpacity style={[styles.productCard, commonStyle.shadow, { marginLeft: normalize(10) }]} key={index} onPress={() => this.state.onPressProduct(item.products_id)}>
                                 <FastImageComponent
@@ -96,32 +96,47 @@ export default class TopBrandToday extends PureComponent {
     render() {
         return (
             <View style={[styles.container, this.state.containerStyle]}>
-                <View style={styles.heading}>
-                    <Text style={styles.title}>Today's Top Brand</Text>
-                    <Text style={styles.subtitle}>Check The Top Collections from The Brand</Text>
-                </View>
+                {
+                    this.props.showAsTopBrand &&
+                    <View style={styles.heading}>
+                        <Text style={styles.title}>Today's Top Brand</Text>
+                        <Text style={styles.subtitle}>Check The Top Collections from The Brand</Text>
+                    </View>
+                }
+                {
+                    this.props.showAsTopBrand &&
+                    <View>
+                        <FlatList
+                            data={this.state.data}
+                            keyExtractor={(item, index) => index}
+                            renderItem={this.renderBrandItem}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            ItemSeparatorComponent={() => <View style={styles.separator} />}
+                            style={{
+                                marginTop: normalize(10)
+                            }}
+                            contentContainerStyle={{
+                                flexGrow: 1,
+                                justifyContent: 'center',
+                                paddingVertical: normalize(10),
+                                paddingHorizontal: normalize(20)
+                            }}
+                        />
+                    </View>
+                }
 
-                <FlatList
-                    data={this.state.data}
-                    keyExtractor={(item, index) => index}
-                    renderItem={this.renderBrandItem}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    style={{
-                        marginTop: normalize(10)
-                    }}
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        justifyContent: 'center',
-                        paddingVertical: normalize(10),
-                        paddingHorizontal: normalize(20)
-                    }}
-                />
+                <Text style={[commonStyle.text14, commonStyle.textBlack, commonStyle.fontBold, commonStyle.margin_H_15, commonStyle.gapTop10]}>
+                    {
+                        this.props.showAsTopBrand ?
+                            "Products:"
+                            :
+                            this.props.title ??
+                            " Most Searched Products:"
+                    }
+                </Text>
 
-                <Text style={[commonStyle.text14, commonStyle.textgrey, commonStyle.fontBold, commonStyle.margin_H_15, commonStyle.gapTop10]}>Products: </Text>
-
-                <View style={[{ flex: 1 }]}>
+                <View style={[{}]}>
                     <FlatList
                         data={this.state.data}
                         keyExtractor={(item, index) => index}
@@ -138,7 +153,7 @@ export default class TopBrandToday extends PureComponent {
                 <CustomButton
                     container={{
                         backgroundColor: colors.themeColor,
-                        marginTop: setWidth(2),
+                        // marginTop: setWidth(2),
                         paddingHorizontal: setWidth(7),
                         paddingRight: setWidth(9),
                         marginHorizontal: setWidth(2)

@@ -18,11 +18,10 @@ export default class Checkbox extends Component {
 
   render() {
     return (
-      <TouchableOpacity style={styles.container} onPress={() => this.props.onPressCheckBox()}>
+      <TouchableOpacity style={[styles.container, this.props.containerStyle]} onPress={() => this.props.onPressCheckBox()}>
         {
           this.props.isChecked &&
           <View style={styles.circle} />
-
         }
       </TouchableOpacity>
     );

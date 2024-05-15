@@ -7,55 +7,60 @@ const upperheight = Platform.OS === 'ios' ? StatusBarManager.HEIGHT + setWidth(3
 
 export const styles = StyleSheet.create({
     container:{
-        flex: 1,       
+        flex:1,
         backgroundColor: colors.white,
-        marginHorizontal: setWidth(4),        
+        // width: setWidth(75)
     },
     content:{
         flexGrow:1,
-        paddingTop: upperheight,
-        paddingBottom: normalize(20)
+        // paddingTop: upperheight,
+        marginHorizontal: normalize(8),
+        paddingBottom: normalize(20),
     },
     profileInfoContainer:{
         paddingHorizontal: setWidth(2),
         paddingVertical: setWidth(5),        
-        borderRadius: setWidth(2)
+        borderRadius: setWidth(2),
+        // paddingLeft: normalize(10),
+        backgroundColor: colors.themeColor,
+        marginTop: normalize(6)
     },
     row:{
         flexDirection: 'row'
     },
     imageContainer:{
-        width: setWidth(20),
-        height: setWidth(20),
-        borderRadius: setWidth(30),
-        overflow: 'hidden'
+        width: '100%',
+        height: normalize(130),
+        overflow: 'hidden', 
+        borderRadius: normalize(10)          
     },
     image:{
-        flex:1,
-        aspectRatio: 1,
+        width:'100%',
+        height:'100%'
     },
     nameContainer:{
         flex:1,
         justifyContent:'center',
-        paddingLeft: setWidth(2)
+        marginLeft: normalize(3)
     },
     name:{
-        fontSize: setWidth(4.5),
+        fontSize: setWidth(3.5),
         color: colors.white,
-        fontFamily: fonts.fontRegular
+        fontFamily: fonts.fontRegular,
     },
     name2:{
-        fontSize: setWidth(3),
+        fontSize: setWidth(2.5),
         color: colors.white,
-        marginTop: setWidth(3),
+        marginTop: normalize(3),
         fontFamily: fonts.fontRegular
     },
     location:{
         flex:1,
-        fontSize: setWidth(3),
+        fontSize: setWidth(2.7),
         color: colors.white,
-        paddingLeft: setWidth(2),
-        fontFamily: fonts.fontRegular
+        marginLeft: setWidth(1),
+        fontFamily: fonts.fontRegular,
+        textTransform:'capitalize'   
     },
     creditView:{
         backgroundColor: colors.green1,
@@ -100,8 +105,10 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.fontBold
     },
     lottiView: {
-        position: 'relative',
-        height: setWidth(10),
-        alignSelf: 'center',
+        // position: 'relative',
+        height: setHeight(1),
+        width: setWidth(5),
+        // backgroundColor: 'red',
+        // alignSelf: 'center',
     },
 })

@@ -21,7 +21,7 @@ class AppTrackingService extends Base{
       action_id: activity_obj?.action_id ?? "",
       city_id: activity_obj?.city_id ?? "",
     }
-    console.log("_saveTrackingDataService  ==> ", param);
+    // console.log("_saveTrackingDataService  ==> ", param);
     // return
     if(retailer_id == '' || duration == 0){
       return

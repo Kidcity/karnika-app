@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, Image, StatusBar, Linking, Alert, NativeModules, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Image, StatusBar, Linking, Alert, NativeModules, Platform, Keyboard } from 'react-native';
 import { styles } from './style';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import CustomTextInput from '../../component/CustomTextInput';
@@ -9,7 +9,7 @@ import { fonts, images, normalize, setWidth } from '../../utils/variable';
 import colors from '../../utils/colors';
 import LoginService from '../../services/LoginService';
 import { errorAlert, retryAlert } from '../../helper/ToastHelper';
-import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
 import FullScreenLoader from '../../component/FullScreenLoader';
 import { Strings } from '../../utils/strings';
 import { connect } from 'react-redux';
@@ -39,11 +39,12 @@ class LoginScreen extends Component {
     };
   }
 
-  // 9163029201 - wholesaler
-  // 123456 - wholesaler
 
-  // 8240773294 - retailer
-  // 123456 - retailer
+  // 9163029201 - wholesaler
+  // 123456 - 
+
+  // 9831028860 - retailer
+  // 123456 - 
 
   async componentDidMount() {
 
@@ -69,7 +70,7 @@ class LoginScreen extends Component {
   async _login() {
     // _setCrashUserID("User "+this.state.phone)
     // _setCrashLog("Attempt Login - "+this.state.phone)
-
+    Keyboard.dismiss()
     const device_token = await AsyncStorage.getItem('@device_token_KARNIKA')
     const param = {
       mobile: this.state.phone,
@@ -87,7 +88,7 @@ class LoginScreen extends Component {
       }
 
     }, error => {
-      console.log(error);
+      // console.log(error);   
       if (this._isMounted) {
         this.setState({ showLoader: false })
         if (error.message == "server_error") {
@@ -100,7 +101,7 @@ class LoginScreen extends Component {
           // errorAlert("Error", error.message)
           this.setState({
             showErrorModal: true,
-            errMessage:  error.message
+            errMessage: error.message
           })
         }
       }
@@ -110,8 +111,8 @@ class LoginScreen extends Component {
   render() {
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={[styles.container]}>
-       
+      <KeyboardAwareScrollView contentContainerStyle={[styles.container]} keyboardShouldPersistTaps="handled">
+        
 
         <View style={[styles.header]} resizeMode="cover">
           <Image source={images.header_logo2} resizeMode="contain" style={styles.logo} />
@@ -122,11 +123,13 @@ class LoginScreen extends Component {
 
           <CustomTextInput
             container={[styles.inputContainer]}
-            leftIcon={<Feather name='phone-call' size={setWidth(4)} color={colors.grey3} />}
+            leftIcon={<Feather name='phone-call' size={setWidth(4)} color={colors.grey2} />}
             placeholder="Mobile Number"
             keyboardType="number-pad"
             value={this.state.phone}
             onChangeText={(e) => this.setState({ phone: e })}
+            // testId="phonenumber"
+            // accessibilityLabel="phonenumber"
           />
 
 
@@ -161,7 +164,7 @@ class LoginScreen extends Component {
 
           <View style={{ marginTop: setWidth(20) }}>
             <Text style={styles.connectingbrandText}>{Strings.loginScreenStrings.connectingBrandsText}</Text>
-            <Lottie
+            <LottieView
               autoPlay
               loop
               style={styles.lottiView}
@@ -169,13 +172,14 @@ class LoginScreen extends Component {
             />
           </View>
 
-          <View style={[styles.footer, { marginTop: setWidth(10) }]}>
+          <View style={[styles.footer, { marginTop: setWidth(1) }]}>
             <Feather name='check-circle' size={setWidth(4)} color={colors.themeColor} />
-            <View style={[styles.row, { alignItems: 'center', justifyContent: 'center' }]}>
-              <Text style={styles.footerText} > {Strings.loginScreenStrings.bottomText1}</Text>
-              <TouchableOpacity onPress={() => Linking.openURL("https://Karnikaindustries.com/terms.html")}><Text style={[styles.footerText, styles.link]}> {Strings.loginScreenStrings.bottomText2}</Text></TouchableOpacity>
-              <Text style={styles.footerText}> {Strings.loginScreenStrings.bottomText3}</Text>
-              <TouchableOpacity onPress={() => Linking.openURL("https://karnikaindustries.com/privacy.html")}><Text style={[styles.footerText, styles.link]}> {Strings.loginScreenStrings.bottomText4}</Text></TouchableOpacity>
+            <View style={[styles.row, { flex: 1, alignItems: 'center', justifyContent: 'center', marginLeft: normalize(4) }]}>
+              <Text style={styles.footerText} >{Strings.loginScreenStrings.bottomText1}
+                <Text style={[styles.link]} onPress={() => Linking.openURL("https://Karnikaindustries.com/terms.html")}> {Strings.loginScreenStrings.bottomText2}</Text>
+                {" "} {Strings.loginScreenStrings.bottomText3}
+                <Text style={[styles.link]}> {Strings.loginScreenStrings.bottomText4}</Text>
+              </Text>
             </View>
           </View>
 

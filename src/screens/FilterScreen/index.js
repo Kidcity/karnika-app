@@ -1,26 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Keyboard, Platform, NativeModules, Animated, Dimensions, StatusBar, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, Image } from 'react-native';
 import colors from '../../utils/colors';
 import { styles } from './style';
-import Feather from 'react-native-vector-icons/Feather'
-import { icons, images, normalize, setHeight, setWidth } from '../../utils/variable';
+import { icons, images, normalize, setWidth } from '../../utils/variable';
 import { connect } from 'react-redux';
 import { clearProductFilterAction, setProductFilterAction } from '../../redux/actions/commonAction';
 import FilterService from '../../services/FilterService';
 import { errorAlert } from '../../helper/ToastHelper';
-import { TextInput } from 'react-native-gesture-handler';
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import Entypo from 'react-native-vector-icons/Entypo'
-import { Easing } from 'react-native-reanimated';
 import FlatListContainer from '../../component/FlatListContainer';
-import { initialWindowMetrics } from 'react-native-safe-area-context';
 import { commonStyle } from '../../helper/commonStyle'
 import CustomImage from '../../component/FastImage';
 import FooterTabMenu from '../../component/FooterTabMenu';
-
-const { StatusBarManager } = NativeModules
-const { width, height } = Dimensions.get("screen")
-const usableHeight = initialWindowMetrics.frame.height
+import Checkbox from '../../component/Checkbox';
 
 class FilterScreen extends Component {
   constructor(props) {
@@ -43,7 +34,7 @@ class FilterScreen extends Component {
         },
         {
           id: 3,
-          title: "Age/Size",
+          title: "Size",
           tag: "ageGroup",
           options: [],
           isActive: false
@@ -55,13 +46,13 @@ class FilterScreen extends Component {
           options: [],
           isActive: false
         },
-        {
-          id: 5,
-          title: "Price Range",
-          tag: "priceRange",
-          options: [],
-          isActive: false
-        }
+        // {
+        //   id: 5,
+        //   title: "Price Range",
+        //   tag: "priceRange",
+        //   options: [],
+        //   isActive: false
+        // }
       ],
       genders: [],
       selectedGender: '',
@@ -101,7 +92,7 @@ class FilterScreen extends Component {
       }, () => this._getFilterData())
     } else {
       this.setState({
-        selectedGender: this.state.genders[0].id
+        selectedGender: this.state.genders[0]?.id
       }, () => this._getFilterData())
     }
 
@@ -211,8 +202,8 @@ class FilterScreen extends Component {
       brand_filter.options = response?.brands
       filters[3] = brand_filter
 
-      price_filter.options = response?.price
-      filters[4] = price_filter
+      // price_filter?.options = response?.price
+      // filters[4] = price_filter
 
       // console.log(JSON.stringify(filters));
 
@@ -263,32 +254,32 @@ class FilterScreen extends Component {
     })
 
     if (filters[parentIndex].title === "Season") {
-      const filter = filters[parentIndex].options.filter(item => item.isActive === true).map(({ id }) => id)
+      const filter = filters[parentIndex]?.options.filter(item => item.isActive === true).map(({ id }) => id)
       this.setState({
         selectedSeason: filter.toString()
       }, () => this._getFilterData())
     }
 
-    if (filters[parentIndex].title === "Age/Size") {
-      const filter = filters[parentIndex].options.filter(item => item.isActive === true).map(({ id }) => id)
+    if (filters[parentIndex].title === "Size") {
+      const filter = filters[parentIndex]?.options.filter(item => item.isActive === true).map(({ id }) => id)
       this.setState({
         selectedAge: filter.toString()
       })
     }
     if (filters[parentIndex].title === "Brands") {
-      const filter = filters[parentIndex].options.filter(item => item.isActive === true).map(({ id }) => id)
+      const filter = filters[parentIndex]?.options.filter(item => item.isActive === true).map(({ id }) => id)
       this.setState({
         selectedBrands: filter.toString()
       })
     }
     if (filters[parentIndex].title === "Price Range") {
-      const filter = filters[parentIndex].options.filter(item => item.isActive === true).map(({ id }) => id)
+      const filter = filters[parentIndex]?.options.filter(item => item.isActive === true).map(({ id }) => id)
       this.setState({
         selectedPrice: filter.toString()
       })
     }
     if (filters[parentIndex].title === "Categories") {
-      const filter = filters[parentIndex].options.filter(item => item.isActive === true).map(({ id }) => id)
+      const filter = filters[parentIndex]?.options.filter(item => item.isActive === true).map(({ id }) => id)
       this.setState({
         selectedCategories: filter.toString()
       })
@@ -391,34 +382,28 @@ class FilterScreen extends Component {
         )
       }
 
-      if (item.title === 'Age/Size') {
+      if (item.title === 'Size') {
         return (
           <FlatListContainer
             data={item.options}
-            numColumns={2}
-            columnWrapperStyle={{
-              justifyContent: 'space-around',
-            }}
+            // numColumns={2}
+            // columnWrapperStyle={{
+            //   justifyContent: 'space-around',
+            // }}
             renderItem={({ item, index }) => {
               return (
-                <View>
-                  <TouchableOpacity style={[item?.isActive && styles.selectedBorder, styles.ageImageContainer]} onPress={() => this._onPressRightOption(Pindex, index)}>
-                    <CustomImage
-                      source={{ uri: item.image }}
-                      style={styles.image}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
-                  <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
+                <TouchableOpacity style={[styles.priceRangeContainer,{flexDirection:'row', alignItems:'center'}, item?.isActive && { backgroundColor: colors.grey5 }]} onPress={() => this._onPressRightOption(Pindex, index)}>
+                  <Checkbox isChecked={item?.isActive} containerStyle={{borderRadius: normalize(5)}} onPressCheckBox={() => this._onPressRightOption(Pindex, index)} />
+                  <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontRegular, item?.isActive && commonStyle.fontBold,{marginLeft: normalize(5)}]}>
                     {
                       item?.subtitle
                     }
                   </Text>
-                </View>
+                </TouchableOpacity>
               )
             }
             }
-            itemSeparatorComponent={() => <View style={{ marginTop: normalize(15) }} />}
+            itemSeparatorComponent={() => <View style={{ marginTop: normalize(2) }} />}
           />
         )
       }
@@ -431,7 +416,7 @@ class FilterScreen extends Component {
             numColumns={3}
             style={{ paddingHorizontal: normalize(10), paddingBottom: normalize(20), }}
             columnWrapperStyle={{
-              justifyContent: 'space-between',
+              justifyContent: 'space-evenly',
             }}
             renderItem={({ item, index }) => {
               return (
@@ -492,7 +477,7 @@ class FilterScreen extends Component {
             numColumns={3}
             style={{ paddingHorizontal: normalize(10), paddingBottom: normalize(20), }}
             columnWrapperStyle={{
-              justifyContent: 'space-between',
+              justifyContent: 'space-evenly',
             }}
             renderItem={({ item, index }) => {
               return (
@@ -506,7 +491,7 @@ class FilterScreen extends Component {
                     />
                   </View>
                   <View style={[commonStyle.padding_V_10]}>
-                    <Text style={[commonStyle.text11, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
+                    <Text style={[commonStyle.text10, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>
                       {
                         item.subtitle
                       }
@@ -586,7 +571,7 @@ class FilterScreen extends Component {
             <Text style={[commonStyle.text13, commonStyle.textBlack, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>CANCEL</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerBtn} onPress={() => this._populateTotalFilters()} >
-            <Text style={[commonStyle.text13, commonStyle.textWhite, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>DONE</Text>
+            <Text style={[commonStyle.text13, commonStyle.textWhite, commonStyle.fontBold, commonStyle.textAlignCenter, commonStyle.textCapitalize]}>APPLY</Text>
           </TouchableOpacity>
         </View>
         <FooterTabMenu

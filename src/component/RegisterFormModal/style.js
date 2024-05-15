@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
         fontSize: normalize(15)
     },
     inputStyle: {
-        paddingLeft: 0,
+        paddingLeft: 2,
         height: setWidth(10),
         fontFamily: fonts.fontRegular,
     },
@@ -40,15 +40,15 @@ export const styles = StyleSheet.create({
         height: setWidth(6),
         justifyContent: 'center',
         borderRadius: 5,
-        borderColor: colors.primaryyellow,
+        borderColor: colors.themeColor,
         borderWidth: setWidth(0.5)
     },
     activeBtn: {
-        backgroundColor: colors.primaryyellow
+        backgroundColor: colors.themeColor
     },
     btnText: {
         textAlign: 'center',
-        color: colors.primaryyellow,
+        color: colors.themeColor,
         fontFamily: fonts.fontRegular
     },
     activeBtnText:{

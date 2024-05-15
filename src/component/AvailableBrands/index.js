@@ -40,7 +40,7 @@ export default class AvailableBrands extends Component {
     }
 
     renderBrands = ({ item, index }) => {
-        
+
         if (item.brand_name == "view_more") {
             return (
                 <TouchableOpacity style={[styles.brandImageView, commonStyle.shadow, { backgroundColor: "#F0F1F3" }, commonStyle.justifyContentCenter, commonStyle.alignItemsCenter]} onPress={() => this.onPressBrand(item)}>
@@ -74,7 +74,7 @@ export default class AvailableBrands extends Component {
         return (
             <View style={styles.brandView}>
                 <View style={{ flex: 1, justifyContent: 'space-around' }}>
-                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[colors.grey5, colors.themeColor, colors.grey5]} style={[ styles.headingView]}>
+                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[colors.grey5, colors.themeColor, colors.grey5]} style={[styles.headingView]}>
                         {
                             item.titleLogo ?
                                 <FastImageComponent
@@ -97,11 +97,10 @@ export default class AvailableBrands extends Component {
                         keyExtractor={(item, index) => index}
                         renderItem={this.renderBrands}
                         numColumns={3}
-                        style={{ marginTop: normalize(15) }}
+                        // style={{ marginVertical: normalize(5) }}
                         columnWrapperStyle={{
                             justifyContent: 'space-evenly',
-                            paddingVertical: normalize(10),
-                            // paddingHorizontal: normalize(15)
+                            paddingVertical: normalize(10)
                         }}
                     // ItemSeparatorComponent={() => <View style={{ marginTop: setHeight(3) }} />}
                     />
@@ -120,34 +119,35 @@ export default class AvailableBrands extends Component {
     render() {
         return (
             <View style={[styles.container, this.props.containerStyle && this.props.containerStyle]}>
-                <View style={styles.heading}>
+                {/* <View style={styles.heading}>
                     <Text style={styles.title}>
                         Top Brands For You
                     </Text>
+                </View> */}
+                <View style={{ }}>
+                    <FlatList
+                        data={this.state.brands}
+                        keyExtractor={(item, index) => index}
+                        renderItem={this.renderBrandCity}
+                        // style={{ marginTop: normalize(15), }}
+                        // ItemSeparatorComponent={() => <View style={{ marginVertical: setHeight(3) }} />}
+                    />
                 </View>
-                <FlatList
-                    data={this.state.brands}
-                    keyExtractor={(item, index) => index}
-                    renderItem={this.renderBrandCity}
-                    style={{ marginTop: normalize(15) }}
-                    ItemSeparatorComponent={() => <View style={{ marginTop: setHeight(3) }} />}
-                />
 
-                <CustomButton
+                {/* <CustomButton
                     container={{
                         backgroundColor: colors.themeColor,
-                        // marginTop: setWidth(),
                         paddingHorizontal: setWidth(7),
                         paddingRight: setWidth(9),
-                        marginHorizontal: setWidth(2)
+                        marginHorizontal: setWidth(2),
+                        // marginTop: 10
                     }}
                     label="VIEW ALL BRANDS"
                     labelStyle={{ color: colors.white }}
                     iconColor={colors.white}
                     onPress={this.state.onPressAllBrand}
                     leftIcon={true}
-                />
-
+                /> */}
             </View>
         );
     }

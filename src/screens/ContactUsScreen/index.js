@@ -9,59 +9,35 @@ import { styles } from './style';
 import AppHeader from '../../component/AppHeader';
 import NearByWholeSalerCard from '../../component/NearByWholeSalerCard'
 import { connect } from 'react-redux';
-import Entypo from 'react-native-vector-icons/Entypo'
 import { commonStyle } from '../../helper/commonStyle';
+import Entypo from 'react-native-vector-icons/Entypo'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Feather from 'react-native-vector-icons/Feather'
+import EmptyContent from '../../component/EmptyContent';
 
 class ContactUsScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
             is_ws_not: 0,
-            wholesaler: [
-                {
-                    name: "Sagar Ghosh",
-                    address: "Hooghly",
-                    state: "WB",
-                    pin: "712708",
-                    email: "sagarghosh.ofc@gmail.com",
-                    mobile: "9163029201",
-                    country: "India"
-                },
-                {
-                    name: "Sagar Ghosh",
-                    address: "Hooghly",
-                    state: "WB",
-                    pin: "712708",
-                    email: "sagarghosh.ofc@gmail.com",
-                    mobile: "9163029201",
-                    country: "India"
-                },
-                {
-                    name: "Sagar Ghosh",
-                    address: "Hooghly",
-                    state: "WB",
-                    pin: "712708",
-                    email: "sagarghosh.ofc@gmail.com",
-                    mobile: "9163029201",
-                    country: "India"
-                }
-            ]
+            wholesalers: []
         };
     }
 
     static getDerivedStateFromProps(props, state) {
         return {
-            is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0
+            is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0,
+            wholesalers: props.hasOwnProperty("wholesalers") ? props.wholesalers : [],
         }
     }
 
     linkToWhatsapp() {
-        Linking.openURL('https://wa.me/03326558101?text=Hello Karnika')
+        Linking.openURL('https://wa.me/919883279470?text=Hello Karnika')
     }
 
     renderItem = ({ item, index }) => {
         return (
-            <NearByWholeSalerCard item={item} showEditButton />
+            <NearByWholeSalerCard item={item} showEditButton/>
         )
     }
 
@@ -97,16 +73,13 @@ class ContactUsScreen extends Component {
                                 container={{
                                     backgroundColor: colors.green,
                                     justifyContent: 'flex-start',
-                                    marginTop: setWidth(5)
+                                    marginTop: setWidth(5),
+                                    paddingLeft: normalize(15),
                                 }}
                                 label="WHATSAPP US"
-                                labelStyle={{ color: colors.white }}
+                                labelStyle={{ color: colors.white, marginLeft: normalize(15), }}
                                 rightIcon={
-                                    <Image source={icons.whatsapp} resizeMode="contain" style={{
-                                        width: setWidth(10),
-                                        height: setWidth(10),
-                                        marginRight: setWidth(3)
-                                    }} />
+                                    <FontAwesome name="whatsapp" size={normalize(27)} color={colors.white} />
                                 }
                                 leftIcon={false}
                                 onPress={() => this.linkToWhatsapp()}
@@ -118,24 +91,38 @@ class ContactUsScreen extends Component {
                                     marginTop: setWidth(5)
                                 }}
                                 label="CALL US"
-                                labelStyle={{ color: colors.white }}
+                                labelStyle={{ color: colors.white, marginLeft: normalize(15), }}
                                 rightIcon={
-                                    <Image source={icons.phone} resizeMode="contain" style={styles.btnImage} />
+                                    <Feather name="phone-call" size={normalize(22)} color={colors.white} />
                                 }
                                 leftIcon={false}
-                                onPress={() => Linking.openURL(`tel:033-2655-8101`)}
+                                onPress={() => Linking.openURL(`tel:+91 98832 79470`)}
+                            />
+                            <CustomButton
+                                container={{
+                                    backgroundColor: colors.blue2,
+                                    justifyContent: 'flex-start',
+                                    marginTop: setWidth(5)
+                                }}
+                                label="EMAIL US"
+                                labelStyle={{ color: colors.white, marginLeft: normalize(15), }}
+                                rightIcon={
+                                    <Entypo name="mail-with-circle" color={colors.white} size={normalize(25)} />
+                                }
+                                leftIcon={false}
+                                onPress={() => Linking.openURL(`mailto:karnikaindustriesindia@gmail.com`)}
                             />
                         </>
                     }
                     {
                         this.state.is_ws_not === 0 &&
                         <>
-                            <View style={[commonStyle.row, commonStyle.alignItemsCenter, {marginTop: setWidth(4)}]}>
-                                <Entypo name='location-pin' size={normalize(25)} color={colors.black} />
-                                <Text style={styles.heading}>Your nearby wholesalers </Text>
+                            <View style={[commonStyle.row, commonStyle.alignItemsCenter, { marginTop: setWidth(4) }]}>
+                                <Entypo name='location-pin' size={normalize(20)} color={colors.black} />
+                                <Text style={styles.heading}>Your Nearby Wholesalers </Text>
                             </View>
                             <FlatList
-                                data={this.state.wholesaler}
+                                data={this.state.wholesalers}
                                 renderItem={this.renderItem}
                                 keyExtractor={(item, index) => index}
                                 style={{ marginTop: setWidth(2) }}
@@ -144,6 +131,7 @@ class ContactUsScreen extends Component {
                                     flexGrow: 1,
                                     paddingBottom: normalize(20)
                                 }}
+                                ListEmptyComponent={() =><EmptyContent title="No nearby wholesaler on your location" /> }
                             />
                         </>
                     }
@@ -151,19 +139,22 @@ class ContactUsScreen extends Component {
 
                     {
                         this.state.is_ws_not === 1 &&
-                        <View style={[styles.footer, styles.row]}>
-                            <TouchableOpacity style={styles.footerBlock} onPress={() => Linking.openURL("https://www.karnikaindustries.com/")}>
-                                <Text style={styles.blockTitle}>Facebook</Text>
-                                <Image source={icons.facebook} resizeMode="contain" style={styles.footerImage} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.footerBlock} onPress={() => Linking.openURL("https://www.instagram.com/karnika_india/")}>
-                                <Text style={styles.blockTitle}>Instagram</Text>
-                                <Image source={icons.instagram} resizeMode="contain" style={styles.footerImage} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.footerBlock} onPress={() => Linking.openURL("https://www.karnikaindustries.com/")}>
-                                <Text style={styles.blockTitle}>Website</Text>
-                                <Image source={icons.web} resizeMode="contain" style={styles.footerImage} />
-                            </TouchableOpacity>
+                        <View style={styles.footer}>
+                            <Text style={[styles.heading,{marginTop: normalize(15)}]}>Connect with us : </Text>
+                            <View style={[styles.row, { justifyContent: 'space-between', marginTop: normalize(10) }]}>
+                                <TouchableOpacity style={styles.footerBlock} onPress={() => Linking.openURL("https://www.karnikaindustries.com/")}>
+                                    <Text style={styles.blockTitle}>Facebook</Text>
+                                    <Image source={icons.facebook} resizeMode="contain" style={styles.footerImage} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.footerBlock} onPress={() => Linking.openURL("https://www.instagram.com/karnika_india/")}>
+                                    <Text style={styles.blockTitle}>Instagram</Text>
+                                    <Image source={icons.instagram} resizeMode="contain" style={styles.footerImage} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.footerBlock} onPress={() => Linking.openURL("https://www.karnikaindustries.com/")}>
+                                    <Text style={styles.blockTitle}>Website</Text>
+                                    <Image source={icons.web} resizeMode="contain" style={styles.footerImage} />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     }
                 </View>
@@ -174,7 +165,8 @@ class ContactUsScreen extends Component {
 
 const mapStateToProps = state => {
     return {
-        is_ws_not: state.loginReducer.data.is_ws_not
+        is_ws_not: state.loginReducer.data.is_ws_not,
+        wholesalers: state.homeReducer.wholesalers
     }
 }
 

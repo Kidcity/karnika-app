@@ -29,11 +29,12 @@ export default class Step1 extends Component {
 
   onPressCartItem = (index) => {
     const cart_items = this.state.cart_items
-  
+    // console.log(cart_items[index]);
+
     let selected_cart_item_index = this.state.selected_cart_item_index
 
     if (selected_cart_item_index.includes(index)) {
-       
+
       const _index = selected_cart_item_index.indexOf(index);
       if (_index > -1) { // only splice array when item is found
         selected_cart_item_index.splice(_index, 1); // 2nd parameter means remove one item only
@@ -42,10 +43,11 @@ export default class Step1 extends Component {
       this.state.onPressCartItem(cart_items[index], 1)
 
     } else {
-      
+
       selected_cart_item_index.push(index)
+      
       if (this.state.onPressCartItem) {
-        this.state.onPressCartItem(cart_items[index] , 0)
+        this.state.onPressCartItem(cart_items[index], 0)
       }
 
     }
@@ -68,6 +70,21 @@ export default class Step1 extends Component {
     this.animFromRight()
   }
 
+  getTotalPiecesOrdered = (item) => {
+    // const cart_items = this.state.cart_items
+
+    // let total_pc = 0
+    // this.state.selected_cart_item_index.map((item, index) => {
+    //   console.log(item);
+    //   total_pc = cart_items[item]?.set_qty * cart_items[item]?.qty_ordered
+    // })
+
+    // return total_pc
+
+    const pc = item?.items.reduce((pv, curr) => (pv + (curr.set_qty * curr.qty_ordered)), 0)
+    return pc === 1 ? pc + ' Pc' : pc + " Pcs"
+  }
+
   renderItem = ({ item, index }) => {
 
     return (
@@ -82,23 +99,28 @@ export default class Step1 extends Component {
                 }
               </Text>
             </View>
-            {
+            {/*
               (item?.shop_in_shop === "1") &&
               <Text style={[styles.cartText, { marginLeft: setWidth(6) }]}>( {item.facility_name} )</Text>
-            }
+              */ }
           </View>
           <View style={[styles.row, styles.alignCenter, { flex: 0.3 }]}>
-            <Text style={[styles.cartText]}>Total Value</Text>
-            <Text style={[styles.cartText, styles.textBold, { color: colors.grey2 },commonStyle.bluredText
-            //  this.props.is_ws_not == 0 && commonStyle.bluredText
-            ]}>  ₹ {parseFloat(item.gross_total_price).toFixed(2)}</Text>
+            <Text style={[styles.cartText]}>Total Qty: </Text>
+            <Text style={[styles.cartText, styles.textBold, { color: colors.grey2 }]}>
+              {
+                this.getTotalPiecesOrdered(item)
+              }
+            </Text>
+            {/* <Text style={[styles.cartText, styles.textBold, { color: colors.grey2 },commonStyle.bluredText
+            ]}>  ₹ {parseFloat(item.gross_total_price).toFixed(2)}
+            </Text> */}
           </View>
           <View style={[{ flex: 0.2 }]}>
             <TouchableOpacity style={[styles.checkBox, (this.state.selected_cart_item_index.includes(index)) && { backgroundColor: colors.red }]} onPress={() => this.onPressCartItem(index)}>
             </TouchableOpacity>
           </View>
         </View>
-        {
+        {/*
           !item.is_minimum_order_amount_met &&
           <View style={[styles.row, styles.warningView]}>
             <FontAwesome name='warning' color={colors.primaryyellow} size={setWidth(5)} style={{ flex: 0.1 }} />
@@ -119,7 +141,7 @@ export default class Step1 extends Component {
               </Text>
             </Text>
           </View>
-        }
+            */}
       </View>
     )
   }
@@ -128,7 +150,14 @@ export default class Step1 extends Component {
     return (
       <Animated.View style={[styles.container, { transform: [{ translateX: this.axisX }] }]}>
         <View style={styles.heading}>
-          <Text style={styles.headingText}>SELECT THE ORDER YOU WANT TO PAY FOR</Text>
+          <Text style={styles.headingText}>
+            {
+              this.props.is_ws_not === 0 ?
+              "Select the option to raise the request" 
+              :
+              "Select the option to place the order"
+            }
+            </Text>
         </View>
 
         <FlatList

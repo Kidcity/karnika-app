@@ -2,8 +2,9 @@ import { Animated, Dimensions, ScrollView, Text, View } from 'react-native'
 import React, { Component } from 'react'
 import { styles } from './style'
 import CartPaymentView from '../../CartPaymentView'
+import WholsalersList from '../../WholsalersList'
 
-const {width, height} = Dimensions.get("screen")
+const { width, height } = Dimensions.get("screen")
 
 export default class Step3 extends Component {
   constructor(props) {
@@ -32,41 +33,33 @@ export default class Step3 extends Component {
     }
   }
 
-  animFromRight (){
-    Animated.spring(this.axisX,{
+  animFromRight() {
+    Animated.spring(this.axisX, {
       toValue: 0,
       useNativeDriver: true,
       // delay: 1000,
       friction: 4,
-    }).start() 
+    }).start()
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.animFromRight()
   }
 
   render() {
     return (
-      <Animated.View style={[styles.container,{transform: [{translateX: this.axisX}]}]}>
+      <Animated.View style={[styles.container, { transform: [{ translateX: this.axisX }] }]}>
         <View style={styles.heading}>
-          <Text style={styles.headingText}>SELECT THE PAYMENT METHOD YOU WANT TO USE</Text>
+          <Text style={styles.headingText}>SELECT THE WHOLESALERS TO REQUEST</Text>
         </View>
-        <ScrollView style={styles.content}>
-          <CartPaymentView
-            address={this.state.default_shipping_address}
-            city_wallet_amount={this.state.city_wallet_amount}
-            credit_balance={this.state.rupifi_credit_balance}
-            COD_percentage={this.state.cod_percentage}
-            COD_amount_to_pay={this.state.cod_amount_to_pay}
-            total_order_value={this.state.total_order_value}
-            onChoosePaymentMode={(obj) => {
-              // console.log(obj);
-              if(this.state.onChoosePaymentMode){
-                this.state.onChoosePaymentMode(obj)
-              }
-            }}
+        <View style={styles.content}>
+          <WholsalersList
+            wholesalers={this.props.wholesalers}
+            showCheckBox
+            onPressCheckBox={this.props.onChooseWholesaler}
+            multiSelect={false}
           />
-        </ScrollView>
+        </View>
       </Animated.View>
     )
   }

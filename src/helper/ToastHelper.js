@@ -26,7 +26,7 @@ export function successToast(message, message2) {
 
 export function errorToast(message, message2) {
   Toast.show({
-    type: 'error',
+    type: 'Oops',
     text1: message,
     text2: message2
   });

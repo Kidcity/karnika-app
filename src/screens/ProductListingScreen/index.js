@@ -21,6 +21,9 @@ import { Easing } from 'react-native-reanimated';
 import { setScreenActivity } from '../../helper/AppActivityTrackingHelper'
 import AppHeader from '../../component/AppHeader';
 import { commonStyle } from '../../helper/commonStyle';
+import CustomButton from '../../component/CustomButton';
+import { setToStore } from '../../helper/AsyncStorageHelper';
+import RegisterFormModal from '../../component/RegisterFormModal';
 
 
 const { width, height } = Dimensions.get("screen")
@@ -42,7 +45,9 @@ class ProductListingScreen extends Component {
             isGridView: true,
             noData: false,
             showFilter: false,
-            is_ws_not : 0
+            is_ws_not: 0,
+            is_gst_verified: '0',
+            showRegisterModal: false
         }
         this.flatListRef = React.createRef()
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -62,7 +67,8 @@ class ProductListingScreen extends Component {
                 "",
             deeplinkparam: props.route.params ?? undefined,
             lastproductfilter: props.hasOwnProperty("lastproductfilter") ? props.lastproductfilter : null,
-            is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0
+            is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0,
+            is_gst_verified: props.hasOwnProperty("is_gst_verified") ? props.is_gst_verified : "0"
         }
     }
 
@@ -72,7 +78,7 @@ class ProductListingScreen extends Component {
             'focus',
             async () => {
 
-                if ( this.state.deeplinkparam && !this.state.deeplinkparam?.totalFilterApplied) {
+                if (this.state.deeplinkparam && !this.state.deeplinkparam?.totalFilterApplied) {
                     // alert(1)
                     const deeplinkparam = this.state.deeplinkparam
                     const filter = {
@@ -170,7 +176,7 @@ class ProductListingScreen extends Component {
             total += 1
 
         }
-        console.log("totalFilterApplied ==> ", total);
+        // console.log("totalFilterApplied ==> ", total);
         this.setState({
             totalFilterApplied: total
         })
@@ -195,6 +201,8 @@ class ProductListingScreen extends Component {
 
             let products = response.products
 
+            console.log(products.length);
+
             if (!this.state.isFiltered) {
                 products = [...this.state.list, ...products]
             } else if (this.state.isFiltered && this.state.page > 1) {
@@ -212,7 +220,7 @@ class ProductListingScreen extends Component {
             this.setState({
                 list: products,
                 showLoader: false,
-                // showBottomLoader: false,
+                showBottomLoader: false,
                 isFiltered: false,
                 noData: (response.products.length === 0) ? true : false,
                 page: (response.products.length === 0) ? 1 : this.state.page
@@ -316,22 +324,6 @@ class ProductListingScreen extends Component {
     render() {
         return (
             <View style={[styles.container]}>
-                {/* <CustomHeader
-                    city_id={this.state.city_id}
-                    showingThreeIcon={true}
-                    showSearchIcon={true}
-                    showCartIcon={true}
-                    showFavouriteIcon={true}
-                    showBackButton={true}
-                    headingLogoStyle={{
-                        marginLeft: setWidth(6)
-                    }}
-                    navigation={this.props.navigation}
-                    shouldRedirectToSelfScreen={true}
-                    onSearch={this._searchProduct}
-                    onPressBack={() => this.handleBackButtonClick()}
-                    onPressCartIcon={() => this.props.navigation.navigate("Cart")}
-                /> */}
                 <AppHeader
                     showBackBtn
                     showSearch
@@ -356,83 +348,72 @@ class ProductListingScreen extends Component {
                             }}
                         />
                     </View>
-                    <TouchableOpacity style={styles.gridbtn} onPress={() => this._changeListView()}>
-                        <Feather name={this.state.isGridView ? 'grid' : 'list'} size={setWidth(6)} color={colors.dark_charcoal} />
-                    </TouchableOpacity>
                 </View>
                 <View style={{ flex: 1, paddingHorizontal: setWidth(2) }}>
                     {
-                        this.state.isGridView ?
-                            <FlatList
-                                ref={this.flatListRef}
-                                key={'#'}
-                                data={this.state.list}
-                                keyExtractor={(item, index) => '#' + index}
-                                renderItem={this.renderGridViewItem}
-                                numColumns={2}
-                                initialNumToRender={10}
-                                columnWrapperStyle={{
-                                    justifyContent: 'space-between'
-                                }}
-                                contentContainerStyle={{
-                                    flexGrow: 1,
-                                    paddingBottom: setWidth(10),
-                                    paddingTop: normalize(15)
-                                }}
-                                onEndReachedThreshold={0.1}
-                                onEndReached={() => {
-                                    if (!this.state.noData) {
+                        this.state.isGridView &&
+                        <FlatList
+                            ref={this.flatListRef}
+                            key={'#'}
+                            data={this.state.list}
+                            keyExtractor={(item, index) => '#' + index}
+                            renderItem={this.renderGridViewItem}
+                            numColumns={2}
+                            initialNumToRender={10}
+                            columnWrapperStyle={{
+                                justifyContent: 'space-between'
+                            }}
+                            contentContainerStyle={{
+                                flexGrow: 1,
+                                paddingBottom: setWidth(10),
+                                paddingTop: normalize(15)
+                            }}
+                            onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+
+                            onEndReachedThreshold={0.1}
+                            onEndReached={() => {
+                                if (!this.onEndReachedCalledDuringMomentum) {
+                                    if (!this.state.noData && !this.state.showLoader && this.state.is_gst_verified === 1) {
                                         this.setState({
                                             page: this.state.page + 1
                                         }, () => this._getProductList())
                                     }
-                                }}
-                                // onScroll={this.handleScroll}
-                                scrollEventThrottle={16}
-                                ListFooterComponent={() => this.state.noData ?
-                                    <Text style={styles.emptyMessageStyle}>No More Data</Text>
-                                    :
-                                    this.state.showBottomLoader &&
-                                    <ActivityIndicator animating={true} size="large" color={colors.primaryyellow} />
                                 }
-                                ItemSeparatorComponent={() => <View style={[commonStyle.gapTop10]} />}
-                            />
-                            :
-                            <FlatList
-                                ref={this.flatListRef}
-                                key={'_'}
-                                data={this.state.list}
-                                keyExtractor={(item, index) => '_' + index}
-                                renderItem={this.renderListViewItem}
-                                numColumns={1}
-                                initialNumToRender={10}
-                                contentContainerStyle={{
-                                    flexGrow: 1,
-                                    paddingBottom: setWidth(10)
-                                }}
-                                onEndReachedThreshold={0.1}
-                                onEndReached={() => {
-                                    if (!this.state.noData) {
-                                        this.setState({
-                                            page: this.state.page + 1
-                                        }, () => this._getProductList())
-                                    }
-                                }}
-                                // onScroll={this.handleScroll}
-                                scrollEventThrottle={16}
-                                ListFooterComponent={() => this.state.noData ?
-                                    <Text style={styles.emptyMessageStyle}>No More Data</Text>
+                            }}
+                            // onScroll={this.handleScroll}
+                            scrollEventThrottle={16}
+                            ListFooterComponent={() =>
+                                this.state.is_gst_verified === 0 ?
+                                    <CustomButton
+                                        container={{
+                                            backgroundColor: colors.themeColor,
+                                            marginTop: setWidth(5),
+                                            marginHorizontal: normalize(20),
+                                            paddingHorizontal: setWidth(7),
+                                            paddingRight: setWidth(9),
+                                        }}
+                                        label={"Please provide information to view all data"}
+                                        labelStyle={{ color: colors.white }}
+                                        iconColor={colors.white}
+                                        onPress={() => this.setState({ showRegisterModal: true })}
+                                        leftIcon
+                                    />
                                     :
-                                    this.state.showBottomLoader &&
-                                    <ActivityIndicator animating={true} size="large" color={colors.primaryyellow} />
-                                }
-                            />
+                                    this.state.noData ?
+                                        <Text style={styles.emptyMessageStyle}>No Data</Text>
+                                        :
+                                        this.state.showBottomLoader &&
+                                        <ActivityIndicator animating={true} size="large" color={colors.primaryyellow} />
+                            }
+                            ItemSeparatorComponent={() => <View style={[commonStyle.gapTop10]} />}
+                        />
+
                     }
                 </View>
                 {
                     this.state.showFilter &&
                     <FilterModal
-                    isMyFeed={false}
+                        isMyFeed={false}
                         isOpen={this.state.showFilter}
                         onClose={() => this.setState({ showFilter: false })}
                         onDone={async (totalFilterApplied) => {
@@ -456,19 +437,34 @@ class ProductListingScreen extends Component {
                         isOpen={this.state.showLoader}
                     />
                 }
+                {
+                    this.state.showRegisterModal &&
+                    <RegisterFormModal
+                        onSuccess={() => {
+                            this.setState({
+                                page: this.state.page + 1,
+                                showRegisterModal: false
+                            }, () => this._getProductList())
+                        }}
+                        onClose={() => {
+                            this.setState({ showRegisterModal: false })
+                        }}
+                    />
+                }
             </View>
         );
     }
 }
 
-const mapStateToProps = state => {    
+const mapStateToProps = state => {
     return {
         cust_manu_id: state.loginReducer.data.cust_manu_id,
         filter: state.commonReducer.filter,
         lastproductfilter: state.productListReducer.lastproductfilter,
         // productListReducerLastState: state.productListReducer.lastState,
         total_wishlist_count: state.wishListReducer.total_wishlist_count,
-        is_ws_not: state.loginReducer.data.is_ws_not
+        is_ws_not: state.loginReducer.data.is_ws_not,
+        is_gst_verified: state.loginReducer.data.is_gst_verified,
     }
 }
 const mapDispatchToProps = dispatch => ({

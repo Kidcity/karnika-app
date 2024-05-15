@@ -58,14 +58,14 @@ export default class GridViewItem extends Component {
                     */ }
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.props.onPressProduct}>
-                    {
+                    {/*
                         (this.props.item?.item_left != '') &&
                         <View style={[commonStyle.row]}>
                             <View style={styles.itemsLeftContainer}>
                                 <Text style={[styles.text, { color: colors.white, textAlign: 'center' }]} >{this.props.item.item_left}</Text>
                             </View>
                         </View>
-                    }
+                */}
 
 
                     <View style={[styles.block, { borderLeftWidth: 0, borderRightWidth: 0 }]}>
@@ -73,16 +73,16 @@ export default class GridViewItem extends Component {
                             <View style={[{ flex: 1 }]}>
                                 <Text style={[styles.text, styles.largeBoldFont]} >{this.props.item.brand_name}</Text>
                             </View>
-                            <View style={[{ flex: 1, }, styles.alignItemEnd]}>
+                            {/* <View style={[{ flex: 1, }, styles.alignItemEnd]}>
                                 <Text style={[styles.text, styles.largeBoldFont, commonStyle.bluredText]}>₹{this.props.item.price}</Text>
-                            </View>
+                            </View> */}
                         </View>
-                        <View style={[styles.row, styles.justifyBetween, { marginTop: setWidth(3) }]}>
+                        {/* <View style={[styles.row, styles.justifyBetween, { marginTop: setWidth(3) }]}>
                             <Text style={[styles.text, { color: colors.green1 },  commonStyle.bluredText]}>{this.props.item.off}% OFF</Text>
                             <Text style={[styles.text, styles.strikThroughFont ,  commonStyle.bluredText]}>₹{this.props.item.prev_price}</Text>
-                        </View>
+                        </View> */}
                     </View>
-                    <View style={[styles.block, { borderLeftWidth: 0, borderRightWidth: 0, height: normalize(30) }]}>
+                    {/* <View style={[styles.block, { borderLeftWidth: 0, borderRightWidth: 0, height: normalize(30) }]}>
                         <View style={styles.row}>
                             <Text style={[styles.text, styles.subHeading]}>Size:</Text>
                             <Text style={[styles.text]} adjustsFontSizeToFit numberOfLines={1}> {this.props.item.size}</Text>
@@ -124,7 +124,7 @@ export default class GridViewItem extends Component {
                             <Text style={[styles.text, styles.subHeading]}>Margin:</Text>
                             <Text style={[styles.text, { color: colors.red }, commonStyle.bluredText]}> {this.props.item.margin}</Text>
                         </View>
-                    </View>
+                    </View> */}
                 </TouchableOpacity>
             </Animated.View>
         );

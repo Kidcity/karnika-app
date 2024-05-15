@@ -9,6 +9,7 @@ class EditProfileService extends Base {
     _getProfileInfoService(param) {
         return new Promise((resolve, reject) => {
             this.post(GET_PROFILE_INFO_SLUG, param).then(response => {
+                
                 resolve(response)
             }, error => {
                 reject(error)
@@ -19,7 +20,7 @@ class EditProfileService extends Base {
     _updateProfileInfo(param) {
         return new Promise((resolve, reject) => {
             this.post(UPDATE_PROFILE_INFO_SLUG, param).then(response => {
-                //console.log('response', response.data.data.data);
+                console.log('response', response.data.data);
                 if (response.data.data.data) {
 
                     const data = {
@@ -35,12 +36,11 @@ class EditProfileService extends Base {
                         shop_name: response.data.data.data.shop_name,
                         user_name: response.data.data.data.user_name,
                         user_type_id: response.data.data.data.user_type_id,
+                        is_applied_for_credit: 0,
+                        is_ws_not: +response.data.data.data?.is_ws_not,
+                        is_gst_verified: +response.data.data.data?.is_gst_verified
                     }   
 
-                    if(!response.data.data.data.default_address){
-                        reject({message: "API error: Proper data is not coming"})
-                        return
-                    }
                     const add = response.data.data.data.default_address
                     const address = {
                         address_book_id: add.address_book_id,

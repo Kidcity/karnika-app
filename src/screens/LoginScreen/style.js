@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import colors from "../../utils/colors";
-import { fonts, setHeight, setWidth } from '../../utils/variable'
+import { fonts, normalize, setHeight, setWidth } from '../../utils/variable'
 
 export const styles = StyleSheet.create({
     container: {
@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     },
     header: {
         height: setWidth(60),
+        marginLeft:normalize(10)
     },
     logo: {
         height: setWidth(50),
@@ -19,9 +20,9 @@ export const styles = StyleSheet.create({
         flexDirection:'row'
     },
     lottiView: {
-        position: 'relative',
+        // position: 'relative',
         height: setWidth(25),
-        alignSelf: 'center',        
+        // alignSelf: 'center',        
     },
     title: {
         color: colors.black,
@@ -41,7 +42,7 @@ export const styles = StyleSheet.create({
 
     },
     link:{
-        color: colors.red
+        color: colors.themeColor
     },
     perssableText: {
         color: colors.grey2,
@@ -50,8 +51,9 @@ export const styles = StyleSheet.create({
     },
     connectingbrandText: {
         fontSize: setWidth(4),
-        color: colors.primaryyellow,
+        color: colors.themeColor,
         fontFamily: fonts.fontBold,
+        fontWeight: 'bold',
         textAlign: 'center',
     },
     footer: {
@@ -65,7 +67,9 @@ export const styles = StyleSheet.create({
     footerText: {
         flexShrink: 1,
         color: colors.black,
-        fontSize: setWidth(2),
-        fontFamily: fonts.fontRegular
+        fontSize: setWidth(2.8),
+        fontFamily: fonts.fontRegular,
+        lineHeight: normalize(13),
+        textAlign: 'left'
     }
 })

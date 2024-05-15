@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
         height: height,
         backgroundColor: 'rgba(0,0,0,0.8)',
         justifyContent:'center',
-        zIndex: 999
+        zIndex: 9999
     },
     content:{
         backgroundColor: colors.white,

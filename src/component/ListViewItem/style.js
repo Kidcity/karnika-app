@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import colors from "../../utils/colors";
-import { fonts, setHeight, setWidth } from "../../utils/variable";
+import { fonts, normalize, setHeight, setWidth } from "../../utils/variable";
 
 const width = Dimensions.get("screen").width
 
@@ -23,9 +23,10 @@ export const styles = StyleSheet.create({
         flex: 0.5,  
     },
     productImage:{
-        flex:1,
-        width: '100%',
-        height: '100%',        
+        // flex:1,
+        // width: '100%',
+        // height: '100%', 
+        height: normalize(180)       
     },
     row:{
         flexDirection:'row'
@@ -78,7 +79,8 @@ export const styles = StyleSheet.create({
         color: colors.dark_charcoal,
         fontFamily: fonts.fontBold,
         flexWrap: 'wrap',
-        flexShrink: 1
+        flexShrink: 1,
+        marginLeft: normalize(5)
     },
     largeBoldFont:{
         fontSize: setWidth(4),

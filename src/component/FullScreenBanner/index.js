@@ -84,7 +84,7 @@ export default class FullScreenBanner extends Component {
                     this.props.staticImage ?
                         <FastImageComponent
                             style={[styles.image, this.props.bannerImageStyle]}
-                            source={require("../../../assets/videos/a.png")}
+                            source={images.no_image}
                             resizeMode={this.state.resizeMode}
                         />
                         :

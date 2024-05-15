@@ -1,5 +1,5 @@
 import { Animated } from "react-native"
-import { SET_AVAILABLE_BRAND_HOMEPAGE, CLEAR_HOME_DATA, SET_COLORS, SET_MAIN_CATEGORIES, STORE_CITIES_HOMEPAGE, SET_BANNERS_HOMEPAGE, SET_ICONIC_BRAND_HOMEPAGE, SET_PROMOS, SET_SHOPINSHOP_BRAND_HOMEPAGE } from "../types"
+import { SET_AVAILABLE_BRAND_HOMEPAGE, CLEAR_HOME_DATA, SET_COLORS, SET_MAIN_CATEGORIES, STORE_CITIES_HOMEPAGE, SET_BANNERS_HOMEPAGE, SET_ICONIC_BRAND_HOMEPAGE, SET_PROMOS, SET_SHOPINSHOP_BRAND_HOMEPAGE, SET_WHOLESALER } from "../types"
 
 const initialState = {
     banners: {},
@@ -9,7 +9,8 @@ const initialState = {
     cities: [],
     iconic_brand: [],
     shop_in_shop: [],
-    promos: []
+    promos: [],
+    wholesalers:[]
 }
 
 
@@ -30,7 +31,10 @@ function homeReducer(state = initialState, action) {
 
         case SET_SHOPINSHOP_BRAND_HOMEPAGE:
             return { ...state, shop_in_shop: action.payload }
-            
+
+        case SET_WHOLESALER:
+            return { ...state, wholesalers: action.payload }
+
         // case SET_COLORS:
         //     return { ...state, colors: [...action.payload] }
 

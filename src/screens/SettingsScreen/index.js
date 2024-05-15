@@ -71,21 +71,24 @@ class SettingsScreen extends Component {
             }}            
           /> */}
 
-          <TextCard
-            image={icons.navigation}
-            leftText="Shipping Address"
-            onPress={() => { this.props.navigation.navigate("ChangeAddress") }}
-            rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
-            containerStyle={{
-              height: setHeight(7)
-            }}
-          />
+          {
+            this.props.is_ws_not == 1 &&
+            <TextCard
+              image={icons.navigation} 
+              leftText="Shipping Address"
+              onPress={() => { this.props.navigation.navigate("ChangeAddress") }}
+              rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
+              containerStyle={{
+                height: setHeight(7)
+              }}
+            />
+          }
 
           <TextCard
             image={icons.bell}
             leftText="About Karnika"
             rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
-            onPress={() => Linking.openURL("https://www.karnikaindustries.com/Default/About#")}
+            onPress={() => Linking.openURL("https://www.karnikaindustries.com/Default/About")}
             containerStyle={{
               height: setHeight(7)
             }}
@@ -95,13 +98,13 @@ class SettingsScreen extends Component {
             image={icons.shield}
             leftText="Privacy Policy"
             rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
-            onPress={() => Linking.openURL("https://www.karnikaindustries.com/Default/About#")}
+            onPress={() => Linking.openURL("https://karnikaindustries.com/privacy.html")}
             containerStyle={{
               height: setHeight(7)
             }}
           />
 
-          <TextCard
+          {/* <TextCard
             image={icons.box}
             leftText="Damaged Goods Policy"
             rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
@@ -109,11 +112,11 @@ class SettingsScreen extends Component {
             containerStyle={{
               height: setHeight(7)
             }}
-          />
+          /> */}
 
           <TextCard
             image={icons.phone_call}
-            leftText="Contact Us"
+            leftText={this.props.is_ws_not == 0 ? "Contact" : "Contact Us"}
             rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
             onPress={() => { this.props.navigation.navigate("ContactUs") }}
             containerStyle={{
@@ -130,7 +133,7 @@ class SettingsScreen extends Component {
             }}   
           /> */}
 
-          <TextCard
+          {/* <TextCard
             image={icons.file}
             leftText="Terms & Condition"
             rightIcon={<Feather name='arrow-right' size={setWidth(6)} color={colors.dark_charcoal} />}
@@ -138,7 +141,7 @@ class SettingsScreen extends Component {
             containerStyle={{
               height: setHeight(7)
             }}
-          />
+          /> */}
 
 
         </View>
@@ -153,7 +156,8 @@ class SettingsScreen extends Component {
 }
 const mapStateToProps = state => {
   return {
-    filter: state.commonReducer.filter
+    filter: state.commonReducer.filter,
+    is_ws_not: state.loginReducer.data.is_ws_not
   }
 }
 

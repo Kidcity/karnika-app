@@ -105,30 +105,53 @@ class ProductDetailsScreen extends Component {
         return (
             <View style={styles.productSizeView}>
                 <View style={[styles.row, { justifyContent: 'space-between', }]}>
-                    <View style={{}} >
-                        <Text style={[styles.subHeading, styles.textBold, styles.textCenter, { color: colors.dark_charcoal }]}>Age Group</Text>
-                        <Text style={[styles.subHeading, styles.textCenter, { color: colors.dark_charcoal, paddingVertical: setWidth(1) }]}>{item.label}</Text>
-                        <View style={[styles.sizeBtn, (item.is_selected) && { backgroundColor: colors.grey5 }]} >
-                            <Text style={[styles.subHeading, styles.textCenter, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.9) }]}>{item.size}</Text>
+
+                    <View style={{ justifyContent: 'flex-start', flex: 1 }}>
+                        
+                            <Text style={[styles.subHeading, styles.textBold, styles.textCenter, { color: colors.dark_charcoal, fontSize: setWidth(3) }]}>Design No.</Text>
+
+                            <View style={{
+                                backgroundColor: colors.white,
+                                marginTop: normalize(5),
+                                borderRadius: normalize(20),
+                                borderColor: colors.themeColor,
+                                borderWidth: normalize(1),
+                                paddingVertical: normalize(3),
+                                paddingHorizontal: normalize(4),
+
+                            }}>
+                                <Text style={[styles.subHeading, styles.textCenter, { color: colors.dark_charcoal, fontWeight: 'bold', fontSize: setWidth(3.2) }]}>{`${item.subsku}`}</Text>
+                            </View>
+                       
+                        {/* <Text style={[styles.subHeading, styles.textCenter, styles.textBold, { color: colors.dark_charcoal }, commonStyle.bluredText]}>₹ {item.price_per_piece}</Text>
+                        <Text style={[styles.subHeading, styles.textCenter, styles.textBold, styles.textStrikeThrough, { color: colors.lightRed }, commonStyle.bluredText]}>₹ {item.wsp}</Text>
+                        <Text style={[styles.text, styles.textCenter, { color: colors.grey3, fontSize: setWidth(2.8) }]}>Per Piece</Text> */}
+                        {/* <Text style={[styles.text, styles.textCenter, styles.textBold, { color: colors.grey3, marginTop: setWidth(1) }]}>{item.total_set} Pcs / Set</Text> */}
+                    </View>
+
+                    <View style={{ justifyContent: 'flex-start', flex: 1, alignItems: 'center', }} >
+                        <Text style={[styles.subHeading, styles.textCenter, styles.textBold, { color: colors.dark_charcoal, fontSize: setWidth(3)  }]}>Size Group</Text>
+                        <View style={[styles.sizeBtn, { marginTop: normalize(5) }]} >
+                            <Text style={[styles.subHeading, styles.textCenter, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.2) }]}>{item.size}</Text>
                         </View>
                     </View>
-                    <View style={{ justifyContent: 'flex-end' }}>
-                        <Text style={[styles.subHeading, styles.textCenter, styles.textBold, { color: colors.dark_charcoal }, commonStyle.bluredText]}>₹ {item.price_per_piece}</Text>
-                        <Text style={[styles.subHeading, styles.textCenter, styles.textBold, styles.textStrikeThrough, { color: colors.lightRed },  commonStyle.bluredText]}>₹ {item.wsp}</Text>
-                        <Text style={[styles.text, styles.textCenter, { color: colors.grey3, fontSize: setWidth(2.8) }]}>Per Piece</Text>
-                        <Text style={[styles.text, styles.textCenter, styles.textBold, { color: colors.grey3, marginTop: setWidth(1) }]}>{item.total_set} Pcs / Set</Text>
-                    </View>
-                    <View style={{ justifyContent: 'flex-end' }}>
-                        <Text style={[styles.text, styles.textCenter, styles.textBold, { color: colors.dark_charcoal, marginTop: setWidth(5) }]}>{(parseInt(item.total_selected) * parseInt(item.total_set))} Pieces</Text>
+ 
+
+                    <View style={{ justifyContent: 'space-evenly', alignItems: 'center' }}>
+                       
+                        <Text style={[styles.text, styles.textCenter, styles.textBold, { color: colors.orange3, marginTop: setWidth(1), letterSpacing: 0.2, fontSize: normalize(8) }]}>{item.total_set} Pcs / Set</Text>
+
                         <IncrementDecrementButton
-                            label={item.total_selected + ' Sets'}
+                            label={item.total_selected}
                             container={{
+                                width: setWidth(22),
                                 marginTop: setWidth(1),
                                 backgroundColor: '#263C69',
                             }}
                             onIncrease={() => this._checkStock(item.total_selected + 1, index)}
                             onDecrease={() => this._adjustProductQty(item.total_selected - 1, index)}
                         />
+                        <Text style={[styles.text, styles.textCenter, styles.textBold, { color: colors.dark_charcoal, fontSize: normalize(8)}]}>{(parseInt(item.total_selected) * parseInt(item.total_set))} Pieces</Text>
                     </View>
                 </View>
             </View>
@@ -309,7 +332,7 @@ class ProductDetailsScreen extends Component {
 
         const sizelist = this.state.productSizeList
         const default_address = this.props.addressReducer.default_address
-        if(!default_address){
+        if (!default_address) {
             errorAlert("Error", "Please add your shipping address.")
             return
         }
@@ -408,7 +431,7 @@ class ProductDetailsScreen extends Component {
             product_id: (!product_id) ? this.param.product_id : product_id,
             retailer_id: this.props.loginReducer.data.cust_manu_id
         }
-        console.log(param);
+        // console.log(param);
         if (product_id !== null) {
             this.props.navigation.setParams({ product_id: product_id })
         }
@@ -628,18 +651,18 @@ class ProductDetailsScreen extends Component {
                     <View style={styles.row}>
                         <View style={[styles.smallBlock, { flex: 0.5, }]}>
                             <View style={[styles.row, styles.alignitemCenter]}>
-                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.7) }]}>Brand: </Text>
-                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.7) }]}>{this.state.brand_name}</Text>
+                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.3) }]}>Brand: </Text>
+                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.3) }]}>{this.state.brand_name}</Text>
                             </View>
                         </View>
                         <View style={[styles.smallBlock, { flex: 0.5, borderLeftWidth: 0 }]}>
                             <View style={[styles.row, styles.alignitemCenter]}>
-                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.7) }]}>Colour: </Text>
-                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.7) }]}>{this.state.total_color}</Text>
+                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.3) }]}>Colour: </Text>
+                                <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.3) }]}>{this.state.total_color}</Text>
                             </View>
                         </View>
                     </View>
-                    <View style={[styles.smallBlock, { borderTopColor: colors.white, backgroundColor: colors.grey6 }]}>
+                    {/* <View style={[styles.smallBlock, { borderTopColor: colors.white, backgroundColor: colors.grey6 }]}>
                         <View style={[styles.row, styles.alignitemCenter]}>
                             <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.7) }]}>Brand's Minimum Order Value: </Text>
                             <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.7) }]}>
@@ -651,11 +674,11 @@ class ProductDetailsScreen extends Component {
                                 }
                             </Text>
                         </View>
-                    </View>
+                    </View> */}
                     <View style={[styles.smallBlock, { borderTopColor: colors.white }]}>
                         <View style={[styles.row, styles.alignitemCenter]}>
-                            <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.7) }]}>Style No. : </Text>
-                            <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.7) }]}>{this.state.style_no}</Text>
+                            <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.3) }]}>Master Design No. : </Text>
+                            <Text style={[styles.subHeading, styles.textBold, { color: colors.grey3, fontSize: setWidth(3.3) }]}>{this.state.style_no}</Text>
                         </View>
                     </View>
 
@@ -668,7 +691,7 @@ class ProductDetailsScreen extends Component {
                         keyExtractor={(item, index) => index}
                         renderItem={this.renderProductSizeView}
                         style={{
-                            backgroundColor: 'red',
+                            // backgroundColor: 'red',
                             margin: 0
                         }}
                     />
@@ -678,7 +701,7 @@ class ProductDetailsScreen extends Component {
                         /* Product Details Section */
                     }
                     <TouchableOpacity style={styles.collasableBtn} onPress={() => this.setState({ showProductDetails: !this.state.showProductDetails })}>
-                        <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2 }]}>Product Details</Text>
+                        <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.3) }]}>Product Details</Text>
                         <MaterialIcons name={this.state.showProductDetails ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={setWidth(7)} color={colors.grey2} />
                     </TouchableOpacity>
                     {
@@ -689,7 +712,7 @@ class ProductDetailsScreen extends Component {
                     {
                         (this.state.brand_mov === 0) &&
                         <TouchableOpacity style={styles.collasableBtn} onPress={this._moreProductByBrand}>
-                            <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2 }]}>More Products By {this.state.brand_name}</Text>
+                            <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2,fontSize: setWidth(3.3) }]}>More Products By {this.state.brand_name}</Text>
                             <MaterialIcons name='keyboard-arrow-right' size={setWidth(7)} color={colors.grey2} />
                         </TouchableOpacity>
                     }
@@ -704,17 +727,17 @@ class ProductDetailsScreen extends Component {
                         {
                             (this.state.brand_mov !== 0) ?
                                 <TouchableOpacity style={[styles.collasableBtn, { marginTop: 0 }]} onPress={() => this.setState({ showSimilerProduct: !this.state.showSimilerProduct })}>
-                                    <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2 }]}>Similar Products</Text>
+                                    <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2 , fontSize: setWidth(3.3)}]}>Similar Products</Text>
                                     <MaterialIcons name={this.state.showSimilerProduct ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={setWidth(7)} color={colors.grey2} />
                                 </TouchableOpacity>
                                 :
                                 <View style={[styles.row, { justifyContent: 'space-between', paddingHorizontal: setWidth(4) }]}>
-                                    <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2 }]}>Similar Products</Text>
+                                    <Text style={[styles.subHeading, styles.textBold, { color: colors.grey2, fontSize: setWidth(3.3) }]}>Similar Products</Text>
 
                                     <TouchableOpacity onPress={() => {
                                         this.props.navigation.navigate("SeeAllProduct", { all_similer_product: this.state.similerProduct, city_id: this.state.city_id })
                                     }}>
-                                        <Text style={[styles.subHeading, styles.textBold, { color: colors.lightRed }]}>See All</Text>
+                                        <Text style={[styles.subHeading, styles.textBold, { color: colors.lightRed, fontSize: setWidth(3.3) }]}>See All</Text>
                                     </TouchableOpacity>
                                 </View>
                         }
@@ -768,7 +791,7 @@ class ProductDetailsScreen extends Component {
                     <Text style={[styles.subHeading, styles.textBold, { color: colors.dark_charcoal, marginTop: setWidth(8) }, styles.textCenter]}>Made In Bharat</Text>
                 </ScrollView>
 
-                {
+                {/*
                     this.state.remaining_mov_value > 0 &&
                     <BlinkText
                         duration={700}
@@ -785,7 +808,7 @@ class ProductDetailsScreen extends Component {
                             </View>
                         }
                     />
-                }
+                    */}
 
                 <View style={styles.footerbtnView}>
                     <TouchableOpacity style={[styles.heartBtn]} onPress={() => this._addToFavourite()}>

@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 import colors from "../../utils/colors";
-import { fonts, setWidth } from "../../utils/variable";
+import { fonts, normalize, setWidth } from "../../utils/variable";
 
 export const styles = StyleSheet.create({
     container:{
@@ -75,7 +75,8 @@ export const styles = StyleSheet.create({
     info:{
         marginTop: setWidth(10),
         alignItems:'center',
-        fontFamily: fonts.fontRegular
+        fontFamily: fonts.fontRegular,
+        justifyContent:'center'
     },
     infoText:{
         marginLeft: setWidth(2),
@@ -92,11 +93,13 @@ export const styles = StyleSheet.create({
     footerText: {
         flexShrink: 1,
         color: colors.black,
-        fontSize: setWidth(2),
-        fontFamily: fonts.fontRegular
+        fontSize: setWidth(2.7),
+        fontFamily: fonts.fontRegular,
+        lineHeight: normalize(13),
+        textAlign: 'left'
     },
     link:{
-        color: colors.red
+        color: colors.themeColor
     },
     itemView:{
         flex: 1,

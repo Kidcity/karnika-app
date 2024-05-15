@@ -9,12 +9,12 @@ class RazorPayServices extends Base {
 
     _getOrderIDService(mode, price, userid) {
         const url = config.paymentURL + ORDER_ID_SLUG + '/' + parseFloat(price) + '/' + userid + '/' + mode
-       console.log('url ====> ', url);
+    //    console.log('url ====> ', url);
         return new Promise(async (resolve, reject) => {
             await this.get(url).then(response => {
                 resolve(response)
             }, error => {
-               console.log(error);
+            //    console.log(error);
                 reject(error)
             })
         })
@@ -37,13 +37,13 @@ class RazorPayServices extends Base {
             },
             theme: { color: colors.yellow }
         }
-        console.log('_razorPayPaymentService   => ', options  );
+        // console.log('_razorPayPaymentService   => ', options  );
         // return
         return new Promise(async (resolve, reject) => {
             await RazorpayCheckout.open(options).then((data) => {                                
                 resolve(data)                
             }).catch((error) => {
-                console.log(error);
+                // console.log(error);
                 reject({message: 'You Cancelled Payment.'})
             });
         })

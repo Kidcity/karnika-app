@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.fontBold,
     color: colors.grey2,
     fontSize: setWidth(4),
+    textTransform:'uppercase'
   },
   listContainer: {
     marginTop: setHeight(3)

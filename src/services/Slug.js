@@ -25,6 +25,7 @@ module.exports = {
     GET_BANNERS: "getBanners",
     AVAILABLE_BRANDS_SLUG: "getOnlyAvailableBrands",
     MAIN_CATEGORIES_SLUG: "getCategories",
+    GET_WHOLESALER_SLUG: "listingWholesaler",
     CATELOG_BANNER_SLUG: "getcatalogBanner",
     FILTER_SLUG:"getCategoriesNew",
     COLORS_SLUG: "getColor",

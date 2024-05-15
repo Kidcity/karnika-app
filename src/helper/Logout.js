@@ -21,9 +21,9 @@ export const logout = () => {
     const param = {
         retailer_id: retailer_id
     }
-    console.log(param);
+    // console.log(param);
     LoginService.logoutService(param).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response?.success === true) {
             store.dispatch(clearLoginData())
             store.dispatch(clearHomeData())

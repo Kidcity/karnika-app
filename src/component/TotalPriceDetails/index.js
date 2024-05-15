@@ -40,7 +40,12 @@ export default class TotalPriceDetails extends Component {
                             return (
                                 <View style={[styles.row, styles.textGap, { justifyContent: 'space-between', alignItems:'center' }]} key={index}>
                                     <Text style={[styles.subHeading, styles.darkText,{flex: 0.7}]}>{item.title}</Text>
-                                    <Text style={[styles.subHeading, styles.textRight, styles.darkText,{flex: 0.3},commonStyle.bluredText]}>₹ {parseFloat(item.value).toFixed(2)}</Text>
+                                    {/* <Text style={[styles.subHeading, styles.textRight, styles.darkText,{flex: 0.3},commonStyle.bluredText]}>₹ {parseFloat(item.value).toFixed(2)}</Text> */}
+                                    <Text style={[styles.subHeading, styles.textRight, styles.darkText,{flex: 0.3}]}>
+                                        {
+                                            item.total_qty_ordered 
+                                        }
+                                    </Text>
                                 </View>
                             )
                         })

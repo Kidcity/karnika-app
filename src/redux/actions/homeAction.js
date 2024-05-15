@@ -1,4 +1,4 @@
-import { SET_AVAILABLE_BRAND_HOMEPAGE, CLEAR_HOME_DATA, SET_COLORS, SET_MAIN_CATEGORIES, STORE_CITIES_HOMEPAGE, SET_BANNERS_HOMEPAGE, SET_ICONIC_BRAND_HOMEPAGE, SET_PROMOS, SET_SHOPINSHOP_BRAND_HOMEPAGE } from "../types";
+import { SET_AVAILABLE_BRAND_HOMEPAGE, CLEAR_HOME_DATA, SET_COLORS, SET_MAIN_CATEGORIES, STORE_CITIES_HOMEPAGE, SET_BANNERS_HOMEPAGE, SET_ICONIC_BRAND_HOMEPAGE, SET_PROMOS, SET_SHOPINSHOP_BRAND_HOMEPAGE, SET_WHOLESALER } from "../types";
 
 
 export const setBannersAction = data => dispatch => {   
@@ -53,5 +53,12 @@ export const setShopINshopBrandAction = data => dispatch => {
 export const clearHomeData = data => dispatch => {
     dispatch({
         type: CLEAR_HOME_DATA
+    })
+}
+
+export const setWholesalerAction = data => dispatch => {   
+    dispatch({
+        type: SET_WHOLESALER,
+        payload: data
     })
 }

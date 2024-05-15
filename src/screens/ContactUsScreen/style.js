@@ -21,17 +21,19 @@ export const styles = StyleSheet.create({
     },
     heading:{
         fontFamily: fonts.bold,
-        color: colors.black,
-        fontSize: normalize(15),
+        color: colors.dark_charcoal,
+        fontSize: normalize(15),        
     },
     footer:{
-        position: 'absolute',
-        bottom: 10,
-        width: '100%',
-        justifyContent:'space-between'
+        marginTop: normalize(35),
+        borderTopColor: colors.grey7,
+        borderTopWidth: normalize(1),
+        // position: 'absolute',
+        // bottom: 10,
+        // width: '100%',
     },
     footerBlock:{
-        width: setWidth(20),
+        width: setWidth(25),
         height: setWidth(25),
         justifyContent:'center',
         alignItems:'center'

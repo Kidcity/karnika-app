@@ -11,12 +11,13 @@ export const styles = StyleSheet.create({
     },
     content:{
         flex:1,
-        marginHorizontal: setWidth(4)
+        // marginHorizontal: setWidth(4),        
     },
     searchTextInut:{
         flex:1,
         height: setWidth(10),   
-        fontFamily: fonts.fontRegular     
+        fontFamily: fonts.fontRegular,
+        color: colors.dark_charcoal  
     },  
     text:{
         fontFamily: fonts.fontRegular,
@@ -32,20 +33,20 @@ export const styles = StyleSheet.create({
         borderBottomWidth: setWidth(0.3),
     },
     orderTypeBtn:{
-        width:  (width - setWidth(3)) / 2.8  , // setWidth(35),
+        width:  (width - setWidth(4)) / 3.3  , // setWidth(35),
         paddingVertical: setWidth(2),
         marginRight: setWidth(2),
         borderRadius: setWidth(1.5),
-        borderColor: colors.lightRed,
+        borderColor: colors.themeColor,
         borderWidth: setWidth(0.3)
     },
     activeOrderTypeBtn:{
-        backgroundColor: colors.lightRed
+        backgroundColor: colors.themeColor
     },
     orderTypeBtnText:{
         textAlign:'center',
         fontFamily: fonts.fontRegular,
-        color: colors.red,
+        color: colors.themeColor,
         fontSize: setWidth(3.2)
     },
     activeOrderTypeBtnText:{
@@ -58,6 +59,7 @@ export const styles = StyleSheet.create({
         alignItems:'center',
         borderColor: colors.grey3,
         borderWidth: setWidth(0.3),
-        marginTop: setWidth(2)
+        marginTop: setWidth(2),
+        marginHorizontal: setWidth(4),
     },
 })

@@ -4,14 +4,15 @@ import { DEVICE_WIDTH, fonts, normalize, setHeight, setWidth } from "../../utils
 
 export const styles = StyleSheet.create({
     container: {
-        marginTop: setWidth(2),
+        // marginTop: setWidth(20),
+        // backgroundColor: 'pink',
     },
     brandView: {
         // height: 180,
         width: setWidth(100),
         overflow: 'visible',
         // paddingLeft: setWidth(2),
-        borderColor: colors.dark_charcoal,
+        // borderColor: colors.dark_charcoal,
         // backgroundColor:'green'
     },
     heading:{

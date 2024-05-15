@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
         width: setWidth(6),
         height: setWidth(6),
         //backgroundColor: colors.lightRed,
-        borderColor: colors.lightRed,
+        borderColor: colors.themeColor,
         borderWidth: setWidth(0.3),
         borderRadius: setWidth(6),
         justifyContent:'center',
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     circle:{
         width: setWidth(4),
         height: setWidth(4),
-        backgroundColor: colors.lightRed,
+        backgroundColor: colors.themeColor,
         borderRadius: setWidth(6)
     }
 })

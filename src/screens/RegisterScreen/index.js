@@ -6,7 +6,7 @@ import CustomHeader from '../../component/CustomHeader'
 import Feather from 'react-native-vector-icons/Feather'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CircleImage from '../../component/CircleImage';
-import { setHeight, setWidth } from '../../utils/variable';
+import { normalize, setHeight, setWidth } from '../../utils/variable';
 import CustomTextInput from '../../component/CustomTextInput';
 import CustomButton from '../../component/CustomButton';
 import colors from '../../utils/colors';
@@ -50,8 +50,10 @@ export default class RegisterScreen extends Component {
       showLoader: false,
       showOtherLoader: false,
       is_ws_not: 0,
+      modalHeading: "",
       errMessage: "",
-      showErrorModal: false
+      showErrorModal: false,
+      showCallBtn: false
     };
   }
 
@@ -106,7 +108,7 @@ export default class RegisterScreen extends Component {
       gst_no: this.state.pangstno
     }
     this.setState({ showLoader: true })
-    console.log(param);
+    // console.log(param);
     await RegisterService._checkValidGSTService(param).then(response => {
 
       if (response.data.data.result) {
@@ -271,6 +273,11 @@ export default class RegisterScreen extends Component {
     const imageObj = this.state.imageObj
     const device_token = await AsyncStorage.getItem('@device_token_KARNIKA')
     
+    if(this.state.mobile === ""){
+      this.setState({ showErrorModal: true, modalHeading: "", errMessage: "Please provide phone number" })
+      return
+    }
+    
     const param = {
       fcm_token: device_token,
       is_accept_tnc: true,
@@ -283,26 +290,25 @@ export default class RegisterScreen extends Component {
       android_version: (Platform.OS === 'android') ? VersionInfo.appVersion.toString() : '',
       ios_version: (Platform.OS === 'ios') ? VersionInfo.appVersion.toString() : '',
     }
-
     console.log(param);
-
     this.setState({ showLoader: true })
     await RegisterService._registerService(param).then(response => {
+
       successToast("SUCCESS!", "Successfully Registered.")
-      this.setState({ showLoader: false })
-      this.props.navigation.goBack()
-      // this.props.navigation.navigate("OTPVerificationScreen", { phone: this.state.mobile, what_for: 'signup' })
+      this.setState({ showLoader: false, showErrorModal: true, modalHeading: "Registration successfull!!!", errMessage: "Your application is pending.We will get back soon. \n\nFor any query please contact with the Karnika team: 9903528105 / 9903428105 " })       
+    
     }, error => {
       this.setState({ showLoader: false })
       if (error.message == "server_error") {
-        retryAlert(() => this._register())
+        this.setState({
+          errMessage: "Something went wrong, please try again.",
+          showErrorModal: true
+        })
       } else {
-        console.log(error);
         this.setState({
           errMessage: error.message,
           showErrorModal: true
         })
-        // errorAlert("Error", error.message)
       }
     })
   }
@@ -316,7 +322,7 @@ export default class RegisterScreen extends Component {
   }
 
   componentDidMount() {
-    this._fetchData()
+    // this._fetchData()
   }
 
   render() {
@@ -540,13 +546,14 @@ export default class RegisterScreen extends Component {
           />
 
           <View style={[styles.row, styles.info]}>
-            <Feather name='check-circle' size={setWidth(4)} color={colors.primaryyellow} />
+            <Feather name='check-circle' size={setWidth(4)} color={colors.themeColor} />
             {/* <Text style={styles.infoText} adjustsFontSizeToFit numberOfLines={1}>By Signing in to this account , you agree to our terms of service and Privacy policy</Text> */}
-            <View style={[styles.row, { alignItems: 'center', justifyContent: 'center' }]}>
-              <Text style={styles.footerText} > {Strings.loginScreenStrings.bottomText1}</Text>
-              <TouchableOpacity onPress={() => Linking.openURL("https://karnikaindustries.com/terms.html")}><Text style={[styles.footerText, styles.link]}> {Strings.loginScreenStrings.bottomText2}</Text></TouchableOpacity>
-              <Text style={styles.footerText}> {Strings.loginScreenStrings.bottomText3}</Text>
-              <TouchableOpacity onPress={() => Linking.openURL("https://karnikaindustries.com/privacy.html")}><Text style={[styles.footerText, styles.link]}> {Strings.loginScreenStrings.bottomText4}</Text></TouchableOpacity>
+            <View style={[styles.row, { flex: 1, alignItems: 'center', justifyContent: 'center', marginLeft: normalize(2) }]}>
+            <Text style={styles.footerText} >{Strings.loginScreenStrings.bottomText1}
+                <Text style={[styles.link]} onPress={() => Linking.openURL("https://Karnikaindustries.com/terms.html")}> {Strings.loginScreenStrings.bottomText2}</Text>
+                {" "} {Strings.loginScreenStrings.bottomText3}
+               <Text style={[styles.link]}> {Strings.loginScreenStrings.bottomText4}</Text>
+              </Text>
             </View>
           </View>
 
@@ -584,12 +591,19 @@ export default class RegisterScreen extends Component {
         {
           this.state.showErrorModal &&
           <EmptyCartModal
+            heading={this.state.modalHeading}
             title={this.state.errMessage}
             showProcessBtn={false}
+            showCallBtn={this.state.showCallBtn}
             onPressContinueShopping={() => {
               this.setState({ showErrorModal: false })
             }}
-            onPressClose={() => this.setState({ showErrorModal: false })}
+            onPressClose={() =>{              
+              this.setState({ showErrorModal: false })
+              if(this.state.modalHeading !== ""){
+                this.props.navigation.goBack()
+              }
+            }}
           />
         }
         <RBSheet

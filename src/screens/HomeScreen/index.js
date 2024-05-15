@@ -58,10 +58,11 @@ class Home extends Component {
       isSetFeed: false,
       is_ws_not: 0,
       user_id: "",
-      showRegisterModal: false
+      showRegisterModal: false,
+      is_gst_verified: ""
     }
     this.scrollRef = React.createRef()
-    this.timer = React.createRef().current
+    // this.timer = React.createRef().current
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -70,27 +71,28 @@ class Home extends Component {
       genders: props.hasOwnProperty("genders") ? props.genders : null,
       all_filter_cleared: props.hasOwnProperty("all_filter_cleared") ? props.all_filter_cleared : null,
       is_ws_not: props.hasOwnProperty("is_ws_not") ? props.is_ws_not : 0,
-      user_id: props.hasOwnProperty("user_id") ? props.user_id : ""
+      user_id: props.hasOwnProperty("user_id") ? props.user_id : "",
+      is_gst_verified: props.hasOwnProperty("is_gst_verified") ? props.is_gst_verified : ""
       // H_categories: props.hasOwnProperty("H_categories") ? props.H_categories : null,
       // V_categories: props.hasOwnProperty("V_categories") ? props.V_categories : null,
       // available_brands: props.hasOwnProperty("available_brands") ? props.available_brands : null,
     }
   }
-
+  // sagar
   async componentDidMount() {
-    const profileUpdated = await getStore("profileUpdated")
-    if(+profileUpdated !== 1){
-      this.timer = setTimeout(() => {
-        this.setState({
-          showRegisterModal: true
-        })
-      }, 1000);
-    }
+    // if (+this.state.is_gst_verified === 0) {
+    //   this.timer = setTimeout(() => {
+    //     this.setState({
+    //       showRegisterModal: true
+    //     })
+    //   }, 15000);
+    // }
     this.willFocusSubscription = this.props.navigation.addListener(
       'focus',
       async () => {
+        // console.log(this.props);
         if (this.props.route.params?.scroll_to_top === true) {
-          this.scrollRef.current.scrollTo({ animated: true, y: 0 });
+          // this.scrollRef.current.scrollTo({ animated: true, y: 0 });
         }
       })
 
@@ -104,14 +106,18 @@ class Home extends Component {
 
   componentWillUnmount() {
     this.willFocusSubscription()
-    clearTimeout(this.timer)
+    // clearTimeout(this.timer)
   }
 
   _singleTymCallingApis = async () => {
 
+    if(this.state.is_ws_not === 0){
+      this._getWholesalers()
+    }
+
     this.setState({ showLoader: true })
     const response = await Promise.allSettled([
-      await this._getGenders(),
+      await this._getGenders(),      
       this._getBanners(),
       this._getCategories(),
       this._getTopBrand(),
@@ -149,17 +155,28 @@ class Home extends Component {
     })
   }
 
+  _getWholesalers = async () => {
+    const param = {
+      retailer_id: this.state.user_id
+    }
+
+    await StoreByCityService._getWholesalerService(param).then(response => {
+      
+    }, error => {
+    })
+  }
+
   _getGenders = async () => {
     const param = {
       category_id: '',
       season: '',
       city: ''
     }
-
+    
     await StoreByCityService._getGenderService(param).then(response => {
       if (!this.state.selectedGender) {
         this.setState({
-          selectedGender: this.state.genders ? this.state.genders[0].id : ''
+          selectedGender: this.state.genders ? this.state.genders[0]?.id : ''
         })
       }
     }, error => {
@@ -219,7 +236,7 @@ class Home extends Component {
       retailer_id: this.state.user_id
     }
 
-    console.log("banner param ==> ", param);
+    // console.log("banner param ==> ", param);
 
     HomeService._getBannerService(param).then(response => {
 
@@ -244,14 +261,15 @@ class Home extends Component {
       gender: this.state.selectedGender + "",
       retailer_id: this.state.user_id
     }
-
+    // console.log(param);
     HomeService._getTopTrendsService(param).then(response => {
+      console.log(response);
       this.setState({
         toptrend: response
       })
     }, error => {
       if (error.message == "server_error") {
-        retryAlert(() => this._getBanners())
+        retryAlert(() => this._getTopTrends())
       } else {
       }
     })
@@ -304,7 +322,7 @@ class Home extends Component {
     }, error => {
 
       if (error.message == "server_error") {
-        retryAlert(() => this._getCities())
+        retryAlert(() => this._getTopBrand())
       } else {
         // errorAlert("Error in get cities", error.message)
       }
@@ -338,6 +356,12 @@ class Home extends Component {
     }
 
     await this.props.setProductFilterAction(param)
+    this.props.navigation.navigate("ProductListing")
+  }
+
+  async onPressViewAll(){
+    await this.props.clearProductListData()
+    await this.props.clearProductFilterAction()
     this.props.navigation.navigate("ProductListing")
   }
 
@@ -384,7 +408,7 @@ class Home extends Component {
   }
 
   onPressShare(data) {
-    console.log(data);
+    // console.log(data);
     this.setState({ showLoader: true })
     const param = {
       brand_id: data?.brand_id + "",
@@ -392,6 +416,7 @@ class Home extends Component {
     }
 
     CommonService._getSharePdfService(param).then(response => {
+
       if (response?.link) {
         this._shareDoc(response?.link)
       }
@@ -411,7 +436,7 @@ class Home extends Component {
     if (item.link !== "") {
       await this.props.clearProductListData()
       await this.props.clearProductFilterAction()
-      console.log(item.link);
+      // console.log(item.link);
       Linking.openURL(item.link)
     }
   }
@@ -435,7 +460,7 @@ class Home extends Component {
     // await this.props.clearProductFilterAction()
 
     const filter = this.state.filter
-    console.log(filter);
+    // console.log(filter);
     // await this.props.setProductFilterAction(filter)
     this.setState({ openfiltermodal: false, isSetFeed: true })
     successToast("Success", "My Feed Set Succefully!!!")
@@ -448,7 +473,7 @@ class Home extends Component {
     }
 
     const filter = this.state.filter
- 
+
     await this.props.clearProductListData()
     await this.props.clearProductFilterAction()
     await this.props.setProductFilterAction(filter)
@@ -472,7 +497,7 @@ class Home extends Component {
           navigation={this.props.navigation}
         />
         <ScrollView ref={this.scrollRef} contentContainerStyle={styles.content}>
-          <View style={[commonStyle.row, styles.feed, commonStyle.shadow]} >
+          {/* <View style={[commonStyle.row, styles.feed, commonStyle.shadow]} >
             <MyFeed
               containerStyle={{ flex: 0.25, paddingTop: normalize(25) }}
               onPressFeed={this.onPressFeed}
@@ -485,7 +510,41 @@ class Home extends Component {
               onPressGender={(id) => this._onSelectgender(id)}
               onPressCategory={(data) => this._onPressHorizontalCategories(data)}
             />
-          </View>
+          </View> */}
+
+          {
+            (this.state.available_brands && this.state.available_brands.length > 0) &&
+            <AvailableBrands
+              selectedGender={this.state.selectedGender}
+              brands={this.state.available_brands}
+              containerStyle={{
+                // marginTop: normalize(15)
+              }}
+              onPressBrand={(brand) => {
+                if (brand.brand_name == "view_more") {
+                  this.props.navigation.navigate("AllBrands", { city_name: brand.city_name, city_id: brand.city_id, from_screen: 'home' })
+                } else {
+                  this._brandWistList(brand)
+                }
+              }}
+              onPressAllBrand={() => {
+                this.props.navigation.navigate("AllBrands", { city_name: '', from_screen: 'home' })
+              }}
+            />
+          }
+
+          {
+            (this.state.V_categories && this.state.V_categories.length > 0) &&
+            <VerticleBrands
+              title="Top Categories For You"
+              data={this.state.V_categories}
+              containerStyle={{
+                // marginTop: normalize(15)
+              }}
+              onPress={(category_id) => this._categoryWiseList(category_id)}
+              onPressViewAll={()=> this.onPressViewAll()}
+            />
+          }
 
           {
             (this.state.promo_banner && this.state.promo_banner.length > 0) &&
@@ -539,26 +598,7 @@ class Home extends Component {
             />
           }
 
-          {
-            (this.state.available_brands && this.state.available_brands.length > 0) &&
-            <AvailableBrands
-              selectedGender={this.state.selectedGender}
-              brands={this.state.available_brands}
-              containerStyle={{
-                marginTop: normalize(15)
-              }}
-              onPressBrand={(brand) => {
-                if (brand.brand_name == "view_more") {
-                  this.props.navigation.navigate("AllBrands", { city_name: brand.city_name, city_id: brand.city_id, from_screen: 'home' })
-                } else {
-                  this._brandWistList(brand)
-                }
-              }}
-              onPressAllBrand={() => {
-                this.props.navigation.navigate("AllBrands", { city_name: '', from_screen: 'home' })
-              }}
-            />
-          }
+
 
           {
             this.state.catelogs[1] &&
@@ -569,18 +609,6 @@ class Home extends Component {
               }}
               onPressCatelogImage={(product_id) => this.props.navigation.navigate("ProductDetails", { product_id: product_id })}
               onPressShare={() => this.onPressShare(this.state.catelogs[1])}
-            />
-          }
-
-          {
-            (this.state.V_categories && this.state.V_categories.length > 0) &&
-            <VerticleBrands
-              title="Top Categories For You"
-              data={this.state.V_categories}
-              containerStyle={{
-                marginTop: normalize(15)
-              }}
-              onPress={(category_id) => this._categoryWiseList(category_id)}
             />
           }
 
@@ -629,14 +657,8 @@ class Home extends Component {
             />
           }
 
-          <HowToUse
-            containerStyle={{
-              marginTop: normalize(15)
-            }}
-          />
-
           {
-            this.state.topbrand &&
+            (this.state.topbrand && this.state.topbrand.length > 0 ) &&
             <TopBrandToday
               data={this.state.topbrand}
               containerStyle={{
@@ -660,13 +682,19 @@ class Home extends Component {
             </TouchableOpacity>
           }
 
-          <View style={styles.thankyouImage}>
+          <HowToUse
+            containerStyle={{
+              marginTop: normalize(15)
+            }}
+          />
+
+          {/* <View style={styles.thankyouImage}>
             <CustomImage
               source={{ uri: this.state.footer_banner }}
               style={styles.image}
               resizeMode="contain"
             />
-          </View>
+          </View> */}
 
         </ScrollView>
         {
@@ -694,17 +722,7 @@ class Home extends Component {
           <FullScreenLoader
             isOpen={this.state.showLoader}
           />
-        }
-        {
-          this.state.showRegisterModal &&
-          <RegisterFormModal 
-            onClose={()=> {
-              setToStore("profileUpdated", '1')
-              clearTimeout(this.timer)
-              this.setState({showRegisterModal: false})
-            }}
-          />
-        }
+        }       
       </View>
     )
   }
@@ -721,6 +739,7 @@ const mapStateToProps = state => {
     filter: state.commonReducer.filter,
     all_filter_cleared: state.commonReducer.all_filter_cleared,
     is_ws_not: state.loginReducer.data.is_ws_not,
+    is_gst_verified: state.loginReducer.data.is_gst_verified,
     user_id: state.loginReducer.data.cust_manu_id,
   }
 }

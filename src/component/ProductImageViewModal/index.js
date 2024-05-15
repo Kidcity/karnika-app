@@ -35,7 +35,7 @@ export default class ProductImageViewModal extends Component {
     }
 
     render() {
-        console.log(this.props.imageIndex);
+        // console.log(this.props.imageIndex);
         return (
             <View style={styles.contianer}>
                 <View style={styles.content}>

@@ -1,8 +1,8 @@
-import { BackHandler, FlatList, Image, NativeModules, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { BackHandler, FlatList, Image, Keyboard, NativeModules, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { Component } from 'react'
 import { setScreenActivity } from '../../helper/AppActivityTrackingHelper';
 import { styles } from './style';
-import { icons, setHeight, setWidth } from '../../utils/variable';
+import { icons, normalize, setHeight, setWidth } from '../../utils/variable';
 import colors, { dark_charcoal } from '../../utils/colors';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
@@ -12,7 +12,10 @@ import { connect } from 'react-redux';
 import { clearProductFilterAction, setProductFilterAction } from '../../redux/actions/commonAction';
 import { store } from '../../redux/store'
 import { clearProductListData } from '../../redux/actions/productListAction';
-import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
+import TopTrends from '../../component/TopTrends';
+import HomeService from '../../services/HomeService';
+import TopBrandToday from '../../component/TopBrandToday';
 
 const { StatusBarManager } = NativeModules
 
@@ -26,7 +29,10 @@ class SearchScreen extends Component {
             user_id: '',
             city_id: '',
             suggestions: [],
-            loading: false
+            loading: false,
+            topbrand: [],
+            topsearchProduct: [],
+            nodata: false
         }
     }
 
@@ -38,6 +44,16 @@ class SearchScreen extends Component {
     }
 
     componentDidMount() {
+        this.willFocusSubscription = this.props.navigation.addListener(
+            'focus',
+            async () => {
+             this.setState({
+                nodata: false
+             })
+            })
+      
+        this._getTopBrand()
+        this._getTopSearched()
         if (Platform.OS === 'ios') {
             StatusBarManager.getHeight(response =>
                 this.setState({
@@ -53,6 +69,47 @@ class SearchScreen extends Component {
 
     componentWillUnmount() {
         this.backHandler.remove()
+        this.willFocusSubscription()
+    }
+
+    _getTopBrand() {
+
+        const param = {
+            gender: this.state.selectedGender + "",
+            retailer_id: this.state.user_id
+        }
+
+        HomeService._getTopBrandService(param).then(response => {            
+            this.setState({
+                topbrand: response?.topbrand
+            })
+        }, error => {
+            if (error.message == "server_error") {
+                retryAlert(() => this._getTopBrand())
+            } else {
+                // errorAlert("Error in get cities", error.message)
+            }
+        })
+    }
+
+    _getTopSearched() {
+
+        const param = {
+            gender: this.state.selectedGender + "",
+            retailer_id: this.state.user_id
+        }
+
+        HomeService._getTopBrandService(param).then(response => {            
+            this.setState({
+                topsearchProduct: response?.topbrand
+            })
+        }, error => {
+            if (error.message == "server_error") {
+                retryAlert(() => this._getTopBrand())
+            } else {
+                // errorAlert("Error in get cities", error.message)
+            }
+        })
     }
 
     debounce = (func) => {
@@ -77,8 +134,10 @@ class SearchScreen extends Component {
     _getSuggestions = () => {
 
         if (this.state.searchText == '') {
+            Keyboard.dismiss()
             this.setState({
-                suggestions: []
+                suggestions: [],
+                nodata: false
             })
             return
         }
@@ -89,13 +148,14 @@ class SearchScreen extends Component {
             city: this.state.city_id
         }
 
-        console.log('param  ==> ', param);
+        // console.log('param  ==> ', param);
 
         CommonService._getSuggestionsService(param).then(response => {
-          
+
             this.setState({
                 suggestions: response.data,
-                loading: false
+                loading: false,
+                nodata: (response?.data && response?.data.length > 0) ? false : true
             })
         }, error => {
             this.setState({
@@ -105,8 +165,8 @@ class SearchScreen extends Component {
         })
     }
 
-    onPressSuggessionItem(item) {   
-                
+    onPressSuggessionItem(item) {
+
         this.setState({ searchText: "", suggestions: [] }, async () => {
             this._navigate(item.name, item?.city_id)
         })
@@ -117,7 +177,9 @@ class SearchScreen extends Component {
     }
 
     async _navigate(searchText, city_id = '') {
-
+        if(searchText === ""){
+            return
+        }
         await store.dispatch(clearProductListData())
         await store.dispatch(clearProductFilterAction())
 
@@ -153,14 +215,30 @@ class SearchScreen extends Component {
         return true
     };
 
+    async _brandWistList(brand = null) {
+
+        await store.dispatch(clearProductListData())
+        await store.dispatch(clearProductFilterAction())
+
+        let param = this.props.filter
+        param = {
+          ...param,
+          brand: brand.id.toString(),
+          city: brand.city_id.toString()
+        }
+    
+        await store.dispatch(setProductFilterAction(param))
+        this.props.navigation.navigate("ProductListing")
+      }
+
     render() {
         return (
-            <KeyboardAwareScrollView style={styles.container} contentContainerStyle={{ flex: 1 }} >
-                {
-                    Platform.OS === "ios" &&
-                    <View style={{ height: this.state.statusbarheight, backgroundColor: colors.white }} />
-                }
+            <>
                 <View style={styles.searchBar}>
+                    {
+                        Platform.OS === "ios" &&
+                        <View style={{ height: this.state.statusbarheight, backgroundColor: colors.white }} />
+                    }
                     <TouchableOpacity style={[styles.icon]} onPress={this.backAction}>
                         <Image source={icons.arrow_left} style={[{ width: setWidth(7), height: setWidth(7), tintColor: colors.black }]} />
                     </TouchableOpacity>
@@ -177,42 +255,82 @@ class SearchScreen extends Component {
                         <AntDesign name='search1' size={setWidth(6)} color={colors.dark_charcoal} />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.content}>
-                    <FlatList
-                        data={this.state.suggestions}
-                        renderItem={({ item, index }) =>
-                            <TouchableOpacity style={styles.suggestionTextView} onPress={() => this.onPressSuggessionItem(item)}>
-                                <Text style={[styles.suggestionText]}>{item.name}</Text>
-                                <Feather name='arrow-up-left' size={setWidth(6)} color={colors.dark_charcoal} />
-                            </TouchableOpacity>
-                        }
-                        keyExtractor={(item, index) => index}
-                        keyboardShouldPersistTaps="handled"
-                        contentContainerStyle={{
-                            flexGrow: 1,
-                            paddingBottom: setHeight(10),
-                        }}
-                        ListEmptyComponent={() => <View style={styles.emptyComponentView}>
-                            {
-                                (this.state.searchText === "" || this.state.searchText != "" && this.state.loading === false) ?
-                                    <>
-                                        <Lottie
-                                            autoPlay
-                                            loop
-                                            style={styles.lottiView}
-                                            source={require("../../utils/emptylist.json")}
-                                        />
-                                        <Text style={styles.emptyText} adjustsFontSizeToFit numberOfLines={1}>Search Your favourite brand, items and more...</Text>
-                                    </>
-                                    :
-                                    (this.state.loading) &&
-                                    <Text style={styles.emptyText} adjustsFontSizeToFit numberOfLines={1}>Loading...</Text>
-                            }
+                <KeyboardAwareScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: normalize(30) }} >
+                    <View style={styles.content}>
+                        <View style={{}}>
+                            <FlatList
+                                data={this.state.suggestions}
+                                renderItem={({ item, index }) =>
+                                    <TouchableOpacity style={styles.suggestionTextView} onPress={() => this.onPressSuggessionItem(item)}>
+                                        <Text style={[styles.suggestionText]}>{item.name}</Text>
+                                        <Feather name='arrow-up-left' size={setWidth(6)} color={colors.dark_charcoal} />
+                                    </TouchableOpacity>
+                                }
+                                keyExtractor={(item, index) => index}
+                                keyboardShouldPersistTaps="handled"
+                                contentContainerStyle={{
+                                    flexGrow: 1,
+                                    paddingBottom: setHeight(10),
+                                }}
+                                ListEmptyComponent={() => <View style={styles.emptyComponentView}>
+                                    {
+                                        (this.state.searchText === "" || this.state.searchText != "" && this.state.loading === false) ?
+                                            <>
+                                                <LottieView
+                                                    autoPlay
+                                                    loop
+                                                    style={styles.lottiView}
+                                                    source={require("../../utils/emptylist.json")}
+                                                />
+                                                <Text style={styles.emptyText} adjustsFontSizeToFit numberOfLines={1}>
+                                                    {
+                                                        this.state.nodata ?
+                                                            "No Data Found"
+                                                            :
+                                                            "Search Your favourite brand, items and more..."
+                                                    }
+                                                </Text>
+                                            </>
+                                            :
+                                            (this.state.loading) &&
+                                            <Text style={styles.emptyText} adjustsFontSizeToFit numberOfLines={1}>Loading...</Text>
+                                    }
 
-                        </View>}
-                    />
-                </View>
-            </KeyboardAwareScrollView>
+                                </View>
+                                }
+                            />
+                        </View>
+                        {
+                            (this.state.searchText === "" && (this.state.topbrand.length > 0 || this.state.topsearchProduct.length > 0)) &&
+                            <Text style={styles.heading}>Shop Now</Text>
+                        }
+                        {
+                            (this.state.topbrand && this.state.topbrand.length > 0 && this.state.searchText === "") &&
+                            <TopBrandToday
+                                data={this.state.topbrand}
+                                title="Top Trend Products"
+                                // showAsTopBrand={true}
+                                onPressBrand={(brand) => this._brandWistList(brand)}
+                                onPressProduct={(product_id) => this.props.navigation.navigate("ProductDetails", { product_id: product_id })}
+
+                                onPressViewMore={(brand) => this._brandWistList(brand)}
+                            />
+                        }
+                        {
+                            (this.state.topsearchProduct && this.state.topsearchProduct.length > 0 && this.state.searchText === "") &&
+                            <TopBrandToday
+                                data={this.state.topsearchProduct}
+                                title="Top Searched Products"
+                                onPressBrand={(brand) => this._brandWistList(brand)}
+                                onPressProduct={(product_id) => this.props.navigation.navigate("ProductDetails", { product_id: product_id })}
+
+                                onPressViewMore={(brand) => this._brandWistList(brand)}
+                            />
+                        }
+                    </View>
+
+                </KeyboardAwareScrollView>
+            </>
         )
     }
 }

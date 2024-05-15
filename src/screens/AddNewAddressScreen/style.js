@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: setWidth(4)
     },
     inputStyle:{
-        paddingLeft: 0,
+        paddingLeft: 2,
         fontFamily: fonts.fontRegular,
         fontSize: setWidth(3.4),
         color: colors.dark_charcoal
@@ -38,8 +38,8 @@ export const styles = StyleSheet.create({
     },
     dropdownContainer:{
         borderColor: colors.white,
-        borderBottomColor: colors.grey1,
-        borderBottomWidth: setWidth(0.3),
+        // borderBottomColor: colors.grey1,
+        // borderBottomWidth: setWidth(0.3),
         marginTop: setWidth(5)
     },
     dropdownPlacholderStyle:{
@@ -48,8 +48,8 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.fontRegular
     },
     dropdownItemStyle:{
-        borderBottomColor: colors.grey1,
-        borderBottomWidth: setWidth(0.4),
+        borderBottomColor: colors.grey2,
+        borderBottomWidth: setWidth(0.2),
         paddingHorizontal: setWidth(2)
     },
     dropdownItemTextStyle:{

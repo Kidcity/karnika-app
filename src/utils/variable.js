@@ -4,53 +4,27 @@ import colors from './colors'
 
 export const images = {
     /** karnika assets */
-    profileimg: require("../../assets/profile-pic.png"),
+    profileimg: require("../../assets/profile-pic.jpg"),
     header_logo2: require('../../assets/header_logo2.jpg'),
-    ellipse: require("../../assets/ellipse.png"),
-    logo: require("../../assets/logo.png"),
-    heading_logo: require("../../assets/heading_logo.png"),
-    demo1: require("../../assets/demo1.jpg"),
-    demo2: require("../../assets/demo2.jpg"),
-    banner1: require("../../assets/banner1.png"),
-    catelog1: require("../../assets/catelog1.png"),
-    brand_logo: require("../../assets/brand_logo.png"),
-    benefit1: require("../../assets/benefit1.png"),
-    benefit2: require("../../assets/benefit2.png"),
-    trends1: require("../../assets/trends1.png"),
-    trends2: require("../../assets/trends2.png"),
-    trends3: require("../../assets/trends3.png"),
-    trends4: require("../../assets/trends4.png"),
-    trends5: require("../../assets/trends5.png"),    
-    product_view1: require("../../assets/product_view1.png"),
-    purchasehistory: require("../../assets/purchase-history.png"),
-    summer: require("../../assets/summer.png"),
-    winter: require("../../assets/winter.png"),
-    all: require("../../assets/all.png"),
+    empty_product: require("../../assets/empty_product.png"),
+    no_image: require("../../assets/no_image.jpg")
 }
 
 export const gif = {
-
+loader: require("../../assets/videos/loader.gif")
 }
 
 export const icons = {
     bell: require("../../assets/icons/bell.png"),
     box: require("../../assets/icons/box.png"),
     file: require("../../assets/icons/file-minus.png"),
-    message: require("../../assets/icons/message-square.png"),
     navigation: require("../../assets/icons/navigation.png"),
     phone_call: require("../../assets/icons/phone-call.png"),
-    shield: require("../../assets/icons/shield.png"),
-    shopping_bag: require("../../assets/icons/shopping-bag.png"),    
+    shield: require("../../assets/icons/shield.png"),  
     heart: require("../../assets/icons/heart.png"),
     arrow_left: require("../../assets/icons/arrow-left.png"),
     shopping_cart: require("../../assets/icons/shopping-cart.png"),
-    credit_card: require("../../assets/icons/credit-card.png"),
-    logout: require("../../assets/icons/log-out.png"),
-    phone: require("../../assets/icons/phone-call2.png"),
-    whatsapp: require("../../assets/icons/whatsapp.png"),
-
-
-    sunny: require("../../assets/icons/sunny.png"),
+    email: require("../../assets/icons/email.png"),
     facebook: require("../../assets/icons/facebook.png"),
     instagram: require("../../assets/icons/instagram.png"),
     web: require("../../assets/icons/web.png"),
@@ -164,8 +138,8 @@ export const rupifi_status = {
 
 
 export const appStoreLink = {
-    androidstore: "https://play.google.com/store/apps/details?id=com.karnika.krp",
-    iosstore: "itms-apps://itunes.apple.com/us/app/id1575728603"
+    androidstore: "https://play.google.com/store/apps/details?id=com.karnika",
+    iosstore: "", // "itms-apps://itunes.apple.com/us/app/id1575728603"
 }
 
 export const ageList = [

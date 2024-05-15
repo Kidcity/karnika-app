@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Keyboard, Animated, Platform, BackHandler } from 'react-native';
 import CustomHeader from '../../component/CustomHeader';
-import { images, setWidth } from '../../utils/variable';
+import { DEVICE_WIDTH, images, normalize, setWidth } from '../../utils/variable';
 import { styles } from './style';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import OrderBlock from '../../component/OrderBlock';
@@ -14,6 +14,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { Easing, log } from 'react-native-reanimated';
 import { setScreenActivity } from '../../helper/AppActivityTrackingHelper';
 import AppHeader from '../../component/AppHeader';
+import EmptyContent from '../../component/EmptyContent';
 
 class MyOrdersScreen extends Component {
     constructor(props) {
@@ -62,16 +63,16 @@ class MyOrdersScreen extends Component {
     }
 
     renderOrderItem = ({ item, index }) => {
-       
+
         return (
             <OrderBlock
                 is_ws_not={this.state.is_ws_not}
                 item={item}
-                onPress={() => {                    
+                onPress={() => {
                     this.props.navigation.navigate("OrderDetails", { order_id: item.id, is_ws_not: this.state.is_ws_not })
                 }}
                 onPressReturn={() => {
-                    this.props.navigation.navigate("ReturnOrder", { order_id: item.id ,  is_ws_not: this.state.is_ws_not})
+                    this.props.navigation.navigate("ReturnOrder", { order_id: item.id, is_ws_not: this.state.is_ws_not })
                 }}
             />
         )
@@ -103,12 +104,13 @@ class MyOrdersScreen extends Component {
     }
 
     _searchOrder() {
-        Keyboard.dismiss()
+        // Keyboard.dismiss()
         const orders = this.state.allOrders
         const searchText = this.state.searchText
         if (searchText != '' && orders.length > 0) {
             this.setState({ showLoader: true }, async () => {
                 const filteredData = await orders.filter(item => item.order_no.includes(searchText))
+                this.filterOrderList( null ,0)
                 this.setState({
                     filtered_data: filteredData,
                     showLoader: false
@@ -116,6 +118,7 @@ class MyOrdersScreen extends Component {
             })
         }
         else {
+            Keyboard.dismiss()
             this.setState({
                 filtered_data: orders
             })
@@ -128,7 +131,7 @@ class MyOrdersScreen extends Component {
             status: "",
             name: this.state.searchText
         }
-        // console.log(param);
+        console.log(param);
         this.setState({ showLoader: true })
         await OrderListService._getOrdersService(param).then(response => {
             this.setState({
@@ -142,7 +145,7 @@ class MyOrdersScreen extends Component {
             if (error.message == "server_error") {
                 retryAlert(() => this._fetchOrders())
             } else {
-                errorAlert("Error", error.message)
+                errorAlert("Oops!", error.message)
             }
         })
     }
@@ -156,6 +159,7 @@ class MyOrdersScreen extends Component {
         // console.log(param);
         this.setState({ showLoader: true })
         await OrderListService._getRequestService(param).then(response => {
+
             this.setState({
                 showLoader: false,
                 filtered_data: this.state.allOrders
@@ -163,19 +167,30 @@ class MyOrdersScreen extends Component {
                 this.visibleContent()
             })
         }, error => {
+            //  console.log(this.state.filtered_data);
             this.setState({ showLoader: false })
             if (error.message == "server_error") {
-                retryAlert(() => this._fetchOrders())
+                retryAlert(() => this._fetchRequest())
             } else {
-                errorAlert("Error", error.message)
+                errorAlert("Oops!", error.message)
             }
         })
     }
 
     componentDidMount() {
         if (this.state.is_ws_not == 0) {
+            this.setState({
+                order_status_type: [
+                    {
+                        id: 0,
+                        title: "All Requests",
+                        tag: null,
+                        isActive: true
+                    },
+                ]
+            })
             this._fetchRequest()
-        }else{
+        } else {
             this._fetchOrders()
         }
         // this._fetchOrders()
@@ -216,19 +231,29 @@ class MyOrdersScreen extends Component {
         return true;
     };
 
+    debounce = (func) => {
+        // console.log('debounce ');
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+            const context = this;
+            func.apply(context);
+        }, 200);
+
+    };
+
+    onChangeText = (e) => {
+        this.setState({
+            searchText: e,
+            loading: true
+        }, () => {
+            this.debounce(this._searchOrder)
+        })
+    }
+    
     render() {
 
         return (
             <View style={styles.container}>
-                {/* <CustomHeader
-                    heading="MY ORDERS"
-                    headingStyle={{
-                        textAlign: "center"
-                    }}
-                    showBackButton={true}
-                    onPressBack={this.backAction}
-                    showAnimation={true}
-                /> */}
                 <AppHeader
                     showBackBtn
                     showSearch
@@ -237,19 +262,52 @@ class MyOrdersScreen extends Component {
                     navigation={this.props.navigation}
                 />
                 <View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.ordertypeItemView}  >
-                        {
-                            this.state.order_status_type.map((item, index) => {
-                                return (
-                                    <TouchableOpacity style={[styles.orderTypeBtn, item.isActive && styles.activeOrderTypeBtn]} key={index} onPress={() => this.filterOrderList(item.tag, index)}>
-                                        <Text style={[styles.orderTypeBtnText, item.isActive && styles.activeOrderTypeBtnText]}>{item.title}</Text>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                    </ScrollView>
+                    {
+                        this.state.is_ws_not === 0 &&
+                        <View style={{width: '100%',justifyContent:'center'}}>
+                        <TouchableOpacity
+                            style={[
+                                styles.orderTypeBtn,
+                               styles.activeOrderTypeBtn,
+                               {
+                                width: '92%',
+                                alignSelf:'center',
+                                marginRight: 0
+                               }
+                            ]}
+                        >
+                            <Text style={[styles.orderTypeBtnText, styles.activeOrderTypeBtnText]}>Request Details</Text>
+                        </TouchableOpacity>
+                        </View>
+                    }
+
+                    {
+                        this.state.is_ws_not === 1 &&
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={[styles.ordertypeItemView]} contentContainerStyle={{
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }} >
+                            {
+                                this.state.is_ws_not === 1 &&
+                                this.state.order_status_type.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            style={[
+                                                styles.orderTypeBtn,
+                                                item.isActive && styles.activeOrderTypeBtn,
+                                            ]}
+                                            key={index}
+                                            onPress={() => this.filterOrderList(item.tag, index)}
+                                        >
+                                            <Text style={[styles.orderTypeBtnText, item.isActive && styles.activeOrderTypeBtnText]}>{item.title}</Text>
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </ScrollView>
+                    }
                 </View>
-                <Animated.View style={[styles.content, { opacity: this.state.containerOpacity }]}>
+                <View style={[styles.content]}>
 
                     <View style={styles.searchViewContainer}>
                         <TouchableOpacity style={{ paddingHorizontal: setWidth(3) }} onPress={() => this._searchOrder()}>
@@ -257,9 +315,9 @@ class MyOrdersScreen extends Component {
                         </TouchableOpacity>
                         <TextInput
                             style={styles.searchTextInut}
-                            placeholder="Search All Orders Here...."
+                            placeholder={`Search All ${this.state.is_ws_not === 1 ? "Orders" : "Request"} Here....`}
                             value={this.state.searchText}
-                            onChangeText={e => this.setState({ searchText: e })}
+                            onChangeText={this.onChangeText}
                             placeholderTextColor={colors.grey3}
                         />
                         <TouchableOpacity style={{ paddingHorizontal: setWidth(3) }} onPress={() => this.setState({ searchText: '', filtered_data: this.state.allOrders })}>
@@ -270,17 +328,22 @@ class MyOrdersScreen extends Component {
                         data={this.state.filtered_data}
                         keyExtractor={(item, index) => index}
                         renderItem={this.renderOrderItem}
-                        ListEmptyComponent={() => this.state.noData ?
-                            <Text style={[styles.text]}>No Data</Text>
-                            :
-                            null
-                        }
+                        // numColumns={2}
+                        ListEmptyComponent={() => <EmptyContent />}
+                        // columnWrapperStyle={{
+                        //     justifyContent:'space-between'
+                        // }}
+                        ItemSeparatorComponent={() => <View style={{ marginTop: normalize(15) }} />}
                         contentContainerStyle={{
-                            paddingBottom: Platform.OS === 'ios' ? setWidth(7) : setWidth(8)
+                            flexGrow: 1,
+                            paddingVertical: normalize(10),
+                            paddingHorizontal: normalize(12)
+
+                            // paddingBottom: Platform.OS === 'ios' ? setWidth(7) : setWidth(8)
                         }}
                     />
 
-                </Animated.View>
+                </View>
                 {
                     this.state.showLoader &&
                     <FullScreenLoader

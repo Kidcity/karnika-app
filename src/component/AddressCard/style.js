@@ -22,10 +22,11 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.fontRegular
     },
     textBold: {
-        fontFamily: fonts.fontBold
+        fontFamily: fonts.fontBold,
+        fontWeight:'bold'
     },
-    textRed:{
-        color: colors.red
+    textorange:{
+        color: colors.orange3
     },
     textGrey3:{
         color: colors.grey3

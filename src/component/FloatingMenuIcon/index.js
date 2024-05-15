@@ -22,13 +22,13 @@ export default class FloatingMenuIcon extends Component {
                     title: "Call Now",
                     icon: <Feather name='phone-call' size={setWidth(5)} color={colors.white} />,
                     bgcolor: colors.curiousBlue,
-                    onPress: () => Linking.openURL(`tel:033-2655-8101`)
+                    onPress: () => Linking.openURL(`tel:+919883279470`)
                 },
                 {
                     title: "Suggest Us",
                     icon: <Feather name='mail' size={setWidth(5)} color={colors.white} />,
                     bgcolor: colors.red,
-                    onPress: () => Linking.openURL('mailto:info@karnikaindustries.com').then(() => { }).catch(() => alert("Something went wrong!"))
+                    onPress: () => Linking.openURL('mailto:karnikaindustriesindia@gmail.com').then(() => { }).catch(() => alert("Something went wrong!"))
                 }
             ],
             isOpenFloatingIcon: false
@@ -36,8 +36,7 @@ export default class FloatingMenuIcon extends Component {
     }
 
     linkToWhatsapp() {
-        alert('coming soon')
-        // Linking.openURL('https://wa.me/918240773294?text=Hello karnika')
+        Linking.openURL('https://wa.me/+919883279470?text=Hello Karnika')
     }
 
     render() {

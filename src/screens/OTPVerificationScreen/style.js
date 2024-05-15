@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import colors from "../../utils/colors";
-import { fonts, setWidth } from "../../utils/variable";
+import { fonts, normalize, setWidth } from "../../utils/variable";
 
 export const styles = StyleSheet.create({
     container:{
@@ -23,8 +23,7 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.fontBold
     },
     lottiView:{
-        position: 'relative',
-        height: setWidth(40),
-        alignSelf: 'center',
+        height: setWidth(20),
+        marginBottom: normalize(15)
       }, 
 })

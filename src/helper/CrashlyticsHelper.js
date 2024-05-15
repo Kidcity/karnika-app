@@ -1,4 +1,4 @@
-// // import crashlytics from '@react-native-firebase/crashlytics';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 // export const _setCrashUserID = async (userid) => {
 //   await crashlytics().setUserId(userid)  // param string
@@ -16,6 +16,6 @@
 //   await crashlytics().recordError(_report) //param string
 // }
 
-// export const _crashApp = async() => {  
-//   crashlytics().crash()
-// }
+export const _crashApp = async() => {  
+  crashlytics().crash()
+}

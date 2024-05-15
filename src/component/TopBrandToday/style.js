@@ -4,8 +4,9 @@ import { DEVICE_WIDTH, fonts, normalize } from "../../utils/variable";
 
 export const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: colors.white,
-        paddingBottom: normalize(15)
+        paddingBottom: normalize(15),        
     },
     heading: {
         paddingTop: normalize(10)
@@ -46,10 +47,8 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.white
     },
     brandlogo: {
-        // width: '90%',
-        // height: '90%',
-        flex:1,
-        aspectRatio:1,
+        width: '90%',
+        height: '90%',        
         borderRadius: normalize(80),
     },
     lottieContainer: {

@@ -29,6 +29,7 @@ export default class ListViewItem extends Component {
   }
 
   render() {
+    
     return (
       <Animated.View style={[styles.container,
       {
@@ -57,21 +58,21 @@ export default class ListViewItem extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.right, { borderLeftColor: colors.grey5, borderLeftWidth: setWidth(0.3) }]} onPress={this.props.onPressProduct}>
 
-            <View style={[styles.block, { borderRightWidth: 0, borderTopWidth: 0, borderLeftWidth: 0, paddingVertical: 15 }]}>
+            <View style={[{ borderRightWidth: 0, borderTopWidth: 0, borderLeftWidth: 0, paddingVertical: 15 }]}>
               <View style={[styles.row,]}>
                 <View style={[{ flex: 2 }]}>
                   <Text style={[styles.text, styles.largeBoldFont]} adjustsFontSizeToFit numberOfLines={2}>{this.props.item.brand_name}</Text>
                 </View>
-                <View style={[{ flex: 1 }, styles.alignItemEnd]}>
+                {/* <View style={[{ flex: 1 }, styles.alignItemEnd]}>
                   <Text style={[styles.text, styles.largeBoldFont, commonStyle.bluredText]}>₹{this.props.item.price}</Text>
-                </View>
+                </View> */}
               </View>
-              <View style={[styles.row, styles.justifyBetween, { marginTop: setWidth(2) }]}>
+              {/* <View style={[styles.row, styles.justifyBetween, { marginTop: setWidth(2) }]}>
                 <Text style={[styles.text, { color: colors.green1 }, commonStyle.bluredText]}>{this.props.item.off}% OFF</Text>
                 <Text style={[styles.text, styles.strikThroughFont, commonStyle.bluredText]}>₹{this.props.item.prev_price}</Text>
-              </View>
+              </View> */}
             </View>
-
+            {/* 
             <View style={[styles.block, { borderRightWidth: 0, borderLeftWidth: 0, height: setWidth(11), }]}>
               <View style={styles.row}>
                 <Text style={[styles.text, styles.subHeading]}>Size:</Text>
@@ -112,7 +113,7 @@ export default class ListViewItem extends Component {
                 <EvilIcons name='location' size={setWidth(5)} color={colors.dark_charcoal} />
                 <Text style={[styles.text]}> {this.props.item.city_name}</Text>
               </View>
-            </View>
+            </View> */}
 
           </TouchableOpacity>
 

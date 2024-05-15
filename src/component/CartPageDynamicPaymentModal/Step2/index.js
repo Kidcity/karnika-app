@@ -48,10 +48,11 @@ export default class Step2 extends Component {
     return (
       <Animated.View style={[styles.container,{transform: [{translateX: this.axisX}]}]}>
         <View style={styles.heading}>
-          <Text style={styles.headingText}>SELECT THE ADDRESS YOU WANT YOUR <Text style={{ color: colors.red }}>{this.state.city_name}</Text> ORDER TO BE DELIVERED</Text>
+          <Text style={styles.headingText}>SELECT THE ADDRESS YOU WANT YOUR ORDER TO BE DELIVERED</Text>
         </View>
         <ScrollView style={styles.content}>
           <CartAddressView
+            total_ordered_qty={this.props.total_ordered_qty}
             address={this.state.default_shipping_address}
             total_price_details={this.state.total_price_details}
             onPressChangeAddress={this.state.onPressChangeAddress}

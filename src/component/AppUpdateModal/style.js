@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     btn:{
         padding: setWidth(3),
         width: setWidth(50),
-        backgroundColor: colors.primaryyellow,
+        backgroundColor: colors.themeColor,
         borderRadius: setWidth(3),
         marginTop: setWidth(5)
     },

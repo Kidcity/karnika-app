@@ -7,7 +7,7 @@ class CommonService extends Base{
         return new Promise((resolve, reject) => {
             this.post(GET_SUGGESTION_SLUG, param).then(response => { 
                 const data = response?.data?.data?.data
-                console.log(JSON.stringify(response?.data?.data));                                
+                // console.log(JSON.stringify(response?.data?.data));                                
                 resolve({
                     data: (data !== "") ? data : null
                 })
@@ -18,12 +18,12 @@ class CommonService extends Base{
     }
 
     _getSharePdfService(param){
-        console.log(param);
+        // console.log(param);
         return new Promise((resolve, reject) => {
             this.post(SHARE_PDF, param).then(response => {               
                 
                 const data = response?.data?.data
-                console.log(JSON.stringify(response?.data?.data));
+                console.log(JSON.stringify(response?.data));
                 if(data?.success){
                     resolve({
                         link: data?.data

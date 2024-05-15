@@ -10,7 +10,7 @@ class FilterService extends Base {
             this.post(FILTER_SLUG, param).then(response => {
 
                 if (response?.data?.data) {
-                    // console.log(response?.data?.data);
+                    console.log(response?.data?.data);
 
                     // SUB CATEGORIES
                     const categories = response?.data?.data?.categories
@@ -19,14 +19,14 @@ class FilterService extends Base {
 
                     let categories_list = []
                     if (categories && categories.length > 0) {
-                        for (let index = 0; index < categories.length; index++) {
+                        for (let index = 0; index < categories?.length; index++) {
                             const element = categories[index];
 
                             categories_list.push({
-                                id: element.id,
-                                subtitle: element.name,
-                                image: element.image,
-                                isActive: (preselected_categories != '') && (preselected_categories.includes(element.id.toString())) ? true : false
+                                id: element?.id,
+                                subtitle: element?.name,
+                                image: element?.image,
+                                isActive: (preselected_categories != '') && (preselected_categories.includes(element?.id.toString())) ? true : false
                             })
                         }
                     }
@@ -40,10 +40,10 @@ class FilterService extends Base {
                         for (let index = 0; index < brands.length; index++) {
                             const element = brands[index];                            
                             brands_list.push({
-                                id: element.id,
-                                subtitle: element.name,
-                                image: element.image,
-                                isActive: (preselected_brand.includes(element.id.toString())) ? true : false,
+                                id: element?.id,
+                                subtitle: element?.name,
+                                image: element?.image,
+                                isActive: (preselected_brand.includes(element?.id.toString())) ? true : false,
                             })
                         }
                     }
@@ -57,10 +57,10 @@ class FilterService extends Base {
                         for (let index = 0; index < age.length; index++) {
                             const element = age[index];                            
                             age_list.push({
-                                id: element.id,
-                                subtitle: element.subtitle,
-                                image: element.logo,
-                                isActive: (preselected_age.includes(element.id.toString())) ? true : false,
+                                id: element?.id,
+                                subtitle: element?.subtitle,
+                                image: element?.logo,
+                                isActive: (preselected_age.includes(element?.id.toString())) ? true : false,
                             })
                         }
                     }
@@ -74,10 +74,10 @@ class FilterService extends Base {
                         for (let index = 0; index < price.length; index++) {
                             const element = price[index];                            
                             price_list.push({
-                                id: element.id,
-                                subtitle: element.subtitle,
-                                image: element.logo,
-                                isActive: (preselected_price.includes(element.id.toString())) ? true : false,
+                                id: element?.id,
+                                subtitle: element?.subtitle,
+                                image: element?.logo,
+                                isActive: (preselected_price.includes(element?.id.toString())) ? true : false,
                             })
                         }
                     }
@@ -91,10 +91,10 @@ class FilterService extends Base {
                         for (let index = 0; index < season.length; index++) {
                             const element = season[index];                            
                             season_list.push({
-                                id: element.id,
-                                subtitle: element.subtitle,
-                                image: element.logo,
-                                isActive: (preselected_season.includes(element.id.toString())) ? true : false,
+                                id: element?.id,
+                                subtitle: element?.subtitle,
+                                image: element?.logo,
+                                isActive: (preselected_season.includes(element?.id.toString())) ? true : false,
                             })
                         }
                     }

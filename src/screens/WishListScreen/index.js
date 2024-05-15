@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, Alert, BackHandler } from 'react-native';
 import CustomHeader from '../../component/CustomHeader';
-import { images, setWidth } from '../../utils/variable';
+import { images, normalize, setWidth } from '../../utils/variable';
 import { styles } from './style';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import colors from '../../utils/colors';
@@ -19,6 +19,7 @@ import { setScreenActivity } from '../../helper/AppActivityTrackingHelper';
 import AppHeader from '../../component/AppHeader';
 import NearByWholeSalerModal from '../../component/NearByWholeSalerModal';
 import { commonStyle } from '../../helper/commonStyle';
+import EmptyContent from '../../component/EmptyContent';
 
 class WishListScreen extends Component {
     constructor(props) {
@@ -63,58 +64,53 @@ class WishListScreen extends Component {
     }
 
     renderItem = ({ item, index }) => {
+        // console.log(item);
         return (
-            <TouchableOpacity style={styles.productCard} onPress={() => {
-                this.props.navigation.navigate("ProductDetails", { product_id: item.id })
-            }}>
-                <View style={styles.leftBlock}>
-                    <FastImageComponent
-                        source={{
-                            uri: item.image,
-                            priority: FastImage.priority.high,
-                        }}
-                        style={[styles.productImage]}
-                        resizeMode={FastImage.resizeMode.contain}
-                    />
-                </View>
-                <View style={styles.rightBlock}>
-                    <View style={[styles.detailsBlock]}>
-                        <View style={[styles.row, styles.justifyBetween]}>
+            <>
+                <TouchableOpacity style={styles.productCard} onPress={() => {
+                    this.props.navigation.navigate("ProductDetails", { product_id: item.id })
+                }}>
+                    <View style={styles.leftBlock}>
+                        <FastImageComponent
+                            source={{
+                                uri: item.image,
+                                priority: FastImage.priority.high,
+                            }}
+                            style={[styles.productImage]}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    </View>
+                    <View style={styles.rightBlock}>
+                        <View style={[styles.row, styles.justifyBetween, styles.detailsBlock]}>
                             <Text style={[styles.text,]}>{item.brand_name}</Text>
-                            <Text style={[styles.text, { color: colors.red },  commonStyle.bluredText]}> ₹ {item.price}</Text>
                         </View>
-                        <View style={[styles.row, styles.justifyBetween, { marginTop: setWidth(2) }]}>
+                        <View style={styles.bottomborder} />
+                        <View style={[styles.row, styles.detailsBlock, styles.justifyBetween]}>
                             <Text style={[styles.text]}>{item.category}</Text>
-                            <Text style={[styles.text, { color: colors.green }, commonStyle.bluredText]}>{item.offer}% OFF</Text>
                         </View>
-                    </View>
-                    <View style={styles.bottomborder} />
-                    <View style={[styles.row, styles.justifyBetween, styles.detailsBlock, { alignItems: 'center' }]}>
-                        <View>
+                        <View style={styles.bottomborder} />
+                        <View style={[styles.row, styles.detailsBlock, styles.justifyBetween]}>
+                            <Text style={[styles.text]} numberOfLines={2}>Master Style No.: {item.master_style_no}</Text>
+                        </View>
+                        <View style={styles.bottomborder} />
+                        <View style={[styles.row, styles.justifyBetween, styles.detailsBlock, { alignItems: 'center' }]}>
                             <Text style={[styles.text]}>Colors: {item.color}</Text>
-                            <Text style={[styles.text]}>(Each {item.each_set_color} Set)</Text>
+                            <Text style={[styles.text]}>Size: {item.size}</Text>
                         </View>
-                        <Text style={[styles.text]}>Size: {item.size}</Text>
+                        <View style={styles.bottomborder} />
+
                     </View>
-                    <View style={styles.bottomborder} />
-                    <View style={[styles.row, styles.justifyBetween, styles.detailsBlock, { alignItems: 'center' }]}>
-                        <Text style={[styles.text]}>Margin:
-                            <Text style={[commonStyle.bluredText]} >
-                                {item.margin}{(item.margin != "N/A") && "%"}
-                            </Text>
-                        </Text>
-                        <Text style={[styles.text]}>MRP: 
-                            <Text style={[commonStyle.bluredText]} >
-                                {(item.margin == "N/A") ? "N/A" : item.mrp}
-                            </Text>
-                        </Text>
+                </TouchableOpacity>
+
+                <View style={[styles.row, { alignItems: 'center' }]}>
+                        <TouchableOpacity style={styles.removeButton} onPress={() => this._confirmationTodelete(item.id)}>
+                            <Text style={styles.removeButtonText} >REMOVE</Text>                            
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.removeButton, { backgroundColor: colors.green1, }]} onPress={() => this.props.navigation.navigate("ProductDetails", { product_id: item.id })}>
+                            <Text style={styles.removeButtonText} >ADD TO CART</Text>                            
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.removeButton} onPress={() => this._confirmationTodelete(item.id)}>
-                        <Text style={styles.removeButtonText} >REMOVE FROM WISHLIST</Text>
-                        <AntDesign name='delete' size={setWidth(4)} color={colors.white} />
-                    </TouchableOpacity>
-                </View>
-            </TouchableOpacity>
+            </>
         )
     }
 
@@ -214,26 +210,16 @@ class WishListScreen extends Component {
         })
     }
 
+    goBackToProductList = async () => {
+        await this.props.clearProductListData()
+        await this.props.clearProductFilterAction()
+
+        this.props.navigation.navigate("ProductListing")
+    }
+
     render() {
         return (
-            <View style={styles.container}>
-                {/* <CustomHeader
-                    heading="WISHLIST"
-                    headingStyle={{
-                        textAlign: "center"
-                    }}
-                    showBackButton={true}
-                    onPressBack={() => {
-                        this.handleBackButtonClick()
-                    }}
-                    onSearch={(searchText) => {
-                        this._navigateToProductList(searchText)
-                    }}
-                    navigation={this.props.navigation}
-                    showNotificationIcon={true}
-                    showSearchIcon={true}
-                //onPressBellIcon={() => this.props.navigation.navigate("Notification")}
-                /> */}
+            <View style={styles.container}>              
                 <AppHeader
                     showBackBtn
                     showBtn={this.props.is_ws_not === 0 ? false : false}
@@ -248,7 +234,30 @@ class WishListScreen extends Component {
                         keyExtractor={(item, index) => index}
                         renderItem={this.renderItem}
                         contentContainerStyle={{
-                            paddingBottom: setWidth(10)
+                            flexGrow: 1,
+                            paddingBottom: setWidth(10),
+                        }}
+                        ListEmptyComponent={() => {
+                            return(
+                                <> 
+                                    <EmptyContent /> 
+                                    <TouchableOpacity style={{
+                                        backgroundColor: colors.themeColor,
+                                        width: setWidth(50),
+                                        alignSelf: 'center',
+                                        marginTop: normalize(10),
+                                        paddingVertical: normalize(10),
+                                        borderRadius: normalize(8)
+                                    }} onPress={this.goBackToProductList}>
+                                        <Text style={[styles.text,{
+                                            textAlign:'center',
+                                            color: colors.white
+                                        }]}>
+                                            Go Back To Product List
+                                        </Text>
+                                    </TouchableOpacity>
+                                </> 
+                            )
                         }}
                     />
                 </View>

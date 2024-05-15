@@ -322,10 +322,10 @@ class AllBrandsScreen extends Component {
                     navigation={this.props.navigation}
                 />
                 <View style={styles.content}>
-                    <CityDropdown
+                    {/* <CityDropdown
                         cities={this.state.cities}
                         onPressCity={(index) => this.onPressCity(index)}
-                    />
+                    /> */}
                     {/* <View style={styles.cityNameView}>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cityItemView}  >
                             {
@@ -340,7 +340,7 @@ class AllBrandsScreen extends Component {
                         </ScrollView>
                     </View> */}
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.textdark, { marginVertical: setHeight(2), paddingLeft: setWidth(3) }]}>All Brands in {this.state.city_name} </Text>
+                        <Text style={[styles.textdark, { marginVertical: setHeight(2), paddingLeft: setWidth(3) }]}>All Brands </Text>
                         <FlatList
                             ref={this.flatListRef}
                             data={this.state.filtered_brand}

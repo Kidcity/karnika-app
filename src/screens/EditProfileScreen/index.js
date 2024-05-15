@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Alert, Platform, Animated, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Platform, Animated, Dimensions, Keyboard } from 'react-native';
 import CustomHeader from '../../component/CustomHeader';
 import { styles } from './style';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -108,7 +108,7 @@ class EditProfileScreen extends Component {
                 return
             }
             
-            console.log(data);
+            // console.log(data);
             this.setState({
                 mobile: data?.retailer_info[0]?.mobile_no,
                 email: data?.retailer_info[0]?.email,
@@ -148,18 +148,13 @@ class EditProfileScreen extends Component {
             bill_address: this.state.address,
             store_photo: (Object.keys(imageObj).length > 0) ? 'data:image/jpg;base64,' + imageObj.assets[0].base64 : ''
         }
-        console.log({
-            retailer_id: this.props.loginReducer.data.cust_manu_id,
-            email_id: this.state.email,
-            shop_name: this.state.shop_name,
-            owner_name: this.state.owner_name,
-            bill_address: this.state.address,
-        });
+        // console.log(param);
         this.setState({ showLoader: true })
         EditProfileService._updateProfileInfo(param).then(response => {
             successToast("SUCCESS!", "Data Updated Successfully.")
             this.setState({ showLoader: false })
             this._getProfileInfo()
+            Keyboard.dismiss()
         }, error => {
             this.setState({ showLoader: false })
             if (error.message == "server_error") {
@@ -246,7 +241,7 @@ class EditProfileScreen extends Component {
                     />
 
                     {
-                        this.state.email !== "" &&
+                        // this.state.email !== "" &&
                         <Text style={[styles.label, commonStyle.gapTop10]}>Email</Text>
                     }
                     <CustomTextInput
@@ -260,11 +255,11 @@ class EditProfileScreen extends Component {
                     />
 
                     {
-                        this.state.shop_name !== "" &&
+                        // this.state.shop_name !== "" &&
                         <Text style={[styles.label, commonStyle.gapTop10]}>Shop Name</Text>
                     }
                     <CustomTextInput
-                        placeholder="Shop Name*"
+                        placeholder="Enter Shop Name*"
                         inputStyle={styles.inputStyle}
                         value={this.state.shop_name}
                         container={{
@@ -306,11 +301,11 @@ class EditProfileScreen extends Component {
                     />
 
                     {
-                        this.state.owner_name !== "" &&
+                        // this.state.owner_name !== "" &&
                         <Text style={[styles.label, commonStyle.gapTop10]}>Owner</Text>
                     }
                     <CustomTextInput
-                        placeholder="Owner*"
+                        placeholder="Enter Owner Name*"
                         inputStyle={styles.inputStyle}
                         value={this.state.owner_name}
                         container={{

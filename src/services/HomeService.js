@@ -20,9 +20,10 @@ class HomeService extends Base {
 
     _getAppLogo() {
         return new Promise((resolve, reject) => {
+            // console.log(GET_APP_LOGO);
             this.post(GET_APP_LOGO).then(response => {
                 
-                console.log("==>", response?.data?.data   );
+                // console.log("==>", response?.data?.data);
                 store.dispatch(setAppLogo(response?.data?.data?.logo))
             }, error => {
                 // console.log(error);
@@ -71,6 +72,7 @@ class HomeService extends Base {
                 if (response?.data?.data) {
                     const allbrands = response.data.data
                     
+                    // console.log('allbrands ', JSON.stringify(allbrands));
                     let location_brands = []
 
                     for (let index = 0; index < allbrands.length; index++) {
@@ -78,11 +80,7 @@ class HomeService extends Base {
                         let brands = []
 
                         if (element.brands.length > 0) {
-                            brands = [...element.brands, {
-                                brand_name: "view_more",
-                                city_id: element.city_id,
-                                city_name: element.city_name
-                            }]
+                            brands = [...element.brands]
                         }
 
                         location_brands.push({
@@ -91,7 +89,7 @@ class HomeService extends Base {
                             brands: brands
                         })
                     }
-
+                    // console.log('location_brands  ',location_brands);
                     // store.dispatch(availableBrandsAction(location_brands))
                     resolve({
                         brands: location_brands
@@ -312,7 +310,7 @@ class HomeService extends Base {
     }
 
     _getBannerService(param) {
-        console.log('_getBannerService ==> ', param);
+        // console.log('_getBannerService ==> ', param);
 
         return new Promise((resolve, reject) => {
             this.post(GET_BANNERS, param).then(response => {
@@ -325,10 +323,10 @@ class HomeService extends Base {
                     if (data.banners.length > 0 || data.promos.length > 0) {
                         const banners = data.banners
                         const promos = data.promos
-                       
+                        
                         header_banner = banners.filter((item) => item.banner_section == "HEADER")[0] || {}
 
-                        if (promos.banner_details.length > 0) {
+                        if ( promos.length> 0 && promos?.banner_details.length > 0) {
                             promo_final_obj = {
                                 banner_section: promos.banner_section ?? "",
                                 banner_section_id: promos.banner_section_id ?? "",
@@ -355,7 +353,7 @@ class HomeService extends Base {
                     reject({ message: "Something went wrong" })
                 }
             }, error => {
-                console.log('banner error ----------- ', error);
+                // console.log('banner error ----------- ', error);
                 reject(error)
             })
         })
@@ -364,7 +362,7 @@ class HomeService extends Base {
     _getTopTrendsService(param) {        
         return new Promise((resolve, reject) => {
             this.post(TOP_TRENDS, param).then(response => {
-
+                
                 const data = response?.data?.data?.data                
                 if(data){
                     resolve(data)

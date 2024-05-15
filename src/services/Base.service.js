@@ -121,7 +121,8 @@ class Base {
   }
 
   post(slug, body = {}) {
-    // console.log(slug);
+    const controller = new AbortController();
+
     return new Promise(async (resolve, reject) => {
 
       if (slug) {
@@ -134,29 +135,37 @@ class Base {
         else {
 
           const cancelTokenSource = axios.CancelToken.source();
+
           const timeout = setTimeout(() => {
-            cancelTokenSource.cancel();
+            // cancelTokenSource.cancel();
+            controller.abort()
           }, config.apiTimeout);
+
+          console.log(timeout);
+
           try {
             let resp = await this.http({
               url: slug,
               method: "POST",
               headers,
-              data: body
+              data: body,
+              signal: controller.signal,
             })
-            //  console.log("resp =====> ",JSON.stringify(resp));
+            //  console.log("resp =====> ",slug, JSON.stringify(resp));
+
             clearTimeout(timeout)
+
             if (resp.status === 200) {
               resolve(this.response(true, "Success", resp))
             }
-            else{
+            else {
               reject(this.response(false, "API Error"))
             }
 
           } catch (err) {
             let errMessage = '';
             clearTimeout(timeout)
-            // console.log('api error ==========> ', JSON.stringify(err.response.data));
+            // console.log('api error ==========> ', JSON.stringify(err));
             // _setCrashAttributes({
             //   api: slug,
             //   method: "POST",
@@ -165,26 +174,28 @@ class Base {
             // })
             // _recordCrashReport(err)
 
-            if (err.response) {
-              if (err.response.data) {
-                if (err.response.data.message) {
-                  errMessage = err.response.data.message
-                }else{
-                  errMessage = JSON.stringify(err.response.data)
+            if (err?.response) {
+              if (err?.response?.data) {
+                if (err?.response.data?.message) {
+                  errMessage = err?.response?.data?.message
+                } else {
+                  errMessage = JSON.stringify(err?.response?.data)
                 }
-              }else{
-                if(err.message){
-                  errMessage = err.message
+              } else {
+                if (err?.message) {
+                  errMessage = err?.message === "canceled" ? "server_error" : err?.message 
+                } else {
+                  errMessage = "server_message"
                 }
-                errMessage = "server_message"
               }
 
-              if (err.response.data.status === 401) {
-                errMessage = err.response.data ? err.response.data.message : 'server_error'
+              if (err?.response?.data?.status === 401) {
+                errMessage = err?.response?.data ? err?.response?.data?.message : 'server_error'
               }
               reject(this.response(false, errMessage, err))
+
             } else {
-              errMessage = err.message ? err.message : 'server_error'
+              errMessage = err?.message  === "canceled" ? "server_error" : err?.message &&'server_error'
               reject(this.response(false, errMessage, err))
             }
           }

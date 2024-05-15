@@ -12,9 +12,13 @@ class ProductListingService extends Base {
                 const data = response?.data?.data
 
                 let products = []
-                
+
+                const is_gst_verified = store.getState().loginReducer.data.is_gst_verified
 
                 if (data?.products_list) {
+
+                    console.log('actual length ===> ', data.products_list.length);
+
                     for (let index = 0; index < data.products_list.length; index++) {
 
                         const element = data.products_list[index];
@@ -37,32 +41,58 @@ class ProductListingService extends Base {
 
                         let each_set_color = (element.each_set_color != '') ? '(Each ' + element.each_set_color + ' set)' : ''
 
-                        products.push({
-                            id: element.products_id,
-                            brand_name: element.brand_name,
-                            image: element.image,
-                            price: element.sale_price,
-                            off: element.extra,
-                            prev_price: element.min_wsp_price,
-                            size: size_name,
-                            otherSizes: otherSizes,
-                            color: element.no_of_color,
-                            each_set_color: each_set_color,
-                            quantity: element.min_set_qty,
-                            mrp: element.min_mrp,
-                            city_id: element.city_id,
-                            city_name: element.city_name,
-                            margin: element.margin,
-                            item_left: element.stock_msg,
-                            isFavourite: (element.isLiked == '1') ? true : false,
-                            brand_mov: (element.brand_mov !== 0 && element.brand_mov !== undefined) ? element.brand_mov : 0
-                        })
+                        if (is_gst_verified === 0) {
+                            if (index <= 9) {
+                                products.push({
+                                    id: element.products_id,
+                                    brand_name: element.brand_name,
+                                    image: element.image,
+                                    price: element.sale_price,
+                                    off: element.extra,
+                                    prev_price: element.min_wsp_price,
+                                    size: size_name,
+                                    otherSizes: otherSizes,
+                                    color: element.no_of_color,
+                                    each_set_color: each_set_color,
+                                    quantity: element.min_set_qty,
+                                    mrp: element.min_mrp,
+                                    city_id: element.city_id,
+                                    city_name: element.city_name,
+                                    margin: element.margin,
+                                    item_left: element.stock_msg,
+                                    isFavourite: (element.isLiked == '1') ? true : false,
+                                    brand_mov: (element.brand_mov !== 0 && element.brand_mov !== undefined) ? element.brand_mov : 0
+                                })
+                            }
+                        }else{
+                            products.push({
+                                id: element.products_id,
+                                brand_name: element.brand_name,
+                                image: element.image,
+                                price: element.sale_price,
+                                off: element.extra,
+                                prev_price: element.min_wsp_price,
+                                size: size_name,
+                                otherSizes: otherSizes,
+                                color: element.no_of_color,
+                                each_set_color: each_set_color,
+                                quantity: element.min_set_qty,
+                                mrp: element.min_mrp,
+                                city_id: element.city_id,
+                                city_name: element.city_name,
+                                margin: element.margin,
+                                item_left: element.stock_msg,
+                                isFavourite: (element.isLiked == '1') ? true : false,
+                                brand_mov: (element.brand_mov !== 0 && element.brand_mov !== undefined) ? element.brand_mov : 0
+                            })
+                        }
+
+
                     }
-                }                
-                // if (products.length !== 0) {
-                //     store.dispatch(setProductListAction(products))
-                // }
-                // console.log('products.length  ',products.length);
+                }
+
+                
+
                 resolve({
                     products: (products.length > 0) ? products : []
                 })

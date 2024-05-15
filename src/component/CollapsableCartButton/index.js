@@ -4,7 +4,7 @@ import colors from '../../utils/colors';
 import { styles } from './style';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { images, setHeight, setWidth } from '../../utils/variable';
+import { fonts, images, setHeight, setWidth } from '../../utils/variable';
 import IncrementDecrementButton from '../IncrementDecrementButton'
 import FastImage from 'react-native-fast-image';
 import { Strings } from '../../utils/strings';
@@ -45,10 +45,14 @@ export default class CollapsableProductCartButton extends Component {
             <Text style={styles.subHeading}>{Strings.cartScreenStrings.colorText}</Text>
             <Text style={[styles.text, styles.textBold, styles.darkText]}>{item.no_of_color}</Text>
           </View>
-          <View style={[styles.row]}>
+          <View style={[styles.row, { alignItems: 'center' }]}>
+            <Text style={styles.subHeading}>Design No.</Text>
+            <Text style={[styles.text, styles.textBold, styles.darkText]}>{item.subsku}</Text>
+          </View>
+          {/* <View style={[styles.row]}>
             <Text style={styles.subHeading}>{Strings.cartScreenStrings.priceText}</Text>
             <Text style={[styles.text, styles.textBold, styles.darkText, commonStyle.bluredText]}> ₹ {item.per_piece_price} / {Strings.cartScreenStrings.pieceText}</Text>
-          </View>
+          </View> */}
         </TouchableOpacity>
         <View style={styles.buttonView}>
           <Text style={[styles.text, styles.darkText, styles.textBold, { textAlign: 'center', marginTop: setWidth(2), fontSize: setWidth(3) }]}>{Strings.cartScreenStrings.quantitysetText}</Text>
@@ -65,10 +69,28 @@ export default class CollapsableProductCartButton extends Component {
             onDecrease={() => this.props.onDecrease(item.qty_ordered - 1, index)}
             onIncrease={() => this.props.onIncrease(item.qty_ordered + 1, index)}
           />
-          <Text style={[styles.text, styles.textBold, styles.darkText, commonStyle.bluredText, { marginTop: setWidth(2), textAlign: 'center', }]}>₹ {parseFloat(item.order_price).toFixed(2)}</Text>
+          <View style={[styles.row, { justifyContent: 'center', marginTop: 3 }]}>
+            <Text style={styles.subHeading}>Total:  </Text>
+            <Text style={[styles.text, styles.textBold, styles.darkText,]}>
+              {
+                (item.set_qty * item.qty_ordered)
+              }
+              {
+                ((item.set_qty * item.qty_ordered) === 1) ? " Pc" : " Pcs"
+              }
+            </Text>
+          </View>
+          {/* <Text style={[styles.text, styles.textBold, styles.darkText, commonStyle.bluredText, { marginTop: setWidth(2), textAlign: 'center', }]}>₹ {parseFloat(item.order_price).toFixed(2)}</Text> */}
         </View>
       </View>
     )
+  }
+
+  getTotalPiecesOrdered = () => {
+   const pc = this.props.item.items.reduce((pv,curr) => (pv +(curr.set_qty * curr.qty_ordered) ) , 0 )
+
+   return pc === 1 ? pc+' Pc' : pc+" Pcs"
+
   }
 
   render() {
@@ -78,21 +100,21 @@ export default class CollapsableProductCartButton extends Component {
         {
           this.state.isCollapsed &&
           <View style={styles.cityNameView}>
-            {
+            {/*
               (this.props.item?.shop_in_shop === "1") &&
               <View style={[{ flex: 0.3 }]}>
 
               </View>
-            }
+        */ }
             <Text style={[styles.cityName, { flex: 1 }]}>
               {
                 (this.props.item?.shop_in_shop === "1") ? this.props.item?.brand_name : this.props.item?.facility_name
               }
             </Text>
-            {
+            {/*
               (this.props.item?.shop_in_shop === "1") &&
               <Text style={[styles.cartText, { flex: 0.3, }]} adjustsFontSizeToFit>{this.props.item?.facility_name}</Text>
-            }
+            */ }
           </View>
         }
 
@@ -102,20 +124,20 @@ export default class CollapsableProductCartButton extends Component {
               this.state.isCollapsed ?
                 (this.props.item.total_items == 1) ? this.props.item.total_items + " Item" : this.props.item.total_items + ' Items'
                 :
-                "Items For " + (this.props.item?.shop_in_shop === "1" ? this.props.item?.brand_name : this.props.item?.city_name)
+                "Items For " + (this.props.item?.shop_in_shop === "1" ? this.props.item?.brand_name : this.props.item?.facility_name)
             }
           </Text>
 
           {
             this.state.isCollapsed &&
             <View style={[styles.row, { alignItems: 'center' }]}>
-              <Text style={styles.text}>{Strings.cartScreenStrings.totalValueText}</Text>
-              <Text style={[styles.text, styles.textBold, { color: colors.dark_charcoal }, commonStyle.bluredText]}> ₹ {this.props.item.gross_total_price}</Text>
+              <Text style={styles.text}>Total Pieces: </Text>
+              <Text style={[styles.text, styles.textBold, { color: colors.dark_charcoal }]}> {this.getTotalPiecesOrdered()}</Text>
             </View>
-          }
+           }
 
           <View style={[styles.row, { alignItems: 'center' }]}>
-            <TouchableOpacity style={styles.btn} onPress={() => this.setState({ isCollapsed: !this.state.isCollapsed })}>
+            <TouchableOpacity style={styles.btn} onPress={() => this.setState({ isCollapsed: !this.state.isCollapsed })}  >
               <Text style={styles.btnText}>{this.state.isCollapsed ? "View" : "Hide"} Cart</Text>
             </TouchableOpacity>
           </View>
@@ -131,6 +153,17 @@ export default class CollapsableProductCartButton extends Component {
               renderItem={this.renderProductItem}
             />
             {
+              this.props.item?.items.length > 0 &&
+              <View style={styles.priceDetailsview}>
+                <View style={[styles.row, { justifyContent: 'space-between', }]}>
+                  <Text style={[styles.darkText, styles.text, {fontWeight: 'bold'} ]}>
+                    Total Pieces Ordered :
+                  </Text>
+                  <Text style={[styles.darkText, styles.text, {fontWeight: 'bold'}]}> {this.getTotalPiecesOrdered()} </Text>
+                </View>
+              </View>
+            }
+            {/*
               this.props.is_ws_not === 1 &&
               <View style={styles.priceDetailsview}>
                 <View style={[styles.row, { justifyContent: 'space-between', }]}>
@@ -177,14 +210,14 @@ export default class CollapsableProductCartButton extends Component {
                   </View>
                 }
               </View>
-            }
-            {
+            */}
+            {/*
               this.props.is_ws_not === 1 &&
               <View style={[styles.row, styles.borderBottom, { justifyContent: 'space-between', paddingHorizontal: setWidth(5), paddingVertical: setWidth(2) }]}>
                 <Text style={[styles.darkText, styles.text, styles.textBold, { color: colors.dark_charcoal }]}>{Strings.cartScreenStrings.grosstotalText}</Text>
                 <Text style={[styles.darkText, styles.text, styles.textBold, { color: colors.dark_charcoal }, commonStyle.bluredText,]}>₹ {parseFloat(this.props.item.shipping_details.gross_total_price).toFixed(2)}</Text>
               </View>
-            }
+          */}
           </View>
         }
       </View>

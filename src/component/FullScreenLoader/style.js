@@ -9,15 +9,15 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         width: width,
         height: height,
-        backgroundColor: 'rgba(0,0,0,0.9)',
+        backgroundColor: colors.white,
         zIndex: 9999,
-        // justifyContent:'center',
+        justifyContent:'center',
+        alignItems:'center'
     },  
-    lottiView: {
-        // position: 'relative',
-        height: setHeight(100),
-        width: setWidth(50),
-        alignSelf: 'center',
-        // backgroundColor: 'red',
-    },
+   loader:{
+    width: setWidth(90),
+    height: setHeight(40),
+    marginTop: -80
+    // backgroundColor: 'red',
+   }
 })

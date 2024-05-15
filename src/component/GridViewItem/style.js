@@ -120,7 +120,7 @@ export const styles = StyleSheet.create({
     },
     largeBoldFont: {
         fontSize: setWidth(4),
-        fontFamily: fonts.fontBold,
+        fontFamily: fonts.bold,
         color: colors.dark_charcoal
     },
     strikThroughFont: {

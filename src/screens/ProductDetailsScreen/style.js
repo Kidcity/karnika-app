@@ -52,7 +52,8 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.fontRegular
     },
     textBold: {
-        fontFamily: fonts.fontBold
+        fontFamily: fonts.fontBold,
+        fontWeight:'bold'
     },
     textStrikeThrough: {
         textDecorationLine: 'line-through'
@@ -90,8 +91,8 @@ export const styles = StyleSheet.create({
     },
     sizeBtn: {
         backgroundColor: colors.white,
-        paddingVertical: setWidth(2.5),
-        width: setWidth(30),
+        paddingVertical: setWidth(1),
+        width: setWidth(25),
         // paddingHorizontal: setWidth(10),
         borderRadius: setWidth(15),
         borderColor: colors.grey2,

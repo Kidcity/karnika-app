@@ -33,6 +33,7 @@ module.exports = {
     pink1: "#FF00B8",
     orange:"#F2994A",
     orange2:"#FF955E",
+    orange3: "#ED5E04",
     green: '#219653',
 
 

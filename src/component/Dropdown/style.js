@@ -4,8 +4,10 @@ import { fonts, setWidth } from "../../utils/variable";
 
 export const styles = StyleSheet.create({
     dropdownContainer:{
-        borderColor: colors.red,
-        borderWidth: setWidth(0.5),
+        // borderColor: colors.grey2,
+        // borderWidth: setWidth(0.2),
+        borderBottomColor: colors.grey2,
+        borderBottomWidth: setWidth(0.2),
         //paddingHorizontal: setWidth(2),
         padding: 0
     },

@@ -17,6 +17,7 @@ import { store } from '../../redux/store'
 import { demoLoginAction } from '../../redux/actions/loginAction';
 import AppHeader from '../../component/AppHeader';
 import ResetPasswordService from '../../services/ResetPasswordService';
+import LottieView from 'lottie-react-native';
 
 export default class OTPVerificationScreen extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export default class OTPVerificationScreen extends Component {
       user_mobile: this.props.route.params.phone,
       otp: (this.state.otp.length > 0) ? this.state.otp.join('') : ''
     }
-    console.log(param);
+    // console.log(param);
     this.setState({ showLoader: true })
     await OTPVerificationService._OTPvalidate(param, purpose).then(response => {
 
@@ -87,7 +88,7 @@ export default class OTPVerificationScreen extends Component {
 
         <KeyboardAwareScrollView contentContainerStyle={styles.content} >
 
-          <Lottie
+          <LottieView
             ref={animation => {
               this.animation = animation;
             }}

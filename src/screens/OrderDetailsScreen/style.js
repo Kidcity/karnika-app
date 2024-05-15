@@ -1,6 +1,7 @@
 import { Platform, StyleSheet } from "react-native";
 import colors from "../../utils/colors";
-import { fonts, setHeight, setWidth } from "../../utils/variable";
+import { fonts, normalize, setHeight, setWidth } from "../../utils/variable";
+import {commonStyle} from '../../helper/commonStyle'
 
 export const styles = StyleSheet.create({
     container: {
@@ -9,7 +10,7 @@ export const styles = StyleSheet.create({
     },
     content:{
         flexGrow: 1,
-        backgroundColor: colors.grey5,
+        backgroundColor: colors.grey6,
         paddingBottom: setWidth(12)
         //marginHorizontal: setWidth(2)
     },
@@ -73,12 +74,12 @@ export const styles = StyleSheet.create({
         paddingLeft: setWidth(3)
     },
     productimage:{
-        flex:1,
-        aspectRatio: 0.9
+        height: normalize(70),        
+        // aspectRatio: 0.9
         // width: '98%',
         // height: setWidth(18),
     },
-    orderstatusView:{
+    orderstatusView:{        
         paddingVertical: setWidth(2)
     },
     orderstatusText:{
@@ -91,6 +92,9 @@ export const styles = StyleSheet.create({
     status_blue:{
         backgroundColor: colors.blue2
     },
+    status_orange: {
+        backgroundColor: colors.orange3
+    },
     status_green: {
         backgroundColor: colors.green1
     },
@@ -98,9 +102,11 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.red
     },
     creditNoteBtn:{
+        alignSelf:'flex-end',
         backgroundColor : colors.blue2,
         paddingHorizontal: setWidth(3),
-        paddingVertical: setHeight(1)
+        paddingVertical: setHeight(1),
+        marginTop: normalize(10)
     },
     creditNoteBtnText:{
         color: colors.white,
@@ -109,22 +115,20 @@ export const styles = StyleSheet.create({
     },
 
     /* Order status block */
+
     orderStatusblock:{        
         marginHorizontal: setWidth(6),
         borderLeftColor: colors.grey2,
         borderLeftWidth: setWidth(0.3),
         borderStyle: Platform.OS === 'android' ? "dashed" : null,
-        // marginBottom: setWidth(10)
-        height: setWidth(20),  
-        // backgroundColor:'red'      
+        paddingVertical: normalize(8),        
+        marginTop: normalize(5)  
     },
     orderStatusBlockHeading:{
         fontSize: setWidth(4),
         fontFamily: fonts.fontRegular,
         color: colors.black,
-        paddingLeft: setWidth(5),
-        position: 'absolute',
-        top: -10
+        marginLeft: normalize(5)
     },
     circleOutline:{
         width: setWidth(6),
@@ -132,28 +136,23 @@ export const styles = StyleSheet.create({
         borderColor: colors.orange,
         borderWidth: setWidth(0.5),
         borderRadius: setWidth(10),
-        position: 'absolute',
-        top: -10,
-        left: -12,
         backgroundColor: colors.grey5      
     },
     circleIconOutline:{
-        position: 'absolute',
-        top: -10,
-        left: -9,
-        backgroundColor: colors.grey5
+        // position: 'absolute',
+        // top: -10,
+        // left: -9,
+        // backgroundColor: colors.grey5
     },
     orderStatusBlockSubTextView:{
         paddingLeft: setWidth(4),
-        marginTop: setWidth(4),
+        marginTop: setWidth(2),
         flexDirection:'row',
-        alignItems:'center'
     },
     orderStatusBlockText:{       
-        color: colors.grey3,
+        color: colors.dark_charcoal,
         fontSize: setWidth(3.1),
         fontFamily: fonts.fontRegular,
-        marginLeft: setWidth(1.2)
     },
 
     /* Price Details View */
@@ -190,8 +189,8 @@ export const styles = StyleSheet.create({
     shippingAddressView:{
         marginHorizontal: setWidth(2),
         paddingHorizontal: setWidth(2),
-        paddingVertical: setWidth(5),
-        marginTop:setWidth(1),
+        paddingVertical: setWidth(3),
+        marginTop:setWidth(5),
     },
     shippingAddressHeading:{
         fontSize: setWidth(3.5),
@@ -217,5 +216,17 @@ export const styles = StyleSheet.create({
     callBtnText:{
         color: colors.white,
         textAlign: 'center'
+    },
+    customerView:{
+        paddingVertical: normalize(15),
+        backgroundColor: colors.white,
+        paddingHorizontal: setWidth(5),
+        borderRadius: setWidth(3),
+        marginTop: setWidth(2)
+    },
+    wholesaler:{
+        fontSize: setWidth(3.5),
+        fontFamily: fonts.fontRegular,
+        color: colors.black
     }
 })

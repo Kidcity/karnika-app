@@ -48,14 +48,14 @@ export default class CartView extends Component {
                     onIncrease={(value, idx) => this.props.onIncrease(value, index, idx)}
                     onPressItem={(id) => this.props.onPressItem(id)}
                 />
-                {
-                    !item.is_minimum_order_amount_met &&
+                {/*
+                    item.is_minimum_order_amount_met &&
                     <View style={[styles.row, styles.warningView]}>
                         <FontAwesome name='warning' color={colors.primaryyellow} size={setWidth(5)} />
                         <Text style={styles.minimun_order_warning_text}>
                             Add Items worth ₹ <Text style={[commonStyle.bluredText]}>{parseFloat(+item.minimum_order_amount - +item.gross_total_price).toFixed(2)}</Text> from { (item?.shop_in_shop === "1") ? item?.brand_name : item.city_name} to complete <Text style={[{ fontFamily: fonts.fontBold }]}>Minimum Order Amount <Text style={[commonStyle.bluredText]}>₹{item.minimum_order_amount}</Text>  </Text> </Text>
                     </View>
-                }
+        */}
                
             </>
         )

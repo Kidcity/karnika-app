@@ -1,31 +1,59 @@
 import Base from './Base.service'
-import { AVAILABLE_BRANDS_SLUG, CATELOG_BANNER_SLUG, GET_BANNERS, MAIN_CATEGORIES_SLUG } from './Slug';
+import { AVAILABLE_BRANDS_SLUG, CATELOG_BANNER_SLUG, GET_BANNERS, GET_WHOLESALER_SLUG, MAIN_CATEGORIES_SLUG } from './Slug';
 import { store } from '../redux/store'
 import { setAvailableBrandsByCityAction, setBannersAction, setCategoriesAction, setGenderAction } from '../redux/actions/storeByCityAction';
 import { setMinimunOrderPriceAction } from '../redux/actions/purchaseHistoryAction';
+import { setWholesalerAction } from '../redux/actions/homeAction';
 
 class StoreByCityService extends Base {
     
     _getGenderService(param) {
+        console.log('gener param ', param);
         return new Promise((resolve, reject) => {
             this.post(MAIN_CATEGORIES_SLUG, param).then(response => {
+                
+                // console.log("gender ===> ",response.data.data);
 
                 if (response?.data?.data) {
                     const data = response?.data?.data
-                    
                     let categories = []
                     if (data.categories && data.categories.length > 0) {
                         for (let index = 0; index < data.categories.length; index++) {
                             const element = data.categories[index];
                             categories.push({
-                                id: element.id,
-                                image: element.image,
-                                title: element.name
+                                id: element?.id,
+                                image: element?.image,
+                                title: element?.name
                             })
                         }
                     }
+                    
                     store.dispatch(setMinimunOrderPriceAction(data.minimum_order_pirce))
                     store.dispatch(setGenderAction(categories))
+                    resolve(true)
+                } else {
+                    reject({ message: "Something went wrong." })
+                }
+            }, error => {
+                console.log('gender err ==> ', error);
+                reject(error)
+            })
+        })
+    }
+
+    _getWholesalerService(param) {
+        return new Promise((resolve, reject) => {
+            this.post(GET_WHOLESALER_SLUG, param).then(async response => {
+
+                if (response?.data?.data) {
+                    const data = response?.data?.data
+                    
+                    if(data?.data && data?.data.length > 0){
+                        const list = data?.data.map((item, index) => ({...item, isChecked: false}) )
+                        console.log('_getWholesalerService ==> ',list);
+                        await store.dispatch(setWholesalerAction(list))
+                    }                    
+
                     resolve(true)
                 } else {
                     reject({ message: "Something went wrong." })

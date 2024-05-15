@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import colors from '../../utils/colors'
-import { fonts, setWidth } from "../../utils/variable";
+import { fonts, normalize, setWidth } from "../../utils/variable";
 
 export const styles = StyleSheet.create({
     contianer:{
@@ -16,43 +16,45 @@ export const styles = StyleSheet.create({
         paddingHorizontal: setWidth(2),
         paddingVertical: setWidth(5),        
         borderRadius: setWidth(2),
-        marginTop: setWidth(4)
+        backgroundColor: colors.themeColor,
+        marginTop: normalize(10)
     },
     row:{
         flexDirection: 'row'
     },
     imageContainer:{
-        width: setWidth(23),
-        height: setWidth(23),
-        borderRadius: setWidth(30),
-        overflow: 'hidden'
+        width: '100%',
+        height: normalize(160),
+        overflow: 'hidden',  
+        borderRadius: normalize(10)   
     },
     image:{
-        flex:1,
-        aspectRatio: 1,
+        width: '100%',
+        height: '100%'
     },
     nameContainer:{
         flex:1,
         justifyContent:'center',
-        paddingLeft: setWidth(2)
+        marginLeft: normalize(3)
     },
     name:{
-        fontSize: setWidth(4.5),
+        fontSize: setWidth(3.8),
         color: colors.white,
-        fontFamily: fonts.fontRegular
+        fontFamily: fonts.fontRegular,
     },
     name2:{
-        fontSize: setWidth(3),
+        fontSize: setWidth(3.2),
         color: colors.white,
-        marginTop: setWidth(3),
+        marginTop: normalize(3),
         fontFamily: fonts.fontRegular
     },
     location:{
         flex:1,
         fontSize: setWidth(3),
         color: colors.white,
-        paddingLeft: setWidth(2),
-        fontFamily: fonts.fontRegular
+        marginLeft: setWidth(1),
+        fontFamily: fonts.fontRegular,
+        textTransform:'capitalize'   
     },
     walletAmountView:{
         backgroundColor: colors.green1,
