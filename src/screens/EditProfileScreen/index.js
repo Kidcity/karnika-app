@@ -66,12 +66,13 @@ class EditProfileScreen extends Component {
                     })
                 }
             })
-        }, 200);
+        }, 500);
 
     }
 
     _openCamera() {
         this.RBSheet.close()
+        
         const options = {
             mediaType: 'photo',
             includeBase64: true
@@ -79,14 +80,18 @@ class EditProfileScreen extends Component {
         setTimeout(() => {
             launchCamera(options, (response) => {
 
+                // console.log(response);
+                // return
                 if (!response.didCancel && !response.errorCode) {
                     this.setState({
                         image: response.assets[0].uri,
                         imageObj: response
                     })
                 }
+            }).catch(err => {
+                console.log(err);
             })
-        }, 200);
+        }, 500);
 
     }
 

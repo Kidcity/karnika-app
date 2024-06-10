@@ -139,7 +139,7 @@ export const rupifi_status = {
 
 export const appStoreLink = {
     androidstore: "https://play.google.com/store/apps/details?id=com.karnika",
-    iosstore: "", // "itms-apps://itunes.apple.com/us/app/id1575728603"
+    iosstore: "itms-apps://itunes.apple.com/us/app/id6502586516"
 }
 
 export const ageList = [

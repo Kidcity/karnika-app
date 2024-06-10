@@ -91,9 +91,9 @@ export const commonStyle = StyleSheet.create({
     },
     shadow: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0 },
+        shadowOffset: { width: 1, height: 10 },
         shadowOpacity: 0.8,
-        shadowRadius: 1,
+        shadowRadius: 5,
         elevation: 5
     },
     borderBottom: {

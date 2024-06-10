@@ -4,6 +4,8 @@ import { images, setWidth } from '../../utils/variable';
 import { styles } from './style';
 import Feather from 'react-native-vector-icons/Feather'
 import colors from '../../utils/colors';
+import CustomImage from '../FastImage';
+import FastImage from 'react-native-fast-image';
 
 export default class CircleImage extends Component {
   constructor(props) {
@@ -17,9 +19,13 @@ export default class CircleImage extends Component {
       <TouchableOpacity style={[styles.container, this.props.container]} activeOpacity={0.6} onPress={this.props.onPress}>
         {
           this.props.image ?
-            <Image source={{ uri: this.props.image }} resizeMode="cover" style={styles.image} />
+            <CustomImage
+              source={{ uri: this.props.image, priority: FastImage.priority.high }}
+              resizeMode="cover"
+              style={[styles.image]}
+            />
             :
-            <Feather name='camera' size={setWidth(7)} color={colors.white}/>
+            <Feather name='camera' size={setWidth(7)} color={colors.white} />
         }
         {
           this.props.footerImage &&

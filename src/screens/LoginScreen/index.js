@@ -17,6 +17,8 @@ import EmptyCartModal from '../../component/EmptyCartModal';
 import SignupModal from '../../component/SignupModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { _crashApp, _setCrashLog, _setCrashUserID } from '../../helper/CrashlyticsHelper';
+import RNRestart from 'react-native-restart';
+import { getDeviceToken } from '../../helper/NotificationHelper';
 
 const { StatusBarManager } = NativeModules
 
@@ -68,10 +70,26 @@ class LoginScreen extends Component {
 
 
   async _login() {
-    // _setCrashUserID("User "+this.state.phone)
-    // _setCrashLog("Attempt Login - "+this.state.phone)
+
     Keyboard.dismiss()
-    const device_token = await AsyncStorage.getItem('@device_token_KARNIKA')
+
+    let device_token = await AsyncStorage.getItem('@device_token_KARNIKA')
+    if (!device_token) {
+
+      const token = await getDeviceToken()
+      if (token) {
+        device_token = token
+      } else {
+        Alert.alert("Relaunch App", "Please relaunch the app to intialize notitifcation helpers.", [
+          {
+            title: "Relaunch",
+            onPress: () => RNRestart.restart()
+          }
+        ])
+        return
+      }
+      
+    }
     const param = {
       mobile: this.state.phone,
       // password: this.state.password,
@@ -79,6 +97,7 @@ class LoginScreen extends Component {
       fcm_token: device_token,
     }
     console.log(param);
+
     this.setState({ showLoader: true })
     await LoginService._loginService(param).then(response => {
 
@@ -112,7 +131,7 @@ class LoginScreen extends Component {
 
     return (
       <KeyboardAwareScrollView contentContainerStyle={[styles.container]} keyboardShouldPersistTaps="handled">
-        
+
 
         <View style={[styles.header]} resizeMode="cover">
           <Image source={images.header_logo2} resizeMode="contain" style={styles.logo} />
@@ -128,8 +147,8 @@ class LoginScreen extends Component {
             keyboardType="number-pad"
             value={this.state.phone}
             onChangeText={(e) => this.setState({ phone: e })}
-            // testId="phonenumber"
-            // accessibilityLabel="phonenumber"
+          // testId="phonenumber"
+          // accessibilityLabel="phonenumber"
           />
 
 

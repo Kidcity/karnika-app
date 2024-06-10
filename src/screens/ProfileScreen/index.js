@@ -20,6 +20,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
+import CustomImage from '../../component/FastImage';
 
 class ProfileScreen extends Component {
     constructor(props) {
@@ -131,13 +132,10 @@ class ProfileScreen extends Component {
                     <View style={styles.imageContainer}>
                         {
                             (this.state.userdata.image != '') ?
-                                <FastImage
+                                <CustomImage
+                                    source={{ uri: this.state.userdata?.image ,  priority: FastImage.priority.high}}
+                                    resizeMode="cover"
                                     style={[styles.image]}
-                                    source={{
-                                        uri: this.state.userdata.image,
-                                        priority: FastImage.priority.high,
-                                    }}
-                                    resizeMode={FastImage.resizeMode.cover}
                                 />
                                 :
                                 <Image source={images.profileimg} style={styles.image} resizeMode="cover" />

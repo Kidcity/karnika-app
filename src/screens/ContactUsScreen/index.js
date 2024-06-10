@@ -96,7 +96,7 @@ class ContactUsScreen extends Component {
                                     <Feather name="phone-call" size={normalize(22)} color={colors.white} />
                                 }
                                 leftIcon={false}
-                                onPress={() => Linking.openURL(`tel:+91 98832 79470`)}
+                                onPress={() => Linking.openURL(`tel:+919883279470`)}
                             />
                             <CustomButton
                                 container={{

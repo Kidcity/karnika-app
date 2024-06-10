@@ -1,5 +1,5 @@
 import { Alert, Linking, PermissionsAndroid, Platform } from 'react-native';
-import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { check, PERMISSIONS, request, requestNotifications, RESULTS } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 // import { _recordCrashReport, _setCrashAttributes } from './CrashlyticsHelper';
 import { _setBackgroundNotificationListner, _setForeGroundNotificationListener } from './NotificationListener';
@@ -7,31 +7,49 @@ import { store } from '../redux/store'
 import { setToStore } from './AsyncStorageHelper';
 import { setUnreadNotificationsCount } from '../redux/actions/notificationAction';
 import messaging from '@react-native-firebase/messaging'
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 export const _checkPermission = async () => {
     
     const enabled = await messaging().hasPermission();
     console.log('enabled ******* ', enabled)
     if (enabled) {
-        getDeviceToken();
+        setDeviceToken();
     } else {
         requestUserNotificationPermission();
     }
 };
 
 // Register the device with FCM
-const getDeviceToken = async () => {
+const setDeviceToken = async () => {
+    
+    await messaging().registerDeviceForRemoteMessages();
+    let token = ''
+    await messaging().getToken().then(response => {
+        console.log(response);
+        token = response
+    }).catch(error => {
+        console.log('errro =>> ', error);
+    })
+    
+    console.log("DeviceToken>>>>>>>>>>>" + token);
+    await setToStore('@device_token_KARNIKA', token)
+}
+
+export const getDeviceToken = async () => {
     
     let token = ''
     await messaging().registerDeviceForRemoteMessages();
     await messaging().getToken().then(response => {
         token = response
     }).catch(error => {
-        // console.log('errro =>> ', error);
+       
     })
     console.log("DeviceToken>>>>>>>>>>>" + token);
     await setToStore('@device_token_KARNIKA', token)
+    return token
 }
+
 
 function notificationAlert() {
     Alert.alert("Permission needed!", "karnika wants to send notification.\nPlease give permission from app settings.", [
@@ -44,6 +62,7 @@ function notificationAlert() {
 }
 
 const requestUserNotificationPermission = async () => {
+    // const permission = Platform.OS === 'android' ? PERMISSIONS.ANDROID.POST_NOTIFICATIONS : PERMISSIONS.ANDROID.POST_NOTIFICATIONS
     try {
         if (Platform.OS === 'android') {
             check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
@@ -74,20 +93,25 @@ const requestUserNotificationPermission = async () => {
                 });
 
         } else if (Platform.OS === 'ios') {
+            // requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+            //    console.log(status, settings);
+            //   });
+
+            // return
             const authStatus = await messaging().requestPermission();
             const enabled =
                 authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
                 authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+                console.log('Authorization status:', authStatus);
             if (enabled) {
-                //console.log('Authorization status:', authStatus);
             } else {
                 Alert.alert("Oops !!!", "You have denied notification permission.",
                     [
                         { text: "Cancel", onPress: () => console.log("OK Pressed") },
                         {
                             text: "Give Permission",
-                            onPress: () => requestUserPermission()
+                            onPress: () => notificationAlert()
                         }
                     ]
                 )
@@ -107,6 +131,7 @@ const _configureLocalNotification = () => {
             if (url) {
                 Linking.openURL(url)
             }
+            notification.finish(PushNotificationIOS.FetchResult.NoData);
         },
         //(optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
         onAction: function (notification) {
@@ -172,6 +197,8 @@ export const _handleAppOpenFromBackgroundState = () => {
                 if (link) {
                     Linking.openURL(link)
                 }
+            }else{
+                console.log(remoteMessage);
             }
         })
     } catch (error) {
@@ -191,7 +218,7 @@ export const _handleAppOpenFromQuitState = () => {
         messaging().getInitialNotification()
             .then(remoteMessage => {
                 if (remoteMessage) {
-                    // console.log("_handleAppOpenFromQuitState helper ====> ", remoteMessage);
+                    console.log("_handleAppOpenFromQuitState helper ====> ", remoteMessage);
                     const link = remoteMessage?.data?.link
                     if (link) {
                         Linking.openURL(link)

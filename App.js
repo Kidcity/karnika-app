@@ -20,6 +20,7 @@ import { clearCache } from './src/helper/cacheHandler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native';
 import { _checkPermission, _handleAppOpenFromBackgroundState, _handleAppOpenFromQuitState } from './src/helper/NotificationHelper';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 
 
@@ -154,8 +155,29 @@ export default class App extends Component {
 
   }
 
+   onRemoteNotification = (notification) => {
+    const actionIdentifier = notification.getActionIdentifier();
+    console.log("actionIdentifier ===> ",actionIdentifier);
+    if (actionIdentifier === 'open') {
+      // Perform action based on open action
+    }
+
+    if (actionIdentifier === 'text') {
+      // Text that of user input.
+      const userText = notification.getUserText();
+      // Perform action based on textinput action
+    }
+    // Use the appropriate result based on what you needed to do for this notification
+    const result = PushNotificationIOS.FetchResult.NoData;
+    notification.finish(result);
+  };
+
   async componentDidMount() {
     SplashScreen.hide();
+
+    const type = 'notification';
+    PushNotificationIOS.addEventListener(type, this.onRemoteNotification);
+
     this._getAppLogo();
     // const is_cleared = await AsyncStorage.getItem("@cache_cleared")
     // console.log('is_cleared', is_cleared);
@@ -167,7 +189,7 @@ export default class App extends Component {
     // _crashApp()
 
     this.startTimer()
-    // this._getAppVersion();
+    this._getAppVersion();
     this._getFirebaseId();
     _handleAppOpenFromBackgroundState()
     _handleAppOpenFromQuitState()
@@ -192,6 +214,8 @@ export default class App extends Component {
 
   componentWillUnmount() {
     this.stopTimer()
+    PushNotificationIOS.removeEventListener('notification');
+
   }
 
   startTimer = () => {
